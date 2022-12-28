@@ -29,20 +29,27 @@ function App() {
         <div className="App">
             <Navigaion />
             <Routes>
+
                 <Route path='*' element={<NotFoundPage />} />
                 <Route path='/' element={<GuestHomePage />} />
-                <Route path='/userhome' element={<UserHomePage />} />
-                <Route path='/about' element={<AboutPage />} />
+
                 <Route path='/signup' element={<CreateAccountPage />} />
                 <Route path='/signin' element={<SignInPage />} />
-                <Route path='/createquiz' element={<CreateQuizPage />} />
-                <Route path='/profile' element={<ProfilePage />} />
+                <Route path='/resetpassword' element={<ResetPasswordPage />} />
+
+                <Route path='/userhome' element={<UserHomePage />} />
+
+                <Route path='/about' element={<AboutPage />} />
+
                 <Route path='/quizlist' element={<QuizListPage />} />
                 <Route path='/quizpage' element={<QuizPage />} />
-                <Route path='/resetpassword' element={<ResetPasswordPage />} />
-                <Route path='/search' element={<SearchPage />} />
-                <Route path='/updateprofile' element={<UpdateProfilePage />} />
+                <Route path='/createquiz' element={<CreateQuizPage />} />
                 <Route path='/updatequiz' element={<UpdateQuizPage />} />
+
+                <Route path='/profile' element={<ProfilePage />} />
+                <Route path='/updateprofile' element={<UpdateProfilePage />} />
+                
+                <Route path='/search' element={<SearchPage />} />
             </Routes>
         </div>
     )
