@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { useState, useEffect } from 'react'
 import { useForm } from "react-hook-form"
+import { useAuthContext } from '../contexts/AuthContext'
 
 type FormData = {
     email: string,
@@ -11,10 +12,22 @@ type FormData = {
 const CreateAccountPage = () => {
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
+    const { signup, currentUser, logout } = useAuthContext()
 
     const createUser = async (data: any) => {
         console.log(data)
+
+        try {
+            await signup(data.email, data.password)
+
+        } catch (error) {
+            console.log(error)
+        }
     }
+
+    useEffect(()=>{
+        console.log('Currentuser changed: ', currentUser)
+    }, [currentUser])
 
     return (
         <div className="page-container">
@@ -80,6 +93,7 @@ const CreateAccountPage = () => {
 
                 <Link to='/signin'>Already have an account? sig in instead!</Link>
             </form>
+            <button onClick={logout}>log out</button>
         </div>
     )
 }
