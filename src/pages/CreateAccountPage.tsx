@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from 'react'
 import { useForm } from "react-hook-form"
 import { useAuthContext } from '../contexts/AuthContext'
+import classNames from "classnames"
 
 type FormData = {
     email: string,
@@ -36,7 +37,6 @@ const CreateAccountPage = () => {
     return (
         <div className="page-container">
             <h1>Create your account</h1>
-            <p>Required fields are marked with *</p>
 
             <form onSubmit={handleSubmit(createUser)} noValidate>
                 <label>Email *</label>
@@ -50,8 +50,10 @@ const CreateAccountPage = () => {
                             message: 'incorrect email format'
                         }
                     })}
+                    placeholder='name@mail.com'
+                    className={classNames({'error-input': errors.email})}
                 />
-                {errors.email && <span>{errors.email?.message}</span>}
+                {errors.email && <span className="form-error-message">{errors.email?.message}</span>}
 
                 <label>Password *</label>
                 <input 
@@ -64,8 +66,10 @@ const CreateAccountPage = () => {
                             message: 'Password must be at least six characters'
                         }
                     })}
+                    placeholder='password'
+                    className={classNames({'error-input': errors.password})}
                 />
-                {errors.password && <span>{errors.password?.message}</span>}
+                {errors.password && <span className="form-error-message">{errors.password?.message}</span>}
 
                 <label>Repeat password *</label>
                 <input 
@@ -79,16 +83,24 @@ const CreateAccountPage = () => {
                             }
                         }
                     })}
+                    placeholder='repeat password'
+                    className={classNames({'error-input': errors.passwordrepeat})}
                 />
-                {errors.passwordrepeat && <span>{errors.passwordrepeat?.message}</span>}
+                {errors.passwordrepeat && <span className="form-error-message">{errors.passwordrepeat?.message}</span>}
 
                 <hr />
 
                 <label htmlFor="createusername">Username (if omitted email will be used)</label>
                 <input id="createusername" type='text' />
 
-                <div>
-                    <p>Avatar</p>
+                <div className="avatar-section">
+                    <label>Avatar</label>
+                    <div className="form-avatar-container">
+
+                    </div>
+
+                    <input type="file" 
+                    />
                 </div>
 
                 <hr />
