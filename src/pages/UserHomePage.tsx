@@ -1,6 +1,11 @@
+import { useAuthContext } from "../contexts/AuthContext"
+
 const UserHomePage = () => {
+
+    const { currentUser } = useAuthContext()
+
     return (
-        <p>Welcome User</p>
+        <p>Welcome { currentUser.email }</p>
     )
 }
 

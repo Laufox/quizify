@@ -23,7 +23,11 @@ import UpdateQuizPage from './pages/UpdateQuizPage'
 // Component import
 import Navigaion from './components/Navigation'
 
+import { useAuthContext } from './contexts/AuthContext'
+
 function App() {
+
+    const { currentUser } = useAuthContext()
 
     return (
         <div className="App">
@@ -32,13 +36,11 @@ function App() {
                 <Routes>
 
                     <Route path='*' element={<NotFoundPage />} />
-                    <Route path='/' element={<GuestHomePage />} />
+                    <Route path='/' element={currentUser ? <UserHomePage /> : <GuestHomePage />} />
 
                     <Route path='/signup' element={<CreateAccountPage />} />
                     <Route path='/signin' element={<SignInPage />} />
                     <Route path='/resetpassword' element={<ResetPasswordPage />} />
-
-                    <Route path='/userhome' element={<UserHomePage />} />
 
                     <Route path='/about' element={<AboutPage />} />
 

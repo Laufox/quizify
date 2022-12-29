@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from 'react'
 import { useForm } from "react-hook-form"
 import { useAuthContext } from '../contexts/AuthContext'
@@ -12,16 +12,20 @@ type FormData = {
 const CreateAccountPage = () => {
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
-    const { signup, currentUser, logout } = useAuthContext()
+    const { signup, currentUser } = useAuthContext()
+
+    const [submitErrorMessage, setSubmitErrorMessage] = useState('')
+
+    const navigate = useNavigate()
 
     const createUser = async (data: any) => {
         console.log(data)
 
         try {
             await signup(data.email, data.password)
-
-        } catch (error) {
-            console.log(error)
+            navigate('/')
+        } catch (error: any) {
+            setSubmitErrorMessage(error?.message)
         }
     }
 
@@ -89,11 +93,15 @@ const CreateAccountPage = () => {
 
                 <hr />
 
+                {
+                    submitErrorMessage && 
+                    <p>{submitErrorMessage}</p>
+                }
+
                 <button type="submit" className="btn btn-info">Create Account</button>
 
                 <Link to='/signin'>Already have an account? sig in instead!</Link>
             </form>
-            <button onClick={logout}>log out</button>
         </div>
     )
 }
