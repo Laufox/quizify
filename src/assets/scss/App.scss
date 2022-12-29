@@ -31,9 +31,12 @@ p, span {
     font-size: 1.4rem;
 }
 
-a, button {
+a, button, .link {
     font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
+    font-size: 1.2rem;
     text-decoration: none;
+    color: #000044;
+    cursor: pointer;
 }
 
 .btn {
@@ -57,4 +60,11 @@ a, button {
     display: flex;
     flex-flow: column;
     gap: 4rem;
+}
+
+.link-collection {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    gap: 1rem;
 }
