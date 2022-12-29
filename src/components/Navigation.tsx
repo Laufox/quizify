@@ -21,6 +21,7 @@ const Navigaion = () => {
             <Link to='/'>guest home</Link>
             <Link to='/abc123'>404 page</Link>
             <Link to='/about'>about</Link>
+            <Link to='/signin'>signin</Link>
             <p className='link' onClick={signOut}>logout</p>
         </div>
     )

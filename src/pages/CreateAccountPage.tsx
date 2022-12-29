@@ -30,10 +30,6 @@ const CreateAccountPage = () => {
         }
     }
 
-    useEffect(()=>{
-        console.log('Currentuser changed: ', currentUser)
-    }, [currentUser])
-
     return (
         <div className="page-container">
             <h1>Create your account</h1>
@@ -107,7 +103,7 @@ const CreateAccountPage = () => {
 
                 {
                     submitErrorMessage && 
-                    <p>{submitErrorMessage}</p>
+                    <p className="submit-error-message">{submitErrorMessage}</p>
                 }
 
                 <button type="submit" className="btn btn-info">Create Account</button>

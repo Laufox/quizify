@@ -13,7 +13,7 @@ form {
         margin-bottom: 0.5rem;
     }
 
-    input {
+    input[type="text"], input[type="email"], input[type="password"] {
         height: 4rem;
         border: 0.1rem solid #000;
         border-radius: 0.2rem;
@@ -43,12 +43,6 @@ form {
             margin-top: 0.5rem;
             margin-bottom: 2rem;
         }
-
-        input {
-            border: none;
-            padding: 0;
-
-        }
     }
 
     .form-error-message {
@@ -61,5 +55,14 @@ form {
         &:focus {
             border-color: #c33;
         }
+    }
+
+    .submit-error-message {
+        background-color: #f66;
+        padding: 1rem;
+        font-size: 1.6rem;
+        font-weight: 600;
+        border: 0.3rem solid #c33;
+        border-radius: 0.4rem;
     }
 }
