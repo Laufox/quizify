@@ -18,7 +18,6 @@ const SignInPage = () => {
     const navigate = useNavigate()
 
     const loginUser = async (data: any) => {
-        console.log(data)
 
         try {
             await signin(data.email, data.password)

@@ -1,4 +1,65 @@
-.navigation {
-    height: 6rem;
-    border-bottom: 0.1rem solid black;
+.navigation-header {
+    position: relative;
+
+    .nav-top {
+        height: 6rem;
+        border-bottom: 0.1rem solid black;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2rem;
+        background-color: #bcc;
+    
+        .nav-avatar-container {
+            display: flex;
+            width: 3.2rem;
+            height: 3.2rem;
+            border-radius: 1.6rem;
+            border: 0.1rem solid #000;
+            padding: 0.1rem;
+            cursor: pointer;
+
+            img {
+                border-radius: 1.6rem;
+                width: 3.0rem;
+                // height: 3.0rem;
+            }
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+            height: 3.2rem;
+            width: 3.2rem;
+        }
+    
+        .nav-top-icon-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+    
+            .btn {
+                margin: 0;
+            }
+        }
+    }
+    
+    .dropdown-content {
+        background-color: #C5CCCC;
+        position: absolute;
+        top: 6rem;
+        width: 100%;
+        min-height: calc(100vh - 6rem);
+
+        padding: 4rem 2rem;
+    
+        .link-collection {
+            a, p {
+                font-size: 1.8rem;
+                text-decoration: underline;
+            }
+        }
+    }
+
 }
+
+
