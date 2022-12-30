@@ -5,7 +5,7 @@ const UserHomePage = () => {
     const { currentUser } = useAuthContext()
 
     return (
-        <p>Welcome { currentUser.email }</p>
+        <p>Welcome { currentUser.displayName }</p>
     )
 }
 

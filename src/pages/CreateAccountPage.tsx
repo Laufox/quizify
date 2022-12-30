@@ -7,7 +7,8 @@ import classNames from "classnames"
 type FormData = {
     email: string,
     password: string,
-    passwordrepeat: string
+    passwordrepeat: string,
+    username: string
 }
 
 const CreateAccountPage = () => {
@@ -16,18 +17,38 @@ const CreateAccountPage = () => {
     const { signup, currentUser } = useAuthContext()
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState('')
+    const [imageErrorMessage, setImageErrorMessage] = useState('')
+    const [currentPhoto, setCurrentPhoto] = useState<File | null>(null)
 
     const navigate = useNavigate()
 
     const createUser = async (data: any) => {
-        console.log(data)
 
         try {
-            await signup(data.email, data.password)
+            await signup(data.email, data.password, data.username ? data.username : data.email, currentPhoto)
             navigate('/')
         } catch (error: any) {
             setSubmitErrorMessage(error?.message)
         }
+
+    }
+
+    const handlePhotoSelect: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+
+        if (!e.target.files?.length) {
+            setCurrentPhoto(null)
+            setImageErrorMessage('')
+            return
+        }
+
+        const targetFile = e.target.files[0]
+        console.log(targetFile.type.slice(0, targetFile.type.indexOf('/')))
+        if (targetFile.type.slice(0, targetFile.type.indexOf('/')) !== "image") {
+            setImageErrorMessage('File must be an image')
+            return
+        }
+        setCurrentPhoto(e.target.files[0])
+
     }
 
     return (
@@ -86,8 +107,17 @@ const CreateAccountPage = () => {
 
                 <hr />
 
-                <label htmlFor="createusername">Username (if omitted email will be used)</label>
-                <input id="createusername" type='text' />
+                <label>Username *</label>
+                <input 
+                    id="createusername" 
+                    type='text' 
+                    {...register('username', {
+                        required: 'Username is required'
+                    })}
+                    placeholder='username'
+                    className={classNames({'error-input': errors.username})}
+                />
+                {errors.username && <span className="form-error-message">{errors.username?.message}</span>}
 
                 <div className="avatar-section">
                     <label>Avatar</label>
@@ -95,8 +125,15 @@ const CreateAccountPage = () => {
 
                     </div>
 
-                    <input type="file" 
+                    <input 
+                        type="file" 
+                        onChange={handlePhotoSelect}
                     />
+
+                    {
+                        imageErrorMessage &&
+                        <p className="submit-error-message">{imageErrorMessage}</p>
+                    }
                 </div>
 
                 <hr />
