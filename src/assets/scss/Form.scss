@@ -29,19 +29,68 @@ form {
         }
     }
 
+    input[type="file"] {
+        opacity: 0;
+        width: 0.1px;
+        height: 0.1px;
+        position: absolute;
+    }
+
+    .file-upload-label {
+        border: 0.1rem dashed #000;
+        font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
+        font-size: 1.6rem;
+        cursor: pointer;
+        padding: 1rem 2rem;
+        background-color: #eee;
+        display: flex;
+        flex-flow: column;
+
+        p {
+            font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 1.6rem;
+        }
+
+        span {
+            font-size: 1.2rem;
+        }
+
+        &:hover {
+            background-color: #e8e8e8;
+
+            p {
+                font-style: italic;
+            }
+        }
+    }
+
     hr {
         margin: 3rem 0;
     }
 
     .avatar-section {
 
+        .photo-name {
+            margin-top: 1.5rem;
+            font-weight: bold;
+        }
+
         .form-avatar-container {
-            width: 6.4rem;
-            height: 6.4rem;
+            width: 8rem;
+            height: 8rem;
             border: 0.1rem solid #000;
-            border-radius: 3.2rem;
+            border-radius: 4rem;
             margin-top: 0.5rem;
             margin-bottom: 2rem;
+            padding: 0.2rem;
+            display: flex;
+
+            .avatar-image-preview {
+                // width: 56px;
+                // height: 56px;
+                border-radius: 4rem;
+            }
         }
     }
 

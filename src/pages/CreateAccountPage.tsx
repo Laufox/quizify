@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useForm } from "react-hook-form"
 import { useAuthContext } from '../contexts/AuthContext'
 import classNames from "classnames"
+import defaultAvatar from '../assets/icons/defaultAvatar.svg'
 
 type FormData = {
     email: string,
@@ -18,6 +19,7 @@ const CreateAccountPage = () => {
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState('')
     const [imageErrorMessage, setImageErrorMessage] = useState('')
+    const [imagePreview, setImagePreview] = useState('')
     const [currentPhoto, setCurrentPhoto] = useState<File | null>(null)
 
     const navigate = useNavigate()
@@ -38,16 +40,17 @@ const CreateAccountPage = () => {
         if (!e.target.files?.length) {
             setCurrentPhoto(null)
             setImageErrorMessage('')
+            setImagePreview('')
             return
         }
 
         const targetFile = e.target.files[0]
-        console.log(targetFile.type.slice(0, targetFile.type.indexOf('/')))
         if (targetFile.type.slice(0, targetFile.type.indexOf('/')) !== "image") {
             setImageErrorMessage('File must be an image')
             return
         }
-        setCurrentPhoto(e.target.files[0])
+        setCurrentPhoto(targetFile)
+        setImagePreview(URL.createObjectURL(targetFile))
 
     }
 
@@ -120,15 +123,24 @@ const CreateAccountPage = () => {
                 {errors.username && <span className="form-error-message">{errors.username?.message}</span>}
 
                 <div className="avatar-section">
-                    <label>Avatar</label>
                     <div className="form-avatar-container">
-
+                        <img src={imagePreview ? imagePreview : defaultAvatar} alt='avatar-image-preview' className="avatar-image-preview" />
                     </div>
 
+                    <label htmlFor="createphoto" className="file-upload-label">
+                        <p>Upload profile image</p>
+                        <span>Click to open file system or drag directly to this area</span>
+                    </label>
                     <input 
                         type="file" 
                         onChange={handlePhotoSelect}
+                        id="createphoto"
                     />
+
+                    {
+                        currentPhoto &&
+                        <p className="photo-name">{currentPhoto.name}</p>
+                    }
 
                     {
                         imageErrorMessage &&
