@@ -1,3 +1,5 @@
+// Component that will return a list of links for users that are signed in
+
 import { Link } from "react-router-dom"
 import { useAuthContext } from '../contexts/AuthContext'
 

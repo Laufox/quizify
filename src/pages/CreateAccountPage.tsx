@@ -1,9 +1,17 @@
+/** Page to handle creation of new user accounts */
+
+// React related imports
+import { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
-import { useState, useEffect } from 'react'
 import { useForm } from "react-hook-form"
+
+// Context with data and functions for user authentication
 import { useAuthContext } from '../contexts/AuthContext'
-import classNames from "classnames"
+
+// Icons to display on website
 import defaultAvatar from '../assets/icons/defaultAvatar.svg'
+
+import classNames from "classnames"
 
 type FormData = {
     email: string,
@@ -14,16 +22,25 @@ type FormData = {
 
 const CreateAccountPage = () => {
 
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
-    const { signup, currentUser } = useAuthContext()
-
-    const [submitErrorMessage, setSubmitErrorMessage] = useState('')
-    const [imageErrorMessage, setImageErrorMessage] = useState('')
-    const [imagePreview, setImagePreview] = useState('')
-    const [currentPhoto, setCurrentPhoto] = useState<File | null>(null)
-
+    // Function to jump to different page route
     const navigate = useNavigate()
 
+    // Funtions and variabels to use from auth context
+    const { signup } = useAuthContext()
+
+    // Functions to use from react-hook-form
+    const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
+
+    // States for error messages to display within form
+    const [submitErrorMessage, setSubmitErrorMessage] = useState('')
+    const [imageErrorMessage, setImageErrorMessage] = useState('')
+
+    // State for image url for preview avatar before submitting form
+    const [imagePreview, setImagePreview] = useState('')
+    // State for image file currently selected for upload on form submit
+    const [currentPhoto, setCurrentPhoto] = useState<File | null>(null)
+
+    // Function to request  to sign up new user through auth context
     const createUser = async (data: any) => {
 
         try {
@@ -35,8 +52,10 @@ const CreateAccountPage = () => {
 
     }
 
+    // Function to handle when new image file has been selected
     const handlePhotoSelect: React.ChangeEventHandler<HTMLInputElement> = (e) => {
 
+        // If no filen was given, reset states data and return early
         if (!e.target.files?.length) {
             setCurrentPhoto(null)
             setImageErrorMessage('')
@@ -45,10 +64,12 @@ const CreateAccountPage = () => {
         }
 
         const targetFile = e.target.files[0]
+        // If file is not of type image, set error message and return early
         if (targetFile.type.slice(0, targetFile.type.indexOf('/')) !== "image") {
             setImageErrorMessage('File must be an image')
             return
         }
+        // Set states with new photo info
         setCurrentPhoto(targetFile)
         setImagePreview(URL.createObjectURL(targetFile))
 

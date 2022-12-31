@@ -1,4 +1,6 @@
-// Dependency import
+/** App component to hold all website content */
+
+// React related imports
 import { Routes, Route } from 'react-router-dom'
 
 // Style import
@@ -23,10 +25,12 @@ import UpdateQuizPage from './pages/UpdateQuizPage'
 // Component import
 import Navigaion from './components/Navigation'
 
+// Context with data and functions for user authentication
 import { useAuthContext } from './contexts/AuthContext'
 
 function App() {
 
+    // Funtions and variabels to use from auth context
     const { currentUser } = useAuthContext()
 
     return (

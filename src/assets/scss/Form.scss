@@ -1,3 +1,5 @@
+/* Style rules for all forms */
+
 form {
     display: flex;
     flex-flow: column;
@@ -13,6 +15,7 @@ form {
         margin-bottom: 0.5rem;
     }
 
+    // Rules for specific type of input elements
     input[type="text"], input[type="email"], input[type="password"] {
         height: 4rem;
         border: 0.1rem solid #000;
@@ -30,6 +33,7 @@ form {
         }
     }
 
+    // Hide default input element for file uploads
     input[type="file"] {
         opacity: 0;
         width: 0.1px;
@@ -37,6 +41,7 @@ form {
         position: absolute;
     }
 
+    // Make custom input look a like for file upload input
     .file-upload-label {
         border: 0.1rem dashed #000;
         font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
@@ -70,6 +75,7 @@ form {
         margin: 3rem 0;
     }
 
+    // Rules for profile avatar preview in form
     .avatar-section {
 
         .photo-name {
@@ -93,6 +99,7 @@ form {
         }
     }
 
+    // Rules for feedback messages within forms
     .form-error-message {
         color: #c33;
     }
@@ -123,6 +130,7 @@ form {
         border-radius: 0.4rem; 
     }
 
+    // Rules for search input fields
     input[type="search"] {
         height: 4rem;
         border: 0.1rem solid #000;
@@ -141,6 +149,7 @@ form {
     }
 }
 
+/* Rules for seperate search form */
 .search-form {
     display: flex;
     flex-flow: row;

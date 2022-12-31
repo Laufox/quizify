@@ -1,7 +1,13 @@
+/** Page to handle sign in of user account  */
+
+// React related imports
 import { Link, useNavigate } from "react-router-dom"
-import { useState, useEffect } from 'react'
+import { useState  } from 'react'
 import { useForm } from "react-hook-form"
+
+// Context with data and functions for user authentication
 import { useAuthContext } from '../contexts/AuthContext'
+
 import classNames from "classnames"
 
 type FormData = {
@@ -10,13 +16,20 @@ type FormData = {
 }
 
 const SignInPage = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
-    const { signin, currentUser } = useAuthContext()
 
+    // Function to jump to different page route
+    const navigate = useNavigate()
+    
+    // Funtions and variabels to use from auth context
+    const { signin } = useAuthContext()
+
+    // Functions to use from react-hook-form
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
+
+    // States for error messages to display within form
     const [submitErrorMessage, setSubmitErrorMessage] = useState('')
 
-    const navigate = useNavigate()
-
+    // Function to request  to sign in user through auth context
     const loginUser = async (data: any) => {
 
         try {

@@ -1,3 +1,5 @@
+// Component that will return a list of links for visitors not signed in
+
 import { Link } from "react-router-dom"
 
 interface Props {
