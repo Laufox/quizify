@@ -49,79 +49,37 @@ const Navigaion = () => {
     return (
         <header className='navigation-header'>
             <div className='nav-top-wrapper'>
-            <div className='nav-top'>
-                <Link 
-                    to='/'
-                    onClick={()=>{setIsMenuOpen(false)}}
-                >
-                    <h1>Quizify</h1>
-                </Link>
-
-                {
-                    currentUser 
-                    ?
-                    <LinkListUser onNavClick={()=>{setIsMenuOpen(false)}} signOut={signOut} />
-                    :
-                    <LinkListGuest onNavClick={()=>{setIsMenuOpen(false)}} />
-                }
-
-                {
-                    !currentUser
-                    &&
+                <div className='nav-top'>
                     <Link 
-                        to='/signup' 
-                        className='btn btn-info'
+                        to='/'
                         onClick={()=>{setIsMenuOpen(false)}}
                     >
-                        Sign up!
+                        <h1>Quizify</h1>
                     </Link>
-                }
 
-                {
-                    currentUser 
-                    &&
-                    <Link 
-                        to={`/profile/${currentUser.uid}`} 
-                        className='nav-avatar-container'
-                        onClick={()=>{setIsMenuOpen(false)}}
-                    >
-                        <img 
-                            src={currentUser.photoURL ? currentUser.photoURL : defaultAvatar} 
-                            alt='nav-avatar-image' 
-                        />
-                    </Link>
-                }
-
-                <form className='search-form' onSubmit={handleSearch} noValidate>
-                    <input 
-                        type="search" 
-                        placeholder='Search...' 
-                        ref={searchInput} 
-                    />
-                    <img 
-                        src={searchIcon} 
-                        alt='search-button' 
-                        role='button' 
-                        onClick={handleSearch} 
-                        className='search-button'
-                    />
-                </form>
-
-                <div className='menu-toggle' onClick={menuToggle}>
-                    <img src={ isMenuOpen ? menuCloseIcon : menuOpenIcon } alt='menu-toggle-icon' />
-                </div>
-
-                {/* 
-                    LinkList (d-none on mobile ; d-flex on desktop)
-                    Button (d-flex on mobile ; d-none on desktop)
-                    Avatar (d-none for guest ; d-flex for user)
-                    Search (d-none on mobile ; d-flex on desktop)
-                    MenuIcon (d-flex on movbile ; d-none on desktop)
-                */}
-                {/* <div className='nav-top-icon-wrapper'>
                     {
                         currentUser 
                         ?
+                        <LinkListUser onNavClick={()=>{setIsMenuOpen(false)}} signOut={signOut} />
+                        :
+                        <LinkListGuest onNavClick={()=>{setIsMenuOpen(false)}} />
+                    }
+
+                    {
+                        !currentUser
+                        &&
+                        <Link 
+                            to='/signup' 
+                            className='btn btn-info'
+                            onClick={()=>{setIsMenuOpen(false)}}
+                        >
+                            Sign up!
+                        </Link>
+                    }
+
+                    {
+                        currentUser 
+                        &&
                         <Link 
                             to={`/profile/${currentUser.uid}`} 
                             className='nav-avatar-container'
@@ -132,68 +90,29 @@ const Navigaion = () => {
                                 alt='nav-avatar-image' 
                             />
                         </Link>
-                        :
-                        <Link 
-                            to='/signup' 
-                            className='btn btn-info'
-                            onClick={()=>{setIsMenuOpen(false)}}
-                        >
-                            Sign up!
-                        </Link>
                     }
+
+                    <form className='search-form' onSubmit={handleSearch} noValidate>
+                        <input 
+                            type="search" 
+                            placeholder='Search...' 
+                            ref={searchInput} 
+                        />
+                        <img 
+                            src={searchIcon} 
+                            alt='search-button' 
+                            role='button' 
+                            onClick={handleSearch} 
+                            className='search-button'
+                        />
+                    </form>
+
                     <div className='menu-toggle' onClick={menuToggle}>
                         <img src={ isMenuOpen ? menuCloseIcon : menuOpenIcon } alt='menu-toggle-icon' />
                     </div>
-                </div> */}
 
-                {/* <div className='nav-desktop'>
-                    {
-                        currentUser 
-                        ?
-                        <LinkListUser onNavClick={()=>{setIsMenuOpen(false)}} signOut={signOut} />
-                        :
-                        <LinkListGuest onNavClick={()=>{setIsMenuOpen(false)}} />
-                    }
-                    <div className='nav-top-icon-desktop-wrapper'>
-                        {
-                            currentUser 
-                            ?
-                            <Link 
-                                to={`/profile/${currentUser.uid}`} 
-                                className='nav-avatar-container'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                <img 
-                                    src={currentUser.photoURL ? currentUser.photoURL : defaultAvatar} 
-                                    alt='nav-avatar-image' 
-                                />
-                            </Link>
-                            :
-                            <Link 
-                                to='/signup' 
-                                className='btn btn-info'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Sign up!
-                            </Link>
-                        }
-                        <form className='search-form' onSubmit={handleSearch} noValidate>
-                            <input 
-                                type="search" 
-                                placeholder='Search...' 
-                                ref={searchInput} 
-                            />
-                            <img 
-                                src={searchIcon} 
-                                alt='search-button' 
-                                role='button' 
-                                onClick={handleSearch} 
-                                className='search-button'
-                            />
-                        </form>
-                    </div>
-                </div> */}
-            </div>
+                    
+                </div>
             </div>
             {
                 isMenuOpen &&
