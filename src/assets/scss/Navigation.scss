@@ -19,6 +19,12 @@
         align-items: center;
         padding: 0 2rem;
 
+        .nav-top-content-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
         .link-collection {
 
             display: none;

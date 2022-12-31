@@ -1,12 +1,12 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../contexts/AuthContext'
 import menuOpenIcon from '../assets/icons/menu-open-icon.svg'
 import menuCloseIcon from '../assets/icons/menu-close-icon.svg'
-import searchIcon from '../assets/icons/search-icon.svg'
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
 import LinkListGuest from './LinkListGuest'
 import LinkListUser from './LinkListUser'
+import SearchForm from './SearchForm'
 
 const Navigaion = () => {
 
@@ -15,8 +15,6 @@ const Navigaion = () => {
     const { logout, currentUser } = useAuthContext()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-
-    const searchInput = useRef<HTMLInputElement>(null)
 
     const signOut = async () => {
         try {
@@ -31,16 +29,16 @@ const Navigaion = () => {
         setIsMenuOpen(prevState => !prevState)
     }
 
-    const handleSearch = (e: any) => {
+    const handleSearch = (e: any, ref: React.RefObject<HTMLInputElement>) => {
 
         e.preventDefault()
 
-        if (!searchInput.current?.value) {
+        if (!ref.current?.value) {
             return
         }
 
-        const searchTerm = searchInput.current.value.trim()
-        searchInput.current.value = ''
+        const searchTerm = ref.current.value.trim()
+        ref.current.value = ''
         setIsMenuOpen(false)
         navigate(`/search/${searchTerm}`)
         
@@ -57,80 +55,57 @@ const Navigaion = () => {
                         <h1>Quizify</h1>
                     </Link>
 
-                    {
-                        currentUser 
-                        ?
-                        <LinkListUser onNavClick={()=>{setIsMenuOpen(false)}} signOut={signOut} />
-                        :
-                        <LinkListGuest onNavClick={()=>{setIsMenuOpen(false)}} />
-                    }
+                    <div className='nav-top-content-wrapper'>
 
-                    {
-                        !currentUser
-                        &&
-                        <Link 
-                            to='/signup' 
-                            className='btn btn-info'
-                            onClick={()=>{setIsMenuOpen(false)}}
-                        >
-                            Sign up!
-                        </Link>
-                    }
+                        {
+                            currentUser 
+                            ?
+                            <LinkListUser onNavClick={()=>{setIsMenuOpen(false)}} signOut={signOut} />
+                            :
+                            <LinkListGuest onNavClick={()=>{setIsMenuOpen(false)}} />
+                        }
 
-                    {
-                        currentUser 
-                        &&
-                        <Link 
-                            to={`/profile/${currentUser.uid}`} 
-                            className='nav-avatar-container'
-                            onClick={()=>{setIsMenuOpen(false)}}
-                        >
-                            <img 
-                                src={currentUser.photoURL ? currentUser.photoURL : defaultAvatar} 
-                                alt='nav-avatar-image' 
-                            />
-                        </Link>
-                    }
+                        {
+                            !currentUser
+                            &&
+                            <Link 
+                                to='/signup' 
+                                className='btn btn-info'
+                                onClick={()=>{setIsMenuOpen(false)}}
+                            >
+                                Sign up!
+                            </Link>
+                        }
 
-                    <form className='search-form' onSubmit={handleSearch} noValidate>
-                        <input 
-                            type="search" 
-                            placeholder='Search...' 
-                            ref={searchInput} 
-                        />
-                        <img 
-                            src={searchIcon} 
-                            alt='search-button' 
-                            role='button' 
-                            onClick={handleSearch} 
-                            className='search-button'
-                        />
-                    </form>
+                        {
+                            currentUser 
+                            &&
+                            <Link 
+                                to={`/profile/${currentUser.uid}`} 
+                                className='nav-avatar-container'
+                                onClick={()=>{setIsMenuOpen(false)}}
+                            >
+                                <img 
+                                    src={currentUser.photoURL ? currentUser.photoURL : defaultAvatar} 
+                                    alt='nav-avatar-image' 
+                                />
+                            </Link>
+                        }
 
-                    <div className='menu-toggle' onClick={menuToggle}>
-                        <img src={ isMenuOpen ? menuCloseIcon : menuOpenIcon } alt='menu-toggle-icon' />
+                        <SearchForm onSearch={handleSearch} />
+
+                        <div className='menu-toggle' onClick={menuToggle}>
+                            <img src={ isMenuOpen ? menuCloseIcon : menuOpenIcon } alt='menu-toggle-icon' />
+                        </div>
+
                     </div>
-
                     
                 </div>
             </div>
             {
                 isMenuOpen &&
                 <div className='dropdown-content'>
-                    <form className='search-form' onSubmit={handleSearch} noValidate>
-                        <input 
-                            type="search" 
-                            placeholder='Search...' 
-                            ref={searchInput} 
-                        />
-                        <img 
-                            src={searchIcon} 
-                            alt='search-button' 
-                            role='button' 
-                            onClick={handleSearch} 
-                            className='search-button'
-                        />
-                    </form>
+                    <SearchForm onSearch={handleSearch} />
 
                     {
                         currentUser 
