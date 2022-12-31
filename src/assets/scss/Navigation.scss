@@ -1,14 +1,54 @@
 .navigation-header {
     position: relative;
+    width: 100vw;
+    background-color: #bcc;
+
+    .nav-top-wrapper {
+        border-bottom: 0.1rem solid black;
+        display: flex;
+        justify-content: center;
+        height: 6rem;
+    }
 
     .nav-top {
         height: 6rem;
-        border-bottom: 0.1rem solid black;
+        width: 100vw;
+        max-width: 160rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 0 2rem;
-        background-color: #bcc;
+
+        .link-collection {
+
+            display: none;
+
+            @media screen and (min-width: 992px) {
+                
+                display: flex;
+                flex-flow: row;
+                align-items: center;
+                margin-right: 2rem;
+    
+                a, p {
+                    font-size: 1.4rem;
+                }
+
+            }
+
+        }
+
+        a.btn.btn-info {
+
+            margin: 0;
+
+            @media screen and (min-width: 992px) {
+                
+                display: none;
+
+            }
+
+        }
     
         .nav-avatar-container {
             display: flex;
@@ -26,10 +66,31 @@
             }
         }
 
+        .search-form {
+
+            display: none;
+            margin: 0;
+
+            input {
+                margin: 0;
+            }
+
+            @media screen and (min-width: 992px) {
+                
+                display: flex;
+
+            }
+
+        }
+
         .menu-toggle {
             cursor: pointer;
             height: 3.2rem;
             width: 3.2rem;
+
+            @media screen and (min-width: 992px) {
+                display: none;
+            }
         }
     
         .nav-top-icon-wrapper {

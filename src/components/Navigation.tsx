@@ -5,6 +5,8 @@ import menuOpenIcon from '../assets/icons/menu-open-icon.svg'
 import menuCloseIcon from '../assets/icons/menu-close-icon.svg'
 import searchIcon from '../assets/icons/search-icon.svg'
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
+import LinkListGuest from './LinkListGuest'
+import LinkListUser from './LinkListUser'
 
 const Navigaion = () => {
 
@@ -46,6 +48,7 @@ const Navigaion = () => {
 
     return (
         <header className='navigation-header'>
+            <div className='nav-top-wrapper'>
             <div className='nav-top'>
                 <Link 
                     to='/'
@@ -53,7 +56,69 @@ const Navigaion = () => {
                 >
                     <h1>Quizify</h1>
                 </Link>
-                <div className='nav-top-icon-wrapper'>
+
+                {
+                    currentUser 
+                    ?
+                    <LinkListUser onNavClick={()=>{setIsMenuOpen(false)}} signOut={signOut} />
+                    :
+                    <LinkListGuest onNavClick={()=>{setIsMenuOpen(false)}} />
+                }
+
+                {
+                    !currentUser
+                    &&
+                    <Link 
+                        to='/signup' 
+                        className='btn btn-info'
+                        onClick={()=>{setIsMenuOpen(false)}}
+                    >
+                        Sign up!
+                    </Link>
+                }
+
+                {
+                    currentUser 
+                    &&
+                    <Link 
+                        to={`/profile/${currentUser.uid}`} 
+                        className='nav-avatar-container'
+                        onClick={()=>{setIsMenuOpen(false)}}
+                    >
+                        <img 
+                            src={currentUser.photoURL ? currentUser.photoURL : defaultAvatar} 
+                            alt='nav-avatar-image' 
+                        />
+                    </Link>
+                }
+
+                <form className='search-form' onSubmit={handleSearch} noValidate>
+                    <input 
+                        type="search" 
+                        placeholder='Search...' 
+                        ref={searchInput} 
+                    />
+                    <img 
+                        src={searchIcon} 
+                        alt='search-button' 
+                        role='button' 
+                        onClick={handleSearch} 
+                        className='search-button'
+                    />
+                </form>
+
+                <div className='menu-toggle' onClick={menuToggle}>
+                    <img src={ isMenuOpen ? menuCloseIcon : menuOpenIcon } alt='menu-toggle-icon' />
+                </div>
+
+                {/* 
+                    LinkList (d-none on mobile ; d-flex on desktop)
+                    Button (d-flex on mobile ; d-none on desktop)
+                    Avatar (d-none for guest ; d-flex for user)
+                    Search (d-none on mobile ; d-flex on desktop)
+                    MenuIcon (d-flex on movbile ; d-none on desktop)
+                */}
+                {/* <div className='nav-top-icon-wrapper'>
                     {
                         currentUser 
                         ?
@@ -79,66 +144,15 @@ const Navigaion = () => {
                     <div className='menu-toggle' onClick={menuToggle}>
                         <img src={ isMenuOpen ? menuCloseIcon : menuOpenIcon } alt='menu-toggle-icon' />
                     </div>
-                </div>
+                </div> */}
 
-                <div className='nav-desktop'>
+                {/* <div className='nav-desktop'>
                     {
                         currentUser 
                         ?
-                        <nav className='link-collection'>
-                            <Link 
-                                to='/quizlist'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                View quiz list
-                            </Link>
-                            <Link 
-                                to='/createquiz'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Create a quiz
-                            </Link>
-                            <p 
-                                className='link' 
-                                onClick={()=>{signOut();setIsMenuOpen(false)}}
-                            >
-                                logout
-                            </p>
-                            <Link 
-                                to='/about'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                About website
-                            </Link>
-                            
-                        </nav>
+                        <LinkListUser onNavClick={()=>{setIsMenuOpen(false)}} signOut={signOut} />
                         :
-                        <nav className='link-collection'>
-                            <Link 
-                                to='/quizlist'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                View quiz list
-                            </Link>
-                            <Link 
-                                to='/signup'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Sign up
-                            </Link>
-                            <Link 
-                                to='/signin'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Sign in
-                            </Link>
-                            <Link 
-                                to='/about'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                About website
-                            </Link>
-                        </nav>
+                        <LinkListGuest onNavClick={()=>{setIsMenuOpen(false)}} />
                     }
                     <div className='nav-top-icon-desktop-wrapper'>
                         {
@@ -178,7 +192,8 @@ const Navigaion = () => {
                             />
                         </form>
                     </div>
-                </div>
+                </div> */}
+            </div>
             </div>
             {
                 isMenuOpen &&
@@ -201,66 +216,9 @@ const Navigaion = () => {
                     {
                         currentUser 
                         ?
-                        <nav className='link-collection'>
-                            <Link 
-                                to='/quizlist'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                View quiz list
-                            </Link>
-                            <Link 
-                                to='/createquiz'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Create a quiz
-                            </Link>
-                            <Link 
-                                to={`/profile/${currentUser.uid}`}
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Go to profile
-                            </Link>
-                            <p 
-                                className='link' 
-                                onClick={()=>{signOut();setIsMenuOpen(false)}}
-                            >
-                                logout
-                            </p>
-                            <Link 
-                                to='/about'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                About website
-                            </Link>
-                            
-                        </nav>
+                        <LinkListUser onNavClick={()=>{setIsMenuOpen(false)}} signOut={signOut} />
                         :
-                        <nav className='link-collection'>
-                            <Link 
-                                to='/quizlist'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                View quiz list
-                            </Link>
-                            <Link 
-                                to='/signup'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Sign up
-                            </Link>
-                            <Link 
-                                to='/signin'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Sign in
-                            </Link>
-                            <Link 
-                                to='/about'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                About website
-                            </Link>
-                        </nav>
+                        <LinkListGuest onNavClick={()=>{setIsMenuOpen(false)}} />
                     }
                 </div>
             }
