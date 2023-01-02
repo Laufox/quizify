@@ -6,6 +6,7 @@
 @import 'Navigation';
 @import 'GuestHomePage';
 @import 'UserHomePage';
+@import 'ProfilePage';
 
 /* Generic default style rules for all elements */
 * {
@@ -169,4 +170,8 @@ img {
     flex-flow: column;
     align-items: flex-start;
     gap: 1rem;
+}
+
+.flipped {
+    transform: rotate(180deg);
 }

@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom"
 import { useAuthContext } from "../contexts/AuthContext"
 
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
+import accordionIcon from '../assets/icons/accordion-icon.svg'
 
 interface userData {
     uid: string,
@@ -16,6 +17,16 @@ const ProfilePage = () => {
     const { uid } = useParams()
 
     const [userData, setUserData] = useState<userData>()
+    const [showCreated, setShowCreated] = useState(false)
+    const [showPlayed, setShowPlayed] = useState(false)
+
+    const toggleShowCreated = () => {
+        setShowCreated( prevState => !prevState )
+    }
+
+    const toggleShowPlayed = () => {
+        setShowPlayed( prevState => !prevState )
+    }
 
     useEffect(()=>{
 
@@ -41,7 +52,7 @@ const ProfilePage = () => {
 
                     <>
                     <div className="profile-info">
-                        <div className="form-avatar-container">
+                        <div className="profile-avatar-container">
                             <img src={userData.photoURL ? userData.photoURL : defaultAvatar} alt='avatar-image-preview' className="avatar-image-preview" />
                         </div>
                         <h1>{ userData.username }</h1>
@@ -51,71 +62,89 @@ const ProfilePage = () => {
                         }
                     </div>
 
+
                     <div className='created-quizzes'>
                         <header>
                             <h2>Your created quizzes</h2>
-                            <p>d</p>
+                            <img 
+                                src={accordionIcon} 
+                                onClick={toggleShowCreated}
+                            />
                         </header>
 
-                        <main className='created-quizzes-collection'>
-                            <div>
-                                <Link to=''>Quiz title</Link>
-                                <div className='action-links'>
-                                    <Link to=''>Update</Link>
-                                    <Link to=''>Delete</Link>
-                                </div>
-                            </div>
-                            <div>
-                                <Link to=''>Quiz title</Link>
-                                <div className='action-links'>
-                                    <Link to=''>Update</Link>
-                                    <Link to=''>Delete</Link>
-                                </div>
-                            </div>
-                            <div>
-                                <Link to=''>Quiz title</Link>
-                                <div className='action-links'>
-                                    <Link to=''>Update</Link>
-                                    <Link to=''>Delete</Link>
-                                </div>
-                            </div>
-                            <div>
-                                <Link to=''>Quiz title</Link>
-                                <div className='action-links'>
-                                    <Link to=''>Update</Link>
-                                    <Link to=''>Delete</Link>
-                                </div>
-                            </div>
-                            <Link to=''>+ New quiz</Link>
-                        </main>
+                        {
+                            showCreated && (
+                                <main className='created-quizzes-collection'>
+                                    <div className='created-quiz-item'>
+                                        <Link to=''>Quiz title</Link>
+                                        <div className='action-links'>
+                                            <Link to=''>Update</Link>
+                                            <Link to=''>Delete</Link>
+                                        </div>
+                                    </div>
+                                    <div className='created-quiz-item'>
+                                        <Link to=''>Quiz title</Link>
+                                        <div className='action-links'>
+                                            <Link to=''>Update</Link>
+                                            <Link to=''>Delete</Link>
+                                        </div>
+                                    </div>
+                                    <div className='created-quiz-item'>
+                                        <Link to=''>Quiz title</Link>
+                                        <div className='action-links'>
+                                            <Link to=''>Update</Link>
+                                            <Link to=''>Delete</Link>
+                                        </div>
+                                    </div>
+                                    <div className='created-quiz-item'>
+                                        <Link to=''>Quiz title</Link>
+                                        <div className='action-links'>
+                                            <Link to=''>Update</Link>
+                                            <Link to=''>Delete</Link>
+                                        </div>
+                                    </div>
+                                    <Link to='' className='new-quiz-link'>+ New quiz</Link>
+                                </main>
+                            )
+                        }
+                        
 
                     </div>
 
                     <div className='played-quizzes'>
                         <header>
                             <h2>Your last played quizzes</h2>
-                            <p>d</p>
+                            <img 
+                                src={accordionIcon} 
+                                onClick={toggleShowPlayed}
+                            />
                         </header>
 
-                        <main className='created-quizzes-collection'>
-                            <div>
-                                <Link to=''>Quiz title</Link>
-                                <span>score%</span>
-                            </div>
-                            <div>
-                                <Link to=''>Quiz title</Link>
-                                <span>score%</span>
-                            </div>
-                            <div>
-                                <Link to=''>Quiz title</Link>
-                                <span>score%</span>
-                            </div>
-                            <div>
-                                <Link to=''>Quiz title</Link>
-                                <span>score%</span>
-                            </div>
-                            <Link to=''>+ New quiz</Link>
-                        </main>
+                        {
+                            showPlayed && (
+                                <main className='played-quizzes-collection'>
+                                    <div className='played-quiz-item'>
+                                        <Link to=''>Quiz title</Link>
+                                        <span>score%</span>
+                                    </div>
+                                    <div className='played-quiz-item'>
+                                        <Link to=''>Quiz title</Link>
+                                        <span>score%</span>
+                                    </div>
+                                    <div className='played-quiz-item'>
+                                        <Link to=''>Quiz title</Link>
+                                        <span>score%</span>
+                                    </div>
+                                    <div className='played-quiz-item'>
+                                        <Link to=''>Quiz title</Link>
+                                        <span>score%</span>
+                                    </div>
+                                    <Link to='' className='new-quiz-link'>+ New quiz</Link>
+                                </main>
+                            )
+                        }
+
+                        
                     </div>
                     </>
 
