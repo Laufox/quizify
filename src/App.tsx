@@ -54,7 +54,7 @@ function App() {
                     <Route path='/updatequiz' element={<UpdateQuizPage />} />
 
                     <Route path='/profile/:uid' element={<ProfilePage />} />
-                    <Route path='/updateprofile' element={<UpdateProfilePage />} />
+                    <Route path='/updateprofile/:uid' element={<UpdateProfilePage />} />
 
                     <Route path='/search/:query' element={<SearchPage />} />
                 </Routes>

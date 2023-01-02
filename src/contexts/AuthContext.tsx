@@ -10,7 +10,7 @@ import { useContext, createContext, useEffect, useState } from "react"
 // FIrebase imports
 import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 import { auth, db, storage } from '../firebase'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 
 // Initiate context
@@ -36,18 +36,12 @@ const AuthContextProvider = ({ children }: any) => {
             return
         }
 
-        // Create new firestore document for the new user
-        await setDoc(doc(db, 'users', auth.currentUser.uid), {
-            email,
-            username,
-            role: 'user',
-            createdAt: new Date(),
-        })
+        let photoURL
 
         // If a photo was given, upload photo to storage and then asign photo and username to currentuser profile
         if (photo) {
             const uploadPhoto = await uploadBytes(ref(storage, `avatars/${auth.currentUser.uid}`), photo)
-            const photoURL = await getDownloadURL(uploadPhoto.ref)
+            photoURL = await getDownloadURL(uploadPhoto.ref)
 
             await updateProfile(auth.currentUser, {
                 displayName: username,
@@ -58,6 +52,17 @@ const AuthContextProvider = ({ children }: any) => {
                 displayName: username
             })
         }
+
+        // Create new firestore document for the new user
+        await setDoc(doc(db, 'users', auth.currentUser.uid), {
+            uid: auth.currentUser.uid,
+            email,
+            username,
+            role: 'user',
+            createdAt: new Date(),
+            photoURL: photoURL ?? ""
+        })
+
 
     }
 
@@ -76,13 +81,22 @@ const AuthContextProvider = ({ children }: any) => {
         await sendPasswordResetEmail(auth, email)
     }
 
+    const getUser = async (uid: string) => {
+        const docSnap = await getDoc(doc(db, "users", uid))
+
+        if (docSnap.exists()) {
+            return docSnap.data()
+        }
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
         signup,
         signin,
         logout,
-        passwordReset
+        passwordReset,
+        getUser
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable
