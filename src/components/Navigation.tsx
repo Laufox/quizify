@@ -76,8 +76,9 @@ const Navigaion = () => {
                     <Link 
                         to='/'
                         onClick={()=>{setIsMenuOpen(false)}}
+                        className='nav-logo-link'
                     >
-                        <h1>Quizify</h1>
+                        Quizify
                     </Link>
 
                     <div className='nav-top-content-wrapper'>

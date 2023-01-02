@@ -1,9 +1,42 @@
 /* Rules for start page for guest users */
 
+.homepage-guest-intro {
+    h1 {
+        margin-bottom: 2rem;
+
+        @media screen and (min-width: 992px) {
+            margin-bottom: 4rem;
+        }
+    }
+
+}
+
+.homepage-guest-features {
+    h2 {
+        margin-bottom: 4rem;
+    }
+}
+
+.homepage-guest-cta {
+    display: flex;
+    flex-flow: column;
+    margin: 4rem 0;
+    gap: 3rem;
+
+    @media screen and (min-width: 720px) {
+        gap: 4rem
+    }
+
+    @media screen and (min-width: 992px) {
+        gap: 5rem
+    }
+}
+
 .features-container {
     display: flex;
     flex-flow: column;
     gap: 6rem;
+    padding: 0 1rem;
 
     .feature-create {
         align-self: flex-start;
@@ -15,5 +48,13 @@
 
     .feature-compete {
         align-self: flex-end;
+    }
+
+    @media screen and (min-width: 720px) {
+        padding: 0 3rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        padding: 0 6rem;
     }
 }

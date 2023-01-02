@@ -35,16 +35,40 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
     font-size: 2rem;
+
+    @media screen and (min-width: 720px) {
+        font-size: 2.8rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        font-size: 4rem;
+    }
 }
 
 h2 {
     font-size: 1.6rem;
+
+    @media screen and (min-width: 720px) {
+        font-size: 2rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        font-size: 2.8rem;
+    }
 }
 
 /* Defines generic rules for all normal text */
 p, span {
     font-family: 'Encode Sans', Arial, sans-serif;
     font-size: 1.4rem;
+
+    @media screen and (min-width: 720px) {
+        font-size: 1.8rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        font-size: 2.4rem;
+    }
 }
 
 /* Defines generic rules for all link and button text */
@@ -55,6 +79,18 @@ a, button, .link {
     color: #000044;
     cursor: pointer;
     border: none;
+
+    @media screen and (min-width: 720px) {
+        font-size: 1.6rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        font-size: 2rem;
+    }
+}
+
+.nav-logo-link {
+    font-size: 2.4rem;
 }
 
 /* Defines generic rules for images */
@@ -80,6 +116,16 @@ img {
 .app-container {
     padding: 4rem 2rem;
     min-height: calc(100vh - 6rem);
+    display: flex;
+    justify-content: center;
+
+    @media screen and (min-width: 720px) {
+        padding: 6rem 4rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        padding: 6rem 8rem;
+    }
 }
 
 /* Container for each page */
@@ -87,6 +133,33 @@ img {
     display: flex;
     flex-flow: column;
     gap: 4rem;
+
+    width: 100%;
+    max-width: 1200px;
+
+    .btn {
+        @media screen and (min-width: 720px) {
+            font-size: 1.6rem;
+            padding: 1.2rem 2.3rem;
+        }
+    
+        @media screen and (min-width: 992px) {
+            font-size: 2rem;
+            padding: 1.4rem 2.6rem;
+        }
+    }
+
+    @media screen and (min-width: 500px) {
+        width: 90%;
+    }
+
+    @media screen and (min-width: 720px) {
+        width: 85%;
+    }
+
+    @media screen and (min-width: 992px) {
+        width: 75%;
+    }
 }
 
 /* Style rules for list of links */
