@@ -12,6 +12,7 @@ import { useAuthContext } from '../contexts/AuthContext'
 import defaultAvatar from '../assets/icons/defaultAvatar.svg'
 
 import classNames from "classnames"
+import Confirm from '../components/Confirm'
 
 interface userData {
     uid: string,
@@ -52,6 +53,8 @@ const UpdateProfilePage = () => {
     const [imagePreview, setImagePreview] = useState('')
     // State for image file currently selected for upload on form submit
     const [currentPhoto, setCurrentPhoto] = useState<File | null>(null)
+
+    const [openConfirm, setOpenConfirm] = useState(false)
 
     // Function to request  to sign up new user through auth context
     const updateUser = async (data: any) => {
@@ -135,6 +138,7 @@ const UpdateProfilePage = () => {
             {
                 currentUser && userData && currentUser.uid === uid && (
 
+                    <>
                     <form onSubmit={handleSubmit(updateUser)} noValidate>
                         <label>Username</label>
                         <input 
@@ -256,7 +260,29 @@ const UpdateProfilePage = () => {
                         <button type="submit" className="btn btn-info">Save</button>
 
                     </form>
+
+                    <hr />
+                    <div className='danger-zone'>
+                        <h2>Danger zone</h2>
+                        <button 
+                            className='btn btn-danger' 
+                            onClick={()=>{setOpenConfirm(true)}}
+                        >Delete account</button>
+                    </div>
+
+                    
+
+                    </>
                 )
+            }
+
+            {
+                openConfirm &&
+                <Confirm 
+                    onConfirm={()=>{}}
+                    onCancel={()=>{setOpenConfirm(false)}}
+                    actionText='You are about to delete this account'
+                />
             }
             
         </div>

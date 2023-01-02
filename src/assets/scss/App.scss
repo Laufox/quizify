@@ -7,6 +7,7 @@
 @import 'GuestHomePage';
 @import 'UserHomePage';
 @import 'ProfilePage';
+@import 'Confirm';
 
 /* Generic default style rules for all elements */
 * {
@@ -114,6 +115,16 @@ img {
     background-color: #00b;
 }
 
+.btn-danger {
+    color: #f2f2ff;
+    background-color: #CC3333;
+}
+
+.btn-confirm {
+    color: #f2f2ff;
+    background-color: #33AA33;
+}
+
 /* Container rules for all page - specific content */
 .app-container {
     padding: 4rem 2rem;
@@ -162,6 +173,10 @@ img {
     @media screen and (min-width: 992px) {
         width: 75%;
     }
+}
+
+.page-container {
+    overflow-y: hidden !important;
 }
 
 /* Style rules for list of links */
