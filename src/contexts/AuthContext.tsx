@@ -8,10 +8,10 @@
 import { useContext, createContext, useEffect, useState } from "react"
 
 // FIrebase imports
-import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from 'firebase/auth'
+import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth'
 import { auth, db, storage } from '../firebase'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage"
 
 // Initiate context
 const AuthContext = createContext<any>(undefined)
@@ -89,6 +89,62 @@ const AuthContextProvider = ({ children }: any) => {
         }
     }
 
+    const updateAccount = async (email: string, password: string, username: string, photo: File, removePhoto: boolean) => {
+
+        if (!auth.currentUser) {
+            return
+        }
+
+        let photoURL
+
+        // If a photo was given, upload photo to storage and then asign photo and username to currentuser profile
+        if (photo) {
+            const uploadPhoto = await uploadBytes(ref(storage, `avatars/${auth.currentUser.uid}`), photo)
+            photoURL = await getDownloadURL(uploadPhoto.ref)
+
+            await updateProfile(auth.currentUser, {
+                displayName: username,
+                photoURL
+            })
+        } else {
+            await updateProfile(auth.currentUser, {
+                displayName: username
+            })
+        }
+
+        if (removePhoto) {
+            await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
+            await updateProfile(auth.currentUser, {
+                photoURL: ""
+            })
+        }
+
+        if (email) {
+            await updateEmail(auth.currentUser, email)
+        }
+
+        if (password) {
+            await updatePassword(auth.currentUser, password)
+        }
+
+        await setDoc(doc(db, 'users', auth.currentUser.uid), {
+            email: email ?? auth.currentUser.email,
+            username,
+            photoURL: photoURL ?? auth.currentUser.photoURL
+        }, {
+            merge: true
+        })
+    }
+
+    const verifyUser = async (password: string) => {
+
+        if (!auth.currentUser || !auth.currentUser.email) {
+            return
+        }
+
+        await reauthenticateWithCredential(auth.currentUser, EmailAuthProvider.credential(auth.currentUser?.email, password))
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
@@ -96,7 +152,9 @@ const AuthContextProvider = ({ children }: any) => {
         signin,
         logout,
         passwordReset,
-        getUser
+        getUser,
+        updateAccount,
+        verifyUser
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable

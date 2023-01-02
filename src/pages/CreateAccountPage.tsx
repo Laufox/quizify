@@ -44,7 +44,7 @@ const CreateAccountPage = () => {
     const createUser = async (data: any) => {
 
         try {
-            await signup(data.email, data.password, data.username ? data.username : data.email, currentPhoto)
+            await signup(data.email, data.password, data.username, currentPhoto)
             navigate('/')
         } catch (error: any) {
             setSubmitErrorMessage(error?.message)
