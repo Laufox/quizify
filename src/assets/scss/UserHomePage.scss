@@ -1,0 +1,33 @@
+.user-home-page-links {
+
+    display: flex;
+    flex-flow: column;
+    gap: 3rem;
+    margin-top: 2rem;
+
+    a {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.4rem;
+
+        @media screen and (min-width: 720px) {
+            gap: 2rem;
+            font-size: 1.8rem;
+        }
+    
+        @media screen and (min-width: 992px) {
+            gap: 3rem;
+            font-size: 2.2rem;
+        }
+    }
+
+    @media screen and (min-width: 720px) {
+        gap: 5rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        gap: 6rem;
+        margin-top: 4rem;
+    }
+}
