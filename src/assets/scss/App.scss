@@ -8,6 +8,7 @@
 @import 'UserHomePage';
 @import 'ProfilePage';
 @import 'Confirm';
+@import 'CreateQuizPage';
 
 /* Generic default style rules for all elements */
 *, *:before, *:after {
@@ -57,6 +58,18 @@ h2 {
 
     @media screen and (min-width: 992px) {
         font-size: 2.8rem;
+    }
+}
+
+h3 {
+    font-size: 1.4rem;
+
+    @media screen and (min-width: 720px) {
+        font-size: 1.8rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        font-size: 2.2rem;
     }
 }
 

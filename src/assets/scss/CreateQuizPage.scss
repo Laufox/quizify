@@ -1,13 +1,39 @@
-// .new-question-form {
-//     .form-error-message {
-//         color: #c33;
-//     }
+.question-container {
 
-//     input.error-input {
-//         border-color: #c33;
+    padding: 1rem;
+    background-color: #dcc;
+    margin-bottom: 1rem;
 
-//         &:focus {
-//             border-color: #c33;
-//         }
-//     }
-// }
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        cursor: pointer;
+
+        .question-number-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            span {
+                font-weight: 600;
+            }
+
+            h3 {
+                font-weight: 500;
+            }
+        }
+    }
+
+    main {
+        margin-top: 2rem;
+
+        .action-btn-container {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            width: 100%
+        }
+    }
+}

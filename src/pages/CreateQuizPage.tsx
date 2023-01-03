@@ -44,6 +44,12 @@ const CreateQuizPage = () => {
     const questionSecondWrongAnswerRef = useRef<HTMLInputElement>(null)
     const questionThirdWrongAnswerRef = useRef<HTMLInputElement>(null)
 
+    const editQuestionNameRef = useRef<HTMLInputElement>(null)
+    const editQuestionCorrectAnswerRef = useRef<HTMLInputElement>(null)
+    const editQuestionFirstWrongAnswerRef = useRef<HTMLInputElement>(null)
+    const editQuestionSecondWrongAnswerRef = useRef<HTMLInputElement>(null)
+    const editQuestionThirdWrongAnswerRef = useRef<HTMLInputElement>(null)
+
     const [questionErrors, setQuestionErrors] = useState({
         questionName: false,
         questionCorrectAnswer: false,
@@ -108,6 +114,12 @@ const CreateQuizPage = () => {
             ]
         }] )
 
+        questionNameRef.current.value = ''
+        questionCorrectAnswerRef.current.value = ''
+        questionFirstWrongAnswerRef.current.value = ''
+        questionSecondWrongAnswerRef.current.value = ''
+        questionThirdWrongAnswerRef.current.value = ''
+
     }
 
     const openNewQuestionForm = () => {
@@ -118,11 +130,83 @@ const CreateQuizPage = () => {
         setShowNewQuestionForm(false)
     }
 
+    const toggleEditQuestionForm = (index: number) => {
+
+        if (index === questionAddedToShow) {
+            setQuestionAddedToShow(-1)
+            return
+        }
+
+        
+
+        setQuestionAddedToShow(index)
+
+    }
+
+    const editQuestion = (index: number) => {
+
+        if (
+            !editQuestionNameRef.current?.value ||
+            !editQuestionCorrectAnswerRef.current?.value ||
+            !editQuestionFirstWrongAnswerRef.current?.value ||
+            !editQuestionSecondWrongAnswerRef.current?.value ||
+            !editQuestionThirdWrongAnswerRef.current?.value
+        ) {
+            return
+        }
+
+        const newQuestionArray = [...questionsList]
+
+        newQuestionArray[index].questionText = editQuestionNameRef.current.value
+
+        newQuestionArray[index].answers[0].text = editQuestionCorrectAnswerRef.current.value
+        newQuestionArray[index].answers[1].text = editQuestionFirstWrongAnswerRef.current.value
+        newQuestionArray[index].answers[2].text = editQuestionSecondWrongAnswerRef.current.value
+        newQuestionArray[index].answers[3].text = editQuestionThirdWrongAnswerRef.current.value
+
+        setQuestionsList([...newQuestionArray])
+        console.log('hello')
+        setQuestionAddedToShow(-1)
+
+    }
+
+    const deleteQuestion = (index: number) => {
+
+        const newArr = [...questionsList]
+        newArr.splice(index, 1)
+        setQuestionsList( [...newArr] )
+        
+    }
+
     useEffect(()=>{
 
         console.log('this is current questions: ', questionsList)
 
     }, [questionsList])
+
+    useEffect(()=> {
+
+        if (questionAddedToShow !== -1) {
+
+            if (
+                !editQuestionNameRef.current ||
+                !editQuestionCorrectAnswerRef.current ||
+                !editQuestionFirstWrongAnswerRef.current ||
+                !editQuestionSecondWrongAnswerRef.current ||
+                !editQuestionThirdWrongAnswerRef.current
+            ) {
+                console.log('hello')
+                return
+            }
+
+            editQuestionNameRef.current.value = questionsList[questionAddedToShow].questionText
+            editQuestionCorrectAnswerRef.current.value = questionsList[questionAddedToShow].answers[0].text
+            editQuestionFirstWrongAnswerRef.current.value = questionsList[questionAddedToShow].answers[1].text
+            editQuestionSecondWrongAnswerRef.current.value = questionsList[questionAddedToShow].answers[2].text
+            editQuestionThirdWrongAnswerRef.current.value = questionsList[questionAddedToShow].answers[3].text
+        }
+
+    }, [questionAddedToShow])
 
     return (
         <div className="page-container">
@@ -212,7 +296,14 @@ const CreateQuizPage = () => {
 
                 <div className="questions-heading-container">
                     <h2>Questions</h2>
-                    <p className="link" onClick={openNewQuestionForm}>+ Add new</p>
+                    <p 
+                        className="link" 
+                        onClick={()=>{
+                            showNewQuestionForm ? closeNewQuestionForm() : openNewQuestionForm()
+                        }}
+                    >
+                        + Add new
+                    </p>
                 </div>
 
                 {
@@ -371,21 +462,79 @@ const CreateQuizPage = () => {
                 {
                     !!questionsList.length && questionsList.map((question, i) => (
                         <div className="question-container" key={i}>
-                            <header onClick={()=>{setQuestionAddedToShow(i)}}>
-                                <span>#{i+1}</span>
-                                <h3>{question.questionText}</h3>
+                            <header onClick={()=>{
+                                    toggleEditQuestionForm(i)
+                                }}>
+                                <div className="question-number-text">
+                                    <span>#{i+1}</span>
+                                    <h3>{question.questionText}</h3>
+                                </div>
                                 <img src={accordionIcon} alt='icon to see question' />
                             </header>
 
                             {
                                 questionAddedToShow === i && (
 
-                                    <main>
-                                        {
-                                            question.answers.map((answer, j) => (
-                                                <p key={j}>{answer.text}</p>
-                                            ))
-                                        }
+                                    <main className="new-question-form">
+                                        <label>Question</label>
+                                        <input 
+                                            type='text'
+                                            defaultValue={question.questionText}
+                                            ref={editQuestionNameRef}
+                                        />
+
+                                        <label>Correct answer</label>
+                                        <input 
+                                            type='text'
+                                            defaultValue={question.answers[0].text}
+                                            ref={editQuestionCorrectAnswerRef}
+                                        />
+
+                                        <label>Other alternative</label>
+                                        <input 
+                                            type='text'
+                                            defaultValue={question.answers[1].text}
+                                            ref={editQuestionFirstWrongAnswerRef}
+                                        />
+
+                                        <label>Other alternative</label>
+                                        <input 
+                                            type='text'
+                                            defaultValue={question.answers[2].text}
+                                            ref={editQuestionSecondWrongAnswerRef}
+                                        />
+
+                                        <label>Other alternative</label>
+                                        <input 
+                                            type='text'
+                                            defaultValue={question.answers[3].text}
+                                            ref={editQuestionThirdWrongAnswerRef}
+                                        />
+
+                                        <div className="action-btn-container">
+                                            <button
+                                                type="button"
+                                                className="btn btn-info"
+                                                disabled={
+                                                    !editQuestionNameRef.current?.value ||
+                                                    !editQuestionCorrectAnswerRef.current?.value ||
+                                                    !editQuestionFirstWrongAnswerRef.current?.value ||
+                                                    !editQuestionSecondWrongAnswerRef.current?.value ||
+                                                    !editQuestionThirdWrongAnswerRef.current?.value
+                                                }
+                                                onClick={()=>{editQuestion(i)}}
+                                            >
+                                                Save
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger"
+                                                onClick={()=>{deleteQuestion(i)}}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </main>
 
                                 )
