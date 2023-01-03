@@ -10,7 +10,7 @@ import { useContext, createContext, useEffect, useState } from "react"
 // FIrebase imports
 import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth'
 import { auth, db, storage } from '../firebase'
-import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc, deleteDoc, addDoc, collection } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage"
 
 // Initiate context
@@ -163,6 +163,20 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
+    const createQuiz = async (data: any) => {
+
+        if (!auth.currentUser) {
+            return
+        }
+
+        await addDoc(collection(db, "quizzes"), {
+            authorId: auth.currentUser.uid,
+            createdAt: new Date(),
+            ...data
+        })
+
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
@@ -173,7 +187,8 @@ const AuthContextProvider = ({ children }: any) => {
         getUser,
         updateAccount,
         verifyUser,
-        removeUser
+        removeUser,
+        createQuiz
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable
