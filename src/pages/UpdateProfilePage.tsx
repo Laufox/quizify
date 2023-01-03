@@ -35,7 +35,7 @@ const UpdateProfilePage = () => {
     const navigate = useNavigate()
 
     // Funtions and variabels to use from auth context
-    const { getUser, currentUser, updateAccount, verifyUser } = useAuthContext()
+    const { getUser, currentUser, updateAccount, verifyUser, removeUser } = useAuthContext()
 
     const { uid } = useParams()
 
@@ -105,6 +105,23 @@ const UpdateProfilePage = () => {
 
     const handleRemoveImage = () => {
         setImagePreview('')
+    }
+
+    const handleDeleteUser = async () => {
+        try {
+            await removeUser()
+            navigate('/')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const openConfirmModal = () => {
+        setOpenConfirm(true)
+    }
+
+    const closeConfirmModal = () => {
+        setOpenConfirm(false)
     }
 
     useEffect(()=>{
@@ -266,7 +283,7 @@ const UpdateProfilePage = () => {
                         <h2>Danger zone</h2>
                         <button 
                             className='btn btn-danger' 
-                            onClick={()=>{setOpenConfirm(true)}}
+                            onClick={openConfirmModal}
                         >Delete account</button>
                     </div>
 
@@ -279,9 +296,10 @@ const UpdateProfilePage = () => {
             {
                 openConfirm &&
                 <Confirm 
-                    onConfirm={()=>{}}
-                    onCancel={()=>{setOpenConfirm(false)}}
+                    onConfirm={handleDeleteUser}
+                    onCancel={closeConfirmModal}
                     actionText='You are about to delete this account'
+                    requiresAuth={true}
                 />
             }
             

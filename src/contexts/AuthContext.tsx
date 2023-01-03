@@ -8,9 +8,9 @@
 import { useContext, createContext, useEffect, useState } from "react"
 
 // FIrebase imports
-import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth'
+import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth'
 import { auth, db, storage } from '../firebase'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage"
 
 // Initiate context
@@ -145,6 +145,24 @@ const AuthContextProvider = ({ children }: any) => {
         await reauthenticateWithCredential(auth.currentUser, EmailAuthProvider.credential(auth.currentUser?.email, password))
     }
 
+    const removeUser = async () => {
+
+        if (!auth.currentUser) {
+            return
+        }
+
+        // Delete possible avatar from storage
+        await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
+
+        // Delete user doc from firestore
+        await deleteDoc(doc(db, "users", auth.currentUser.uid))
+
+        // Delete user from auth
+        await deleteUser(auth.currentUser)
+
+
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
@@ -154,7 +172,8 @@ const AuthContextProvider = ({ children }: any) => {
         passwordReset,
         getUser,
         updateAccount,
-        verifyUser
+        verifyUser,
+        removeUser
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable
