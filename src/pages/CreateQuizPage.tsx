@@ -167,6 +167,7 @@ const CreateQuizPage = () => {
                     {...register('description')}
                     placeholder='description'
                     className={classNames({'error-input': errors.description})}
+                    rows={4}
                 />
                 {errors.description && <span className="form-error-message">{errors.description?.message}</span>}
 
@@ -181,12 +182,13 @@ const CreateQuizPage = () => {
                     })}
                     placeholder='tags'
                     className={classNames({'error-input': errors.tags})}
+                    rows={2}
                 />
                 {errors.tags && <span className="form-error-message">{errors.tags?.message}</span>}
 
                 <label>Visibility</label>
 
-                <label>
+                <label className="radio-input-label">
                     <input 
                         id="quizvispublic"
                         type='radio'
@@ -196,7 +198,7 @@ const CreateQuizPage = () => {
                     />
                     Public
                 </label>
-                <label>
+                <label className="radio-input-label">
                     <input 
                         id="quizvispublic"
                         type='radio'

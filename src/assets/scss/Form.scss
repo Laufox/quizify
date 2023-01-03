@@ -33,7 +33,7 @@ form, .new-question-form {
         font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
         font-size: 1.6rem;
         margin-bottom: 0.5rem;
-        max-width: 800px;
+        max-width: 80rem;
 
         &:focus {
             background-color: #f8ffff;
@@ -48,6 +48,102 @@ form, .new-question-form {
     
         @media screen and (min-width: 992px) {
             height: 5rem;
+            font-size: 2rem;
+        }
+    }
+
+    input[type="radio"] {
+        
+        display: grid;
+        place-content: center;
+        appearance: none;
+        background-color: #fff;
+        margin: 0;
+        color: #000;
+        width: 1.6rem;
+        height: 1.6rem;
+        border: 0.1rem solid #000;
+        border-radius: 50%;
+
+        @media screen and (min-width: 720px) {
+            width: 1.8rem;
+            height: 1.8rem;
+        }
+    
+        @media screen and (min-width: 992px) {
+            width: 2rem;
+            height: 2rem;
+        }
+
+    }
+
+    input[type="radio"]::before {
+        content: "";
+        width: 0.8rem;
+        height: 0.8rem;
+        border-radius: 50%;
+        transform: scale(0);
+        box-shadow: inset 1em 1em #33AA33;
+
+        @media screen and (min-width: 720px) {
+            width: 1rem;
+            height: 1rem;
+        }
+    
+        @media screen and (min-width: 992px) {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+    }
+
+    input[type="radio"]:checked::before {
+        transform: scale(1);
+    }
+
+    .radio-input-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.6rem;
+
+        @media screen and (min-width: 720px) {
+            font-size: 1.8rem;
+        }
+    
+        @media screen and (min-width: 992px) {
+            font-size: 2rem;
+        }
+    }
+
+    select {
+        height: 4rem;
+        font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
+        font-size: 1.6rem;
+        padding: 0.5rem 1rem;
+        max-width: 80rem;
+
+        @media screen and (min-width: 720px) {
+            height: 4.5rem;
+            font-size: 1.8rem;
+        }
+    
+        @media screen and (min-width: 992px) {
+            height: 5rem;
+            font-size: 2rem;
+        }
+    }
+
+    textarea {
+        font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
+        font-size: 1.6rem;
+        padding: 1rem 1rem;
+        max-width: 80rem;
+
+        @media screen and (min-width: 720px) {
+            font-size: 1.8rem;
+        }
+    
+        @media screen and (min-width: 992px) {
             font-size: 2rem;
         }
     }

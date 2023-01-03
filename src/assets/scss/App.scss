@@ -10,7 +10,7 @@
 @import 'Confirm';
 
 /* Generic default style rules for all elements */
-* {
+*, *:before, *:after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
