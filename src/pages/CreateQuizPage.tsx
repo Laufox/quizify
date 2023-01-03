@@ -34,7 +34,6 @@ const CreateQuizPage = () => {
     const { createQuiz } = useAuthContext()
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState()
-    const [showNewQuestionForm, setShowNewQuestionForm] = useState(false)
     const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
     const [questionsList, setQuestionsList] = useState<newQuestionInterface[]>([])
 
@@ -122,14 +121,6 @@ const CreateQuizPage = () => {
 
     }
 
-    const openNewQuestionForm = () => {
-        setShowNewQuestionForm(true)
-    }
-
-    const closeNewQuestionForm = () => {
-        setShowNewQuestionForm(false)
-    }
-
     const toggleEditQuestionForm = (index: number) => {
 
         if (index === questionAddedToShow) {
@@ -175,7 +166,7 @@ const CreateQuizPage = () => {
         const newArr = [...questionsList]
         newArr.splice(index, 1)
         setQuestionsList( [...newArr] )
-        
+
     }
 
     useEffect(()=>{
@@ -258,12 +249,7 @@ const CreateQuizPage = () => {
                 <label>Tags (seperate each one with space)</label>
                 <textarea 
                     id="quiztags"
-                    {...register('tags', {
-                        pattern: {
-                            value: /^[a-z0-9\s]*[a-z0-9][a-z0-9\s]$/gi, 
-                            message: 'Tags can only contain characters and numbers, and must be at least two characters long'
-                        }
-                    })}
+                    {...register('tags')}
                     placeholder='tags'
                     className={classNames({'error-input': errors.tags})}
                     rows={2}
@@ -294,168 +280,161 @@ const CreateQuizPage = () => {
 
                 <hr />
 
-                <div className="questions-heading-container">
-                    <h2>Questions</h2>
-                    <p 
-                        className="link" 
-                        onClick={()=>{
-                            showNewQuestionForm ? closeNewQuestionForm() : openNewQuestionForm()
-                        }}
-                    >
-                        + Add new
-                    </p>
-                </div>
+                <h2>Questions</h2>
+               
+                <div className="new-question-form">
 
-                {
-                    showNewQuestionForm && (
-                        <div className="new-question-form">
-
-                            <label>Question</label>
-                            <input 
-                                id="questionname"
-                                type='text'
-                                className={classNames({'error-input': questionErrors.questionName})}
-                                ref={questionNameRef}
-                                onChange={(e)=>{
-                                    if (!e.currentTarget.value) {
-                                        setQuestionErrors((prev) => {
-                                            return {
-                                                ...prev,
-                                                questionName: true
-                                            }
-                                        })
-                                        return
+                    <h3>Add new question:</h3>
+                    <label>Question</label>
+                    <input 
+                        id="questionname"
+                        type='text'
+                        className={classNames({'error-input': questionErrors.questionName})}
+                        ref={questionNameRef}
+                        onChange={(e)=>{
+                            if (!e.currentTarget.value) {
+                                setQuestionErrors((prev) => {
+                                    return {
+                                        ...prev,
+                                        questionName: true
                                     }
-                                    setQuestionErrors((prev) => {
-                                        return {
-                                            ...prev,
-                                            questionName: false
-                                        }
-                                    })
-                                }}
-                            />
-                            {questionErrors.questionName && <span className="form-error-message">Must type a question</span>}
-
-                            <label>Correct answer</label>
-                            <input 
-                                id="questioncorrectanswer"
-                                type='text'
-                                className={classNames({'error-input': questionErrors.questionCorrectAnswer})}
-                                ref={questionCorrectAnswerRef}
-                                onChange={(e)=>{
-                                    if (!e.currentTarget.value) {
-                                        setQuestionErrors((prev) => {
-                                            return {
-                                                ...prev,
-                                                questionCorrectAnswer: true
-                                            }
-                                        })
-                                        return
-                                    }
-                                    setQuestionErrors((prev) => {
-                                        return {
-                                            ...prev,
-                                            questionCorrectAnswer: false
-                                        }
-                                    })
-                                }}
-                            />
-                            {questionErrors.questionCorrectAnswer && <span className="form-error-message">Must give a correct answer</span>}
-
-                            <label>Other alternative</label>
-                            <input 
-                                id="questionfirstwronganswer"
-                                type='text'
-                                className={classNames({'error-input': questionErrors.questionFirstWrongAnswer})}
-                                ref={questionFirstWrongAnswerRef}
-                                onChange={(e)=>{
-                                    if (!e.currentTarget.value) {
-                                        setQuestionErrors((prev) => {
-                                            return {
-                                                ...prev,
-                                                questionFirstWrongAnswer: true
-                                            }
-                                        })
-                                        return
-                                    }
-                                    setQuestionErrors((prev) => {
-                                        return {
-                                            ...prev,
-                                            questionFirstWrongAnswer: false
-                                        }
-                                    })
-                                }}
-                            />
-                            {questionErrors.questionFirstWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
-
-                            <label>Other alternative</label>
-                            <input 
-                                id="questionsecondwronganswer"
-                                type='text'
-                                className={classNames({'error-input': questionErrors.questionSecondWrongAnswer})}
-                                ref={questionSecondWrongAnswerRef}
-                                onChange={(e)=>{
-                                    if (!e.currentTarget.value) {
-                                        setQuestionErrors((prev) => {
-                                            return {
-                                                ...prev,
-                                                questionSecondWrongAnswer: true
-                                            }
-                                        })
-                                        return
-                                    }
-                                    setQuestionErrors((prev) => {
-                                        return {
-                                            ...prev,
-                                            questionSecondWrongAnswer: false
-                                        }
-                                    })
-                                }}
-                            />
-                            {questionErrors.questionSecondWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
-
-                            <label>Other alternative</label>
-                            <input 
-                                id="questionthirdwronganswer"
-                                type='text'
-                                className={classNames({'error-input': questionErrors.questionThirdWrongAnswer})}
-                                ref={questionThirdWrongAnswerRef}
-                                onChange={(e)=>{
-                                    if (!e.currentTarget.value) {
-                                        setQuestionErrors((prev) => {
-                                            return {
-                                                ...prev,
-                                                questionThirdWrongAnswer: true
-                                            }
-                                        })
-                                        return
-                                    }
-                                    setQuestionErrors((prev) => {
-                                        return {
-                                            ...prev,
-                                            questionThirdWrongAnswer: false
-                                        }
-                                    })
-                                }}
-                            />
-                            {questionErrors.questionThirdWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
-
-                            <button
-                                type="button"
-                                className="btn btn-info"
-                                disabled={
-                                    !questionNameRef.current?.value ||
-                                    !questionCorrectAnswerRef.current?.value ||
-                                    !questionFirstWrongAnswerRef.current?.value ||
-                                    !questionSecondWrongAnswerRef.current?.value ||
-                                    !questionThirdWrongAnswerRef.current?.value
+                                })
+                                return
+                            }
+                            setQuestionErrors((prev) => {
+                                return {
+                                    ...prev,
+                                    questionName: false
                                 }
-                                onClick={addNewQuestion}
-                            >
-                                Save
-                            </button>
+                            })
+                        }}
+                    />
+                    {questionErrors.questionName && <span className="form-error-message">Must type a question</span>}
 
-                        </div>
+                    <label>Correct answer</label>
+                    <input 
+                        id="questioncorrectanswer"
+                        type='text'
+                        className={classNames({'error-input': questionErrors.questionCorrectAnswer})}
+                        ref={questionCorrectAnswerRef}
+                        onChange={(e)=>{
+                            if (!e.currentTarget.value) {
+                                setQuestionErrors((prev) => {
+                                    return {
+                                        ...prev,
+                                        questionCorrectAnswer: true
+                                    }
+                                })
+                                return
+                            }
+                            setQuestionErrors((prev) => {
+                                return {
+                                    ...prev,
+                                    questionCorrectAnswer: false
+                                }
+                            })
+                        }}
+                    />
+                    {questionErrors.questionCorrectAnswer && <span className="form-error-message">Must give a correct answer</span>}
+
+                    <label>Other alternative</label>
+                    <input 
+                        id="questionfirstwronganswer"
+                        type='text'
+                        className={classNames({'error-input': questionErrors.questionFirstWrongAnswer})}
+                        ref={questionFirstWrongAnswerRef}
+                        onChange={(e)=>{
+                            if (!e.currentTarget.value) {
+                                setQuestionErrors((prev) => {
+                                    return {
+                                        ...prev,
+                                        questionFirstWrongAnswer: true
+                                    }
+                                })
+                                return
+                            }
+                            setQuestionErrors((prev) => {
+                                return {
+                                    ...prev,
+                                    questionFirstWrongAnswer: false
+                                }
+                            })
+                        }}
+                    />
+                    {questionErrors.questionFirstWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
+
+                    <label>Other alternative</label>
+                    <input 
+                        id="questionsecondwronganswer"
+                        type='text'
+                        className={classNames({'error-input': questionErrors.questionSecondWrongAnswer})}
+                        ref={questionSecondWrongAnswerRef}
+                        onChange={(e)=>{
+                            if (!e.currentTarget.value) {
+                                setQuestionErrors((prev) => {
+                                    return {
+                                        ...prev,
+                                        questionSecondWrongAnswer: true
+                                    }
+                                })
+                                return
+                            }
+                            setQuestionErrors((prev) => {
+                                return {
+                                    ...prev,
+                                    questionSecondWrongAnswer: false
+                                }
+                            })
+                        }}
+                    />
+                    {questionErrors.questionSecondWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
+
+                    <label>Other alternative</label>
+                    <input 
+                        id="questionthirdwronganswer"
+                        type='text'
+                        className={classNames({'error-input': questionErrors.questionThirdWrongAnswer})}
+                        ref={questionThirdWrongAnswerRef}
+                        onChange={(e)=>{
+                            if (!e.currentTarget.value) {
+                                setQuestionErrors((prev) => {
+                                    return {
+                                        ...prev,
+                                        questionThirdWrongAnswer: true
+                                    }
+                                })
+                                return
+                            }
+                            setQuestionErrors((prev) => {
+                                return {
+                                    ...prev,
+                                    questionThirdWrongAnswer: false
+                                }
+                            })
+                        }}
+                    />
+                    {questionErrors.questionThirdWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
+
+                    <button
+                        type="button"
+                        className="btn btn-info"
+                        disabled={
+                            !questionNameRef.current?.value ||
+                            !questionCorrectAnswerRef.current?.value ||
+                            !questionFirstWrongAnswerRef.current?.value ||
+                            !questionSecondWrongAnswerRef.current?.value ||
+                            !questionThirdWrongAnswerRef.current?.value
+                        }
+                        onClick={addNewQuestion}
+                    >
+                        Add
+                    </button>
+
+                </div>
+                    
+                {
+                    !!questionsList.length && (
+                        <h3>Current added questions:</h3>
                     )
                 }
 
@@ -552,11 +531,19 @@ const CreateQuizPage = () => {
 
                 <button 
                     type="submit" 
-                    className="btn btn-info"
+                    className={classNames({
+                        'btn': true,
+                        'btn-info': true,
+                        'btn-disabled': !questionsList.length
+                    })}
                     disabled={!questionsList.length}
                 >
                     Publish
                 </button>
+                {
+                    !questionsList.length &&
+                    <span>(Must add at least one quiz)</span>
+                }
             </form>
 
         </div>

@@ -138,6 +138,10 @@ img {
     background-color: #33AA33;
 }
 
+.btn-disabled {
+    opacity: 0.5;
+}
+
 /* Container rules for all page - specific content */
 .app-container {
     padding: 4rem 2rem;

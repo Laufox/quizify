@@ -4,6 +4,10 @@ form, .new-question-form {
     display: flex;
     flex-flow: column;
 
+    h2 {
+        text-decoration: underline;
+    }
+
     p {
         margin-bottom: 2rem;
     }
