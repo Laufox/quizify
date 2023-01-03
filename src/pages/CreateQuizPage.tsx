@@ -1,10 +1,20 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 // Context with data and functions for user authentication
 import { useAuthContext } from '../contexts/AuthContext'
 
 import classNames from "classnames"
+
+import accordionIcon from '../assets/icons/accordion-icon.svg'
+
+interface newQuestionInterface {
+    questionText: string,
+    answers: {
+        isCorrect: boolean,
+        text: string
+    }[]
+}
 
 type FormData = {
     name: string,
@@ -25,6 +35,8 @@ const CreateQuizPage = () => {
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState()
     const [showNewQuestionForm, setShowNewQuestionForm] = useState(false)
+    const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
+    const [questionsList, setQuestionsList] = useState<newQuestionInterface[]>([])
 
     const questionNameRef = useRef<HTMLInputElement>(null)
     const questionCorrectAnswerRef = useRef<HTMLInputElement>(null)
@@ -53,7 +65,8 @@ const CreateQuizPage = () => {
         try {
             await createQuiz({
                 ...data,
-                name: data.name.trim()
+                name: data.name.trim(),
+                questions: questionsList
             })
         } catch (error: any) {
             setSubmitErrorMessage(error?.message)
@@ -61,8 +74,40 @@ const CreateQuizPage = () => {
 
     }
 
-    const addNewQuestion = (data: any) => {
-        console.log('New question to add: ', data)
+    const addNewQuestion = () => {
+        
+        if (
+            !questionNameRef.current?.value ||
+            !questionCorrectAnswerRef.current?.value ||
+            !questionFirstWrongAnswerRef.current?.value ||
+            !questionSecondWrongAnswerRef.current?.value ||
+            !questionThirdWrongAnswerRef.current?.value
+        ) {
+            return
+        }
+
+        setQuestionsList( [...questionsList, {
+            questionText: questionNameRef.current.value,
+            answers: [
+                {
+                    isCorrect: true,
+                    text: questionCorrectAnswerRef.current.value
+                },
+                {
+                    isCorrect: false,
+                    text: questionFirstWrongAnswerRef.current.value
+                },
+                {
+                    isCorrect: false,
+                    text: questionSecondWrongAnswerRef.current.value
+                },
+                {
+                    isCorrect: false,
+                    text: questionThirdWrongAnswerRef.current.value
+                }
+            ]
+        }] )
+
     }
 
     const openNewQuestionForm = () => {
@@ -73,12 +118,11 @@ const CreateQuizPage = () => {
         setShowNewQuestionForm(false)
     }
 
-    const findEmptyInputRefs = () => {
-        if ( !questionNameRef.current?.value ) {
-            return true
-        }
-        return false
-    }
+    useEffect(()=>{
+
+        console.log('this is current questions: ', questionsList)
+
+    }, [questionsList])
 
     return (
         <div className="page-container">
@@ -304,6 +348,7 @@ const CreateQuizPage = () => {
                             {questionErrors.questionThirdWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
 
                             <button
+                                type="button"
                                 className="btn btn-info"
                                 disabled={
                                     !questionNameRef.current?.value ||
@@ -312,15 +357,39 @@ const CreateQuizPage = () => {
                                     !questionSecondWrongAnswerRef.current?.value ||
                                     !questionThirdWrongAnswerRef.current?.value
                                 }
-                                onClick={
-                                    ()=>{console.log('aeihf')}
-                                }
+                                onClick={addNewQuestion}
                             >
                                 Save
                             </button>
 
                         </div>
                     )
+                }
+
+                {
+                    !!questionsList.length && questionsList.map((question, i) => (
+                        <div className="question-container" key={i}>
+                            <header onClick={()=>{setQuestionAddedToShow(i)}}>
+                                <span>#{i+1}</span>
+                                <h3>{question.questionText}</h3>
+                                <img src={accordionIcon} alt='icon to see question' />
+                            </header>
+
+                            {
+                                questionAddedToShow === i && (
+
+                                    <main>
+                                        {
+                                            question.answers.map((answer, j) => (
+                                                <p key={j}>{answer.text}</p>
+                                            ))
+                                        }
+                                    </main>
+
+                                )
+                            }
+                        </div>
+                    ))
                 }
 
                 <hr />
@@ -330,7 +399,13 @@ const CreateQuizPage = () => {
                     <p className="submit-error-message">{submitErrorMessage}</p>
                 }
 
-                <button type="submit" className="btn btn-info">Publish</button>
+                <button 
+                    type="submit" 
+                    className="btn btn-info"
+                    disabled={!questionsList.length}
+                >
+                    Publish
+                </button>
             </form>
 
         </div>
