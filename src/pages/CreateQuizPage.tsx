@@ -128,8 +128,6 @@ const CreateQuizPage = () => {
             return
         }
 
-        
-
         setQuestionAddedToShow(index)
 
     }
@@ -156,7 +154,6 @@ const CreateQuizPage = () => {
         newQuestionArray[index].answers[3].text = editQuestionThirdWrongAnswerRef.current.value
 
         setQuestionsList([...newQuestionArray])
-        console.log('hello')
         setQuestionAddedToShow(-1)
 
     }
@@ -179,6 +176,8 @@ const CreateQuizPage = () => {
 
         if (questionAddedToShow !== -1) {
 
+            console.log('inside')
+
             if (
                 !editQuestionNameRef.current ||
                 !editQuestionCorrectAnswerRef.current ||
@@ -189,12 +188,14 @@ const CreateQuizPage = () => {
                 console.log('hello')
                 return
             }
-
+            console.log(questionsList[questionAddedToShow].questionText)
+            console.log(editQuestionNameRef.current.value)
             editQuestionNameRef.current.value = questionsList[questionAddedToShow].questionText
             editQuestionCorrectAnswerRef.current.value = questionsList[questionAddedToShow].answers[0].text
             editQuestionFirstWrongAnswerRef.current.value = questionsList[questionAddedToShow].answers[1].text
             editQuestionSecondWrongAnswerRef.current.value = questionsList[questionAddedToShow].answers[2].text
             editQuestionThirdWrongAnswerRef.current.value = questionsList[questionAddedToShow].answers[3].text
+            console.log(editQuestionNameRef.current.value)
         }
 
     }, [questionAddedToShow])
@@ -242,7 +243,7 @@ const CreateQuizPage = () => {
                     {...register('description')}
                     placeholder='description'
                     className={classNames({'error-input': errors.description})}
-                    rows={4}
+                    rows={3}
                 />
                 {errors.description && <span className="form-error-message">{errors.description?.message}</span>}
 
@@ -308,6 +309,11 @@ const CreateQuizPage = () => {
                                 }
                             })
                         }}
+                        onKeyDown={(e)=>{
+                            if (e.key === "Enter") {
+                                e.preventDefault()
+                            }
+                        }}
                     />
                     {questionErrors.questionName && <span className="form-error-message">Must type a question</span>}
 
@@ -333,6 +339,11 @@ const CreateQuizPage = () => {
                                     questionCorrectAnswer: false
                                 }
                             })
+                        }}
+                        onKeyDown={(e)=>{
+                            if (e.key === "Enter") {
+                                e.preventDefault()
+                            }
                         }}
                     />
                     {questionErrors.questionCorrectAnswer && <span className="form-error-message">Must give a correct answer</span>}
@@ -360,6 +371,11 @@ const CreateQuizPage = () => {
                                 }
                             })
                         }}
+                        onKeyDown={(e)=>{
+                            if (e.key === "Enter") {
+                                e.preventDefault()
+                            }
+                        }}
                     />
                     {questionErrors.questionFirstWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
 
@@ -385,6 +401,11 @@ const CreateQuizPage = () => {
                                     questionSecondWrongAnswer: false
                                 }
                             })
+                        }}
+                        onKeyDown={(e)=>{
+                            if (e.key === "Enter") {
+                                e.preventDefault()
+                            }
                         }}
                     />
                     {questionErrors.questionSecondWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
@@ -412,12 +433,25 @@ const CreateQuizPage = () => {
                                 }
                             })
                         }}
+                        onKeyDown={(e)=>{
+                            if (e.key === "Enter") {
+                                e.preventDefault()
+                            }
+                        }}
                     />
                     {questionErrors.questionThirdWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
 
                     <button
                         type="button"
-                        className="btn btn-info"
+                        className={classNames({
+                            'btn': true,
+                            'btn-info': true,
+                            'btn-disabled': !questionNameRef.current?.value ||
+                                            !questionCorrectAnswerRef.current?.value ||
+                                            !questionFirstWrongAnswerRef.current?.value ||
+                                            !questionSecondWrongAnswerRef.current?.value ||
+                                            !questionThirdWrongAnswerRef.current?.value
+                        })}
                         disabled={
                             !questionNameRef.current?.value ||
                             !questionCorrectAnswerRef.current?.value ||
@@ -434,7 +468,7 @@ const CreateQuizPage = () => {
                     
                 {
                     !!questionsList.length && (
-                        <h3>Current added questions:</h3>
+                        <h3 className="current-added-questions">Current added questions:</h3>
                     )
                 }
 
@@ -460,47 +494,65 @@ const CreateQuizPage = () => {
                                             type='text'
                                             defaultValue={question.questionText}
                                             ref={editQuestionNameRef}
+                                            onKeyDown={(e)=>{
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault()
+                                                }
+                                            }}
                                         />
 
                                         <label>Correct answer</label>
                                         <input 
                                             type='text'
-                                            defaultValue={question.answers[0].text}
+                                            // defaultValue={question.answers[0].text}
                                             ref={editQuestionCorrectAnswerRef}
+                                            onKeyDown={(e)=>{
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault()
+                                                }
+                                            }}
                                         />
 
                                         <label>Other alternative</label>
                                         <input 
                                             type='text'
-                                            defaultValue={question.answers[1].text}
+                                            // defaultValue={question.answers[1].text}
                                             ref={editQuestionFirstWrongAnswerRef}
+                                            onKeyDown={(e)=>{
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault()
+                                                }
+                                            }}
                                         />
 
                                         <label>Other alternative</label>
                                         <input 
                                             type='text'
-                                            defaultValue={question.answers[2].text}
+                                            // defaultValue={question.answers[2].text}
                                             ref={editQuestionSecondWrongAnswerRef}
+                                            onKeyDown={(e)=>{
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault()
+                                                }
+                                            }}
                                         />
 
                                         <label>Other alternative</label>
                                         <input 
                                             type='text'
-                                            defaultValue={question.answers[3].text}
+                                            // defaultValue={question.answers[3].text}
                                             ref={editQuestionThirdWrongAnswerRef}
+                                            onKeyDown={(e)=>{
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault()
+                                                }
+                                            }}
                                         />
 
                                         <div className="action-btn-container">
                                             <button
                                                 type="button"
-                                                className="btn btn-info"
-                                                disabled={
-                                                    !editQuestionNameRef.current?.value ||
-                                                    !editQuestionCorrectAnswerRef.current?.value ||
-                                                    !editQuestionFirstWrongAnswerRef.current?.value ||
-                                                    !editQuestionSecondWrongAnswerRef.current?.value ||
-                                                    !editQuestionThirdWrongAnswerRef.current?.value
-                                                }
+                                                className='btn btn-info'
                                                 onClick={()=>{editQuestion(i)}}
                                             >
                                                 Save
