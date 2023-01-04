@@ -183,8 +183,9 @@ const CreateQuizPage = () => {
                     placeholder='category'
                     className={classNames({'error-input': errors.category})}
                 >
+                    <option value="" hidden>--Select a category--</option>
                     {
-                        !!categories.length && categories.map((cat)=>(
+                        !!categories.length && categories.map((cat, i)=>(
                             <option key={cat.id} value={cat.name}>{cat.name}</option>
                         ))
                     }

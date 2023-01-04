@@ -5,6 +5,7 @@ import { useAuthContext } from "../contexts/AuthContext"
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
 import accordionIcon from '../assets/icons/accordion-icon.svg'
 import SearchForm from '../components/SearchForm'
+import Confirm from '../components/Confirm'
 
 interface userData {
     uid: string,
@@ -15,7 +16,7 @@ interface userData {
 
 const ProfilePage = () => {
 
-    const { currentUser, getUser, getCategories, createCategorie, deleteCategorie, getQuizzesByUser } = useAuthContext()
+    const { currentUser, getUser, getCategories, createCategorie, deleteCategorie, getQuizzesByUser, getAllUsers, getAllQuizzes, removeQuiz } = useAuthContext()
     const { uid } = useParams()
 
     const [userData, setUserData] = useState<userData>()
@@ -27,6 +28,12 @@ const ProfilePage = () => {
     const [showCategories, setShowCategories] = useState(false)
     const [newCategorieInput, setNewCategorieInput] = useState('')
     const [quizzesCreatedByUser, setQuizzesCreatedByUser] = useState<{id: string, name: string, createdAt: string}[]>([])
+    const [allUsers, setAllUsers] = useState<{id: string, username: string, createdAt: string}[]>([])
+    const [allQuizzes, setAllQuizzes] = useState<{id: string, name: string, createdAt: string}[]>([])
+
+    const [openConfirm, setOpenConfirm] = useState(false)
+
+    const [quizToDelete, setQuizToDelete] = useState<{id: string, name: string}>()
 
     const toggleShowCreated = () => {
         setShowCreated( prevState => !prevState )
@@ -82,6 +89,37 @@ const ProfilePage = () => {
     const applyQuizzesCreatedByUser = async () => {
         setQuizzesCreatedByUser([...await getQuizzesByUser(userData?.uid)])
     }
+
+    const applyAllUsers = async () => {
+        setAllUsers([...await getAllUsers()])
+    }
+
+    const applyAllQuizzes = async () => {
+        setAllQuizzes([...await getAllQuizzes()])
+    }
+
+    const handleDeleteQuiz = async () => {
+
+        try {
+            await removeQuiz(quizToDelete?.id)
+            applyQuizzesCreatedByUser()
+            if (userData?.role === "admin") {
+                applyAllQuizzes()
+            }
+            closeConfirmModal()
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    const openConfirmModal = () => {
+        setOpenConfirm(true)
+    }
+
+    const closeConfirmModal = () => {
+        setOpenConfirm(false)
+    }
     
     useEffect(()=>{
 
@@ -107,13 +145,19 @@ const ProfilePage = () => {
 
         if (userData?.role === "admin") {
             applyCategories()
+            applyAllUsers()
+            applyAllQuizzes()
         }
         
     }, [userData])
 
     useEffect(()=>{
-        console.log('here are quizzes: ', quizzesCreatedByUser)
-    }, [quizzesCreatedByUser])
+        console.log('here are users: ', allUsers)
+    }, [allUsers])
+
+    useEffect(()=>{
+        console.log('here are quizzes: ', allQuizzes)
+    }, [allQuizzes])
 
     return (
         <div className="page-container">
@@ -152,7 +196,18 @@ const ProfilePage = () => {
                                                     userData.uid === uid && (
                                                         <div className='action-links'>
                                                             <Link to=''>Update</Link>
-                                                            <Link to=''>Delete</Link>
+                                                            <p 
+                                                                onClick={()=>{
+                                                                    setQuizToDelete({
+                                                                        id: quiz.id,
+                                                                        name: quiz.name
+                                                                    })
+                                                                    openConfirmModal()
+                                                                }} 
+                                                                className='link'
+                                                            >
+                                                                Delete
+                                                            </p>
                                                         </div>
                                                     )
                                                 }
@@ -223,30 +278,27 @@ const ProfilePage = () => {
                                     {
                                         showAddedQuizzes && (
                                             <main className='created-quizzes-collection'>
-                                                <div className='created-quiz-item'>
-                                                    <Link to=''>Date created - Quiz title</Link>
-                                                    <div className='action-links'>
-                                                        <Link to=''>Delete</Link>
-                                                    </div>
-                                                </div>
-                                                <div className='created-quiz-item'>
-                                                    <Link to=''>Date created - Quiz title</Link>
-                                                    <div className='action-links'>
-                                                        <Link to=''>Delete</Link>
-                                                    </div>
-                                                </div>
-                                                <div className='created-quiz-item'>
-                                                    <Link to=''>Date created - Quiz title</Link>
-                                                    <div className='action-links'>
-                                                        <Link to=''>Delete</Link>
-                                                    </div>
-                                                </div>
-                                                <div className='created-quiz-item'>
-                                                    <Link to=''>Date created - Quiz title</Link>
-                                                    <div className='action-links'>
-                                                        <Link to=''>Delete</Link>
-                                                    </div>
-                                                </div>
+                                                {
+                                                    !!allQuizzes.length && allQuizzes.map(quiz => (
+                                                        <div key={quiz.id} className='created-quiz-item'>
+                                                            <Link to={`/quiz/${quiz.id}`}>{quiz.createdAt} - {quiz.name}</Link>
+                                                            <div className='action-links'>
+                                                            <p 
+                                                                onClick={()=>{
+                                                                    setQuizToDelete({
+                                                                        id: quiz.id,
+                                                                        name: quiz.name
+                                                                    })
+                                                                    openConfirmModal()
+                                                                }} 
+                                                                className='link'
+                                                            >
+                                                                Delete
+                                                            </p>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                }
                                             </main>
                                         )
                                     }
@@ -262,30 +314,16 @@ const ProfilePage = () => {
                                     {
                                         showAddedUsers && (
                                             <main className='created-quizzes-collection'>
-                                                <div className='created-quiz-item'>
-                                                    <Link to=''>Date created - Username</Link>
-                                                    <div className='action-links'>
-                                                        <Link to=''>Delete</Link>
-                                                    </div>
-                                                </div>
-                                                <div className='created-quiz-item'>
-                                                    <Link to=''>Date created - Username</Link>
-                                                    <div className='action-links'>
-                                                        <Link to=''>Delete</Link>
-                                                    </div>
-                                                </div>
-                                                <div className='created-quiz-item'>
-                                                    <Link to=''>Date created - Username</Link>
-                                                    <div className='action-links'>
-                                                        <Link to=''>Delete</Link>
-                                                    </div>
-                                                </div>
-                                                <div className='created-quiz-item'>
-                                                    <Link to=''>Date created - Username</Link>
-                                                    <div className='action-links'>
-                                                        <Link to=''>Delete</Link>
-                                                    </div>
-                                                </div>
+                                                {
+                                                    !!allUsers.length && allUsers.map(user => (
+                                                        <div key={user.id} className='created-quiz-item'>
+                                                            <Link to={`/profile/${user.id}`}>{user.createdAt} - {user.username}</Link>
+                                                            <div className='action-links'>
+                                                                <Link to=''>Delete</Link>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                }
                                             </main>
                                         )
                                     }
@@ -340,6 +378,16 @@ const ProfilePage = () => {
                     </>
 
                 )
+            }
+
+            {
+                openConfirm &&
+                <Confirm 
+                    onConfirm={handleDeleteQuiz}
+                    onCancel={closeConfirmModal}
+                    actionText={`You are about to delete ${quizToDelete?.name}`}
+                    requiresAuth={false}
+                />
             }
 
         </div>

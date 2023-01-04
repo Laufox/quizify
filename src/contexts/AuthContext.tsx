@@ -160,7 +160,6 @@ const AuthContextProvider = ({ children }: any) => {
         // Delete user from auth
         await deleteUser(auth.currentUser)
 
-
     }
 
     const createQuiz = async (data: any) => {
@@ -174,6 +173,12 @@ const AuthContextProvider = ({ children }: any) => {
             createdAt: new Date(),
             ...data
         })
+
+    }
+
+    const removeQuiz = async (id: string) => {
+
+        await deleteDoc(doc(db, "quizzes", id))
 
     }
 
@@ -226,6 +231,41 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
+    const getAllUsers = async () => {
+
+        const arrayOfUsers: {id: string, username: string, createdAt: string}[] = []
+
+        const allUsersSnap = await getDocs(collection(db, "users"))
+
+        allUsersSnap.forEach(user => {
+            arrayOfUsers.push({
+                id: user.id,
+                username: user.data().username,
+                createdAt: new Date(user.data().createdAt.toMillis()).toISOString().slice(0, 10)
+            })
+        })
+
+        return arrayOfUsers
+    }
+
+    const getAllQuizzes = async () => {
+
+        const arrayOfQuizzes: {id: string, name: string, createdAt: string}[] = []
+
+        const allQuizzesSnap = await getDocs(collection(db, "quizzes"))
+
+        allQuizzesSnap.forEach(quiz => {
+            arrayOfQuizzes.push({
+                id: quiz.id,
+                name: quiz.data().name,
+                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
+            })
+        })
+
+        return arrayOfQuizzes
+
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
@@ -241,7 +281,10 @@ const AuthContextProvider = ({ children }: any) => {
         getCategories,
         createCategorie,
         deleteCategorie,
-        getQuizzesByUser
+        getQuizzesByUser,
+        getAllUsers,
+        getAllQuizzes,
+        removeQuiz
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable
