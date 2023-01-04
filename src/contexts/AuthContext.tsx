@@ -10,7 +10,7 @@ import { useContext, createContext, useEffect, useState } from "react"
 // FIrebase imports
 import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth'
 import { auth, db, storage } from '../firebase'
-import { doc, setDoc, getDoc, deleteDoc, addDoc, collection } from 'firebase/firestore'
+import { doc, setDoc, getDoc, deleteDoc, addDoc, collection, getDocs } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage"
 
 // Initiate context
@@ -177,6 +177,37 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
+    const getCategories = async () => {
+
+        const arrayOfCategories: {id: string, name: string}[] = []
+
+        const allCategoriesSnap = await getDocs(collection(db, "categories"))
+
+        allCategoriesSnap.forEach((cat) => {
+            arrayOfCategories.push({
+                id: cat.id,
+                name: cat.data().name
+            })
+        })
+
+        return arrayOfCategories
+
+    }
+
+    const createCategorie = async (name: string) => {
+
+        await addDoc(collection(db, "categories"), {
+            name
+        })
+
+    }
+
+    const deleteCategorie = async (id: string) => {
+        
+        await deleteDoc(doc(db, "categories", id))
+
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
@@ -188,7 +219,10 @@ const AuthContextProvider = ({ children }: any) => {
         updateAccount,
         verifyUser,
         removeUser,
-        createQuiz
+        createQuiz,
+        getCategories,
+        createCategorie,
+        deleteCategorie
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable
