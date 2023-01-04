@@ -7,6 +7,15 @@ import { useAuthContext } from '../contexts/AuthContext'
 import classNames from "classnames"
 
 import accordionIcon from '../assets/icons/accordion-icon.svg'
+import NewQuestionForm from "../components/NewQuestionForm"
+
+interface NewQuestionInputObject {
+    question: string,
+    correctAnswer: string,
+    firstWrongAnswer: string,
+    secondWrongAnswer: string,
+    thirdWrongAnswer: string
+}
 
 interface newQuestionInterface {
     questionText: string,
@@ -37,25 +46,11 @@ const CreateQuizPage = () => {
     const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
     const [questionsList, setQuestionsList] = useState<newQuestionInterface[]>([])
 
-    const questionNameRef = useRef<HTMLInputElement>(null)
-    const questionCorrectAnswerRef = useRef<HTMLInputElement>(null)
-    const questionFirstWrongAnswerRef = useRef<HTMLInputElement>(null)
-    const questionSecondWrongAnswerRef = useRef<HTMLInputElement>(null)
-    const questionThirdWrongAnswerRef = useRef<HTMLInputElement>(null)
-
     const editQuestionNameRef = useRef<HTMLInputElement>(null)
     const editQuestionCorrectAnswerRef = useRef<HTMLInputElement>(null)
     const editQuestionFirstWrongAnswerRef = useRef<HTMLInputElement>(null)
     const editQuestionSecondWrongAnswerRef = useRef<HTMLInputElement>(null)
     const editQuestionThirdWrongAnswerRef = useRef<HTMLInputElement>(null)
-
-    const [questionErrors, setQuestionErrors] = useState({
-        questionName: false,
-        questionCorrectAnswer: false,
-        questionFirstWrongAnswer: false,
-        questionSecondWrongAnswer: false,
-        questionThirdWrongAnswer: false
-    })
 
     const submitQuiz = async (data: any) => {
 
@@ -79,45 +74,29 @@ const CreateQuizPage = () => {
 
     }
 
-    const addNewQuestion = () => {
-        
-        if (
-            !questionNameRef.current?.value ||
-            !questionCorrectAnswerRef.current?.value ||
-            !questionFirstWrongAnswerRef.current?.value ||
-            !questionSecondWrongAnswerRef.current?.value ||
-            !questionThirdWrongAnswerRef.current?.value
-        ) {
-            return
-        }
+    const addNewQuestion = (question: NewQuestionInputObject) => {
 
         setQuestionsList( [...questionsList, {
-            questionText: questionNameRef.current.value,
+            questionText: question.question,
             answers: [
                 {
                     isCorrect: true,
-                    text: questionCorrectAnswerRef.current.value
+                    text: question.correctAnswer
                 },
                 {
                     isCorrect: false,
-                    text: questionFirstWrongAnswerRef.current.value
+                    text: question.firstWrongAnswer
                 },
                 {
                     isCorrect: false,
-                    text: questionSecondWrongAnswerRef.current.value
+                    text: question.secondWrongAnswer
                 },
                 {
                     isCorrect: false,
-                    text: questionThirdWrongAnswerRef.current.value
+                    text: question.thirdWrongAnswer
                 }
             ]
         }] )
-
-        questionNameRef.current.value = ''
-        questionCorrectAnswerRef.current.value = ''
-        questionFirstWrongAnswerRef.current.value = ''
-        questionSecondWrongAnswerRef.current.value = ''
-        questionThirdWrongAnswerRef.current.value = ''
 
     }
 
@@ -283,188 +262,7 @@ const CreateQuizPage = () => {
 
                 <h2>Questions</h2>
                
-                <div className="new-question-form">
-
-                    <h3>Add new question:</h3>
-                    <label>Question</label>
-                    <input 
-                        id="questionname"
-                        type='text'
-                        className={classNames({'error-input': questionErrors.questionName})}
-                        ref={questionNameRef}
-                        onChange={(e)=>{
-                            if (!e.currentTarget.value) {
-                                setQuestionErrors((prev) => {
-                                    return {
-                                        ...prev,
-                                        questionName: true
-                                    }
-                                })
-                                return
-                            }
-                            setQuestionErrors((prev) => {
-                                return {
-                                    ...prev,
-                                    questionName: false
-                                }
-                            })
-                        }}
-                        onKeyDown={(e)=>{
-                            if (e.key === "Enter") {
-                                e.preventDefault()
-                            }
-                        }}
-                    />
-                    {questionErrors.questionName && <span className="form-error-message">Must type a question</span>}
-
-                    <label>Correct answer</label>
-                    <input 
-                        id="questioncorrectanswer"
-                        type='text'
-                        className={classNames({'error-input': questionErrors.questionCorrectAnswer})}
-                        ref={questionCorrectAnswerRef}
-                        onChange={(e)=>{
-                            if (!e.currentTarget.value) {
-                                setQuestionErrors((prev) => {
-                                    return {
-                                        ...prev,
-                                        questionCorrectAnswer: true
-                                    }
-                                })
-                                return
-                            }
-                            setQuestionErrors((prev) => {
-                                return {
-                                    ...prev,
-                                    questionCorrectAnswer: false
-                                }
-                            })
-                        }}
-                        onKeyDown={(e)=>{
-                            if (e.key === "Enter") {
-                                e.preventDefault()
-                            }
-                        }}
-                    />
-                    {questionErrors.questionCorrectAnswer && <span className="form-error-message">Must give a correct answer</span>}
-
-                    <label>Other alternative</label>
-                    <input 
-                        id="questionfirstwronganswer"
-                        type='text'
-                        className={classNames({'error-input': questionErrors.questionFirstWrongAnswer})}
-                        ref={questionFirstWrongAnswerRef}
-                        onChange={(e)=>{
-                            if (!e.currentTarget.value) {
-                                setQuestionErrors((prev) => {
-                                    return {
-                                        ...prev,
-                                        questionFirstWrongAnswer: true
-                                    }
-                                })
-                                return
-                            }
-                            setQuestionErrors((prev) => {
-                                return {
-                                    ...prev,
-                                    questionFirstWrongAnswer: false
-                                }
-                            })
-                        }}
-                        onKeyDown={(e)=>{
-                            if (e.key === "Enter") {
-                                e.preventDefault()
-                            }
-                        }}
-                    />
-                    {questionErrors.questionFirstWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
-
-                    <label>Other alternative</label>
-                    <input 
-                        id="questionsecondwronganswer"
-                        type='text'
-                        className={classNames({'error-input': questionErrors.questionSecondWrongAnswer})}
-                        ref={questionSecondWrongAnswerRef}
-                        onChange={(e)=>{
-                            if (!e.currentTarget.value) {
-                                setQuestionErrors((prev) => {
-                                    return {
-                                        ...prev,
-                                        questionSecondWrongAnswer: true
-                                    }
-                                })
-                                return
-                            }
-                            setQuestionErrors((prev) => {
-                                return {
-                                    ...prev,
-                                    questionSecondWrongAnswer: false
-                                }
-                            })
-                        }}
-                        onKeyDown={(e)=>{
-                            if (e.key === "Enter") {
-                                e.preventDefault()
-                            }
-                        }}
-                    />
-                    {questionErrors.questionSecondWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
-
-                    <label>Other alternative</label>
-                    <input 
-                        id="questionthirdwronganswer"
-                        type='text'
-                        className={classNames({'error-input': questionErrors.questionThirdWrongAnswer})}
-                        ref={questionThirdWrongAnswerRef}
-                        onChange={(e)=>{
-                            if (!e.currentTarget.value) {
-                                setQuestionErrors((prev) => {
-                                    return {
-                                        ...prev,
-                                        questionThirdWrongAnswer: true
-                                    }
-                                })
-                                return
-                            }
-                            setQuestionErrors((prev) => {
-                                return {
-                                    ...prev,
-                                    questionThirdWrongAnswer: false
-                                }
-                            })
-                        }}
-                        onKeyDown={(e)=>{
-                            if (e.key === "Enter") {
-                                e.preventDefault()
-                            }
-                        }}
-                    />
-                    {questionErrors.questionThirdWrongAnswer && <span className="form-error-message">Must type an incorrect answer</span>}
-
-                    <button
-                        type="button"
-                        className={classNames({
-                            'btn': true,
-                            'btn-info': true,
-                            'btn-disabled': !questionNameRef.current?.value ||
-                                            !questionCorrectAnswerRef.current?.value ||
-                                            !questionFirstWrongAnswerRef.current?.value ||
-                                            !questionSecondWrongAnswerRef.current?.value ||
-                                            !questionThirdWrongAnswerRef.current?.value
-                        })}
-                        disabled={
-                            !questionNameRef.current?.value ||
-                            !questionCorrectAnswerRef.current?.value ||
-                            !questionFirstWrongAnswerRef.current?.value ||
-                            !questionSecondWrongAnswerRef.current?.value ||
-                            !questionThirdWrongAnswerRef.current?.value
-                        }
-                        onClick={addNewQuestion}
-                    >
-                        Add
-                    </button>
-
-                </div>
+                <NewQuestionForm onAddNewQuestion={addNewQuestion} />
                     
                 {
                     !!questionsList.length && (
