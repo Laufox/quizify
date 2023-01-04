@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 // Context with data and functions for user authentication
@@ -41,11 +41,12 @@ const CreateQuizPage = () => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
 
     // Funtions and variabels to use from auth context
-    const { createQuiz } = useAuthContext()
+    const { createQuiz, getCategories } = useAuthContext()
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState()
     const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
     const [questionsList, setQuestionsList] = useState<newQuestionInterface[]>([])
+    const [categories, setCategories] = useState<{id: string, name: string}[]>([])
 
     const submitQuiz = async (data: any) => {
 
@@ -142,6 +143,16 @@ const CreateQuizPage = () => {
 
     }
 
+    const applyCategories = async () => {
+        setCategories([...await getCategories()])
+    }
+
+    useEffect(()=>{
+
+        applyCategories()
+
+    }, [])
+
     return (
         <div className="page-container">
 
@@ -172,10 +183,11 @@ const CreateQuizPage = () => {
                     placeholder='category'
                     className={classNames({'error-input': errors.category})}
                 >
-                    <option value='history'>History</option>
-                    <option value='sport'>Sport</option>
-                    <option value='moveis'>Movies</option>
-                    <option value='books'>Books</option>
+                    {
+                        !!categories.length && categories.map((cat)=>(
+                            <option key={cat.id} value={cat.name}>{cat.name}</option>
+                        ))
+                    }
                 </select>
                 {errors.category && <span className="form-error-message">{errors.category?.message}</span>}
 
