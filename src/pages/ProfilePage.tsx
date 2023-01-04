@@ -15,7 +15,7 @@ interface userData {
 
 const ProfilePage = () => {
 
-    const { currentUser, getUser, getCategories, createCategorie, deleteCategorie } = useAuthContext()
+    const { currentUser, getUser, getCategories, createCategorie, deleteCategorie, getQuizzesByUser } = useAuthContext()
     const { uid } = useParams()
 
     const [userData, setUserData] = useState<userData>()
@@ -26,6 +26,7 @@ const ProfilePage = () => {
     const [showAddedUsers, setShowAddedUsers] = useState(false)
     const [showCategories, setShowCategories] = useState(false)
     const [newCategorieInput, setNewCategorieInput] = useState('')
+    const [quizzesCreatedByUser, setQuizzesCreatedByUser] = useState<{id: string, name: string, createdAt: string}[]>([])
 
     const toggleShowCreated = () => {
         setShowCreated( prevState => !prevState )
@@ -73,9 +74,13 @@ const ProfilePage = () => {
         }
         
     }
-    
+
     const applyCategories = async () => {
         setCategories([...await getCategories()])
+    }
+
+    const applyQuizzesCreatedByUser = async () => {
+        setQuizzesCreatedByUser([...await getQuizzesByUser(userData?.uid)])
     }
     
     useEffect(()=>{
@@ -96,7 +101,9 @@ const ProfilePage = () => {
 
     useEffect(()=>{
 
-        
+        if (userData) {
+            applyQuizzesCreatedByUser()
+        }
 
         if (userData?.role === "admin") {
             applyCategories()
@@ -105,8 +112,8 @@ const ProfilePage = () => {
     }, [userData])
 
     useEffect(()=>{
-        console.log('here are categories: ', categories)
-    }, [categories])
+        console.log('here are quizzes: ', quizzesCreatedByUser)
+    }, [quizzesCreatedByUser])
 
     return (
         <div className="page-container">
@@ -136,36 +143,29 @@ const ProfilePage = () => {
                         {
                             showCreated && (
                                 <main className='created-quizzes-collection'>
-                                    <div className='created-quiz-item'>
-                                        <Link to=''>2022-12-24 - Quiz title</Link>
-                                        <div className='action-links'>
-                                            <Link to=''>Update</Link>
-                                            <Link to=''>Delete</Link>
-                                        </div>
-                                    </div>
-                                    <div className='created-quiz-item'>
-                                        <Link to=''>Date created - Quiz title</Link>
-                                        <div className='action-links'>
-                                            <Link to=''>Update</Link>
-                                            <Link to=''>Delete</Link>
-                                        </div>
-                                    </div>
-                                    <div className='created-quiz-item'>
-                                        <Link to=''>Date created - Quiz title</Link>
-                                        <div className='action-links'>
-                                            <Link to=''>Update</Link>
-                                            <Link to=''>Delete</Link>
-                                        </div>
-                                    </div>
-                                    <div className='created-quiz-item'>
-                                        <Link to=''>Date created - Quiz title</Link>
-                                        <div className='action-links'>
-                                            <Link to=''>Update</Link>
-                                            <Link to=''>Delete</Link>
-                                        </div>
-                                    </div>
+                                    {
+                                        !!quizzesCreatedByUser.length && quizzesCreatedByUser.map(quiz => (
+                                            <div key={quiz.id} className='created-quiz-item'>
+                                                <Link to={`/quiz/${quiz.id}`}>{quiz.createdAt} - {quiz.name}</Link>
+
+                                                {
+                                                    userData.uid === uid && (
+                                                        <div className='action-links'>
+                                                            <Link to=''>Update</Link>
+                                                            <Link to=''>Delete</Link>
+                                                        </div>
+                                                    )
+                                                }
+                                                
+                                            </div>
+                                        ))
+                                    }
+                                    
                                     {/* Only show if this is signed in user */}
-                                    <Link to='' className='new-quiz-link'>+ New quiz</Link>
+                                    {
+                                        userData.uid === uid && <Link to='/createquiz' className='new-quiz-link'>+ New quiz</Link>
+                                    }
+                                    
                                 </main>
                             )
                         }
