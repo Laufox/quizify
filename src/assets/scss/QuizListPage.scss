@@ -1,0 +1,51 @@
+.filterbox-container {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 2rem;
+
+    .filterbox-item {
+        padding: 0.5rem 2rem;
+        border-radius: 3rem;
+        min-width: 9rem;
+        border: 0.1rem solid #000;
+        
+    }
+
+    .filterbox-item.selected {
+        border: none;
+        background-color: #99CC99;
+    }
+}
+
+.quizlist-container {
+    display: flex;
+    flex-flow: column;
+    gap: 2rem;
+    max-width: 70rem;
+
+    .quizlist-item {
+        margin-bottom: 1.5rem;
+
+        header {
+
+            margin-bottom: 1rem;
+    
+            a {
+                text-decoration: underline;
+            }
+    
+            .category-date {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 0.3rem;
+    
+                span {
+    
+                    font-size: 1.6rem;
+                }
+            }
+        }
+    }
+
+    
+}

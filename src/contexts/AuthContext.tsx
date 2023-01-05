@@ -251,14 +251,14 @@ const AuthContextProvider = ({ children }: any) => {
 
     const getAllQuizzes = async () => {
 
-        const arrayOfQuizzes: {id: string, name: string, createdAt: string}[] = []
+        const arrayOfQuizzes: {}[] = []
 
         const allQuizzesSnap = await getDocs(collection(db, "quizzes"))
 
         allQuizzesSnap.forEach(quiz => {
             arrayOfQuizzes.push({
                 id: quiz.id,
-                name: quiz.data().name,
+                ...quiz.data(),
                 createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
             })
         })
