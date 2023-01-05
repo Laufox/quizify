@@ -280,6 +280,19 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
+    const updateQuiz = async (data: any, id: string) => {
+
+        if (!auth.currentUser) {
+            return
+        }
+
+        await setDoc(doc(db, 'quizzes', id), {
+            ...data
+        }, {
+            merge: true
+        })
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
@@ -299,7 +312,8 @@ const AuthContextProvider = ({ children }: any) => {
         getAllUsers,
         getAllQuizzes,
         removeQuiz,
-        getOneQuiz
+        getOneQuiz,
+        updateQuiz
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable

@@ -195,7 +195,7 @@ const ProfilePage = () => {
                                                 {
                                                     userData.uid === uid && (
                                                         <div className='action-links'>
-                                                            <Link to=''>Update</Link>
+                                                            <Link to={`/updatequiz/${quiz.id}`}>Update</Link>
                                                             <p 
                                                                 onClick={()=>{
                                                                     setQuizToDelete({
