@@ -29,6 +29,7 @@ const SearchForm = ({onSearch} : Props) => {
                 type="search" 
                 placeholder='Search...' 
                 ref={searchInput} 
+                role="search"
             />
             <img 
                 src={searchIcon} 
