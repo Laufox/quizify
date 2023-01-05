@@ -170,6 +170,7 @@ const AuthContextProvider = ({ children }: any) => {
 
         await addDoc(collection(db, "quizzes"), {
             authorId: auth.currentUser.uid,
+            authorName: auth.currentUser.displayName,
             createdAt: new Date(),
             ...data
         })
@@ -266,6 +267,19 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
+    const getOneQuiz = async (id: string) => {
+
+        const quizSnap = await getDoc(doc(db, 'quizzes', id))
+
+        if (quizSnap.exists()) {
+            return {
+                ...quizSnap.data(),
+                createdAt: new Date(quizSnap.data().createdAt.toMillis()).toISOString().slice(0, 10)
+            }
+        }
+
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
@@ -284,7 +298,8 @@ const AuthContextProvider = ({ children }: any) => {
         getQuizzesByUser,
         getAllUsers,
         getAllQuizzes,
-        removeQuiz
+        removeQuiz,
+        getOneQuiz
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable
