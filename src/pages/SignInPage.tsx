@@ -9,11 +9,7 @@ import { useForm } from "react-hook-form"
 import { useAuthContext } from '../contexts/AuthContext'
 
 import classNames from "classnames"
-
-type FormData = {
-    email: string,
-    password: string,
-}
+import { FormData } from "../interfaces/FormData"
 
 const SignInPage = () => {
 

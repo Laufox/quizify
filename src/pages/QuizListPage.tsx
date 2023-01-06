@@ -2,21 +2,15 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import SearchForm from '../components/SearchForm'
 import { useAuthContext } from "../contexts/AuthContext"
-
-interface QuizList {
-    id: string, 
-    name: string,
-    category: string,
-    createdAt: string,
-    description?: string
-}
+import { Quiz } from '../interfaces/Quiz'
+import { Categories } from '../interfaces/Categories'
 
 const QuizListPage = () => {
 
     const { getAllPublicQuizDocuments, getAllCategoryDocuments } = useAuthContext()
 
-    const [quizList, setQuizList] = useState<QuizList[]>([])
-    const [categories, setCategories] = useState<{id: string, name: string}[]>([])
+    const [quizList, setQuizList] = useState<Quiz[]>([])
+    const [categories, setCategories] = useState<Categories[]>([])
 
     const applyQuizzes = async () => {
 

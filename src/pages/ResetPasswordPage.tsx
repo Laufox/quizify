@@ -2,11 +2,12 @@ import { Link } from "react-router-dom"
 import { useState } from 'react'
 import { useForm } from "react-hook-form"
 import { useAuthContext } from '../contexts/AuthContext'
+import { FormData } from '../interfaces/FormData'
 import classNames from "classnames"
 
-type FormData = {
-    email: string
-}
+// type FormData = {
+//     email: string
+// }
 
 const ResetPasswordPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
@@ -21,7 +22,6 @@ const ResetPasswordPage = () => {
         try {
             await resetUserAccountPassword(data.email)
             setSubmitSuccessMessage('An email has been sent to your email with further instruction on how to reset your password')
-            // navigate('/')
         } catch (error: any) {
             setSubmitErrorMessage(error?.message ? error.message : 'An unknown error occured')
         }

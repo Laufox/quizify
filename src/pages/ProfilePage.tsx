@@ -7,33 +7,31 @@ import accordionIcon from '../assets/icons/accordion-icon.svg'
 import SearchForm from '../components/SearchForm'
 import Confirm from '../components/Confirm'
 
-interface userData {
-    uid: string,
-    username: string,
-    photoURL: string,
-    role: string
-}
+import { UserData } from '../interfaces/UserData'
+import { Categories } from '../interfaces/Categories'
+import { Quiz } from '../interfaces/Quiz'
+import { User } from '../interfaces/User'
 
 const ProfilePage = () => {
 
     const { currentUser, getUserDocument, getAllCategoryDocuments,createCategoryDocument, deleteCategoryDocument, getAllQuizDocumentsByUser, getAllUserDocuments, getAllQuizDocuments, deleteQuizDocument, getAllPublicQuizDocumentsByUser } = useAuthContext()
     const { uid } = useParams()
 
-    const [userData, setUserData] = useState<userData>()
-    const [categories, setCategories] = useState<{id: string, name: string}[]>([])
+    const [userData, setUserData] = useState<UserData>()
+    const [categories, setCategories] = useState<Categories[]>([])
     const [showCreated, setShowCreated] = useState(false)
     const [showPlayed, setShowPlayed] = useState(false)
     const [showAddedQuizzes, setShowAddedQuizzes] = useState(false)
     const [showAddedUsers, setShowAddedUsers] = useState(false)
     const [showCategories, setShowCategories] = useState(false)
     const [newCategorieInput, setNewCategorieInput] = useState('')
-    const [quizzesCreatedByUser, setQuizzesCreatedByUser] = useState<{id: string, name: string, createdAt: string}[]>([])
-    const [allUsers, setAllUsers] = useState<{id: string, username: string, createdAt: string}[]>([])
-    const [allQuizzes, setAllQuizzes] = useState<{id: string, name: string, createdAt: string}[]>([])
+    const [quizzesCreatedByUser, setQuizzesCreatedByUser] = useState<Quiz[]>([])
+    const [allUsers, setAllUsers] = useState<User[]>([])
+    const [allQuizzes, setAllQuizzes] = useState<Quiz[]>([])
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
-    const [quizToDelete, setQuizToDelete] = useState<{id: string, name: string}>()
+    const [objectToDelete, setObjectToDelete] = useState<{id: string, name: string}>()
 
     const toggleShowCreated = () => {
         setShowCreated( prevState => !prevState )
@@ -110,7 +108,7 @@ const ProfilePage = () => {
     const handleDeleteQuiz = async () => {
 
         try {
-            await deleteQuizDocument(quizToDelete?.id)
+            await deleteQuizDocument(objectToDelete?.id)
             applyQuizzesCreatedByUser()
             if (userData?.role === "admin") {
                 applyAllQuizzes()
@@ -211,7 +209,7 @@ const ProfilePage = () => {
                                                             <Link to={`/updatequiz/${quiz.id}`}>Update</Link>
                                                             <p 
                                                                 onClick={()=>{
-                                                                    setQuizToDelete({
+                                                                    setObjectToDelete({
                                                                         id: quiz.id,
                                                                         name: quiz.name
                                                                     })
@@ -298,7 +296,7 @@ const ProfilePage = () => {
                                                             <div className='action-links'>
                                                             <p 
                                                                 onClick={()=>{
-                                                                    setQuizToDelete({
+                                                                    setObjectToDelete({
                                                                         id: quiz.id,
                                                                         name: quiz.name
                                                                     })
@@ -330,7 +328,7 @@ const ProfilePage = () => {
                                                 {
                                                     !!allUsers.length && allUsers.map(user => (
                                                         <div key={user.id} className='created-quiz-item'>
-                                                            <Link to={`/profile/${user.id}`}>{user.createdAt} - {user.username}</Link>
+                                                            <Link to={`/profile/${user.id}`}>{user.createdAt} - {user.name}</Link>
                                                             <div className='action-links'>
                                                                 <Link to=''>Delete</Link>
                                                             </div>
@@ -398,7 +396,7 @@ const ProfilePage = () => {
                 <Confirm 
                     onConfirm={handleDeleteQuiz}
                     onCancel={closeConfirmModal}
-                    actionText={`You are about to delete ${quizToDelete?.name}`}
+                    actionText={`You are about to delete ${objectToDelete?.name}`}
                     requiresAuth={false}
                 />
             }

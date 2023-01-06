@@ -8,15 +8,10 @@ import { useForm } from "react-hook-form"
 // Context with data and functions for user authentication
 import { useAuthContext } from '../contexts/AuthContext'
 
+import { FormData } from '../interfaces/FormData'
+
 import classNames from "classnames"
 import AvatarInput from '../components/Forms/AvatarInput'
-
-type FormData = {
-    email: string,
-    password: string,
-    passwordrepeat: string,
-    username: string
-}
 
 const CreateAccountPage = () => {
 

@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react"
 
 import classNames from "classnames"
+import { NewQuestionInput } from "../interfaces/NewQuestionInput"
 
 interface Props {
-    onAddNewQuestion: (newQuestionInput: {
-        question: string,
-        correctAnswer: string,
-        firstWrongAnswer: string,
-        secondWrongAnswer: string,
-        thirdWrongAnswer: string
-    }) => void
+    onAddNewQuestion: (newQuestionInput: NewQuestionInput) => void
 }
 
 const NewQuestionForm = ({onAddNewQuestion} : Props) => {

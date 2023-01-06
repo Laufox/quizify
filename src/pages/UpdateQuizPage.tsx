@@ -11,43 +11,10 @@ import accordionIcon from '../assets/icons/accordion-icon.svg'
 import NewQuestionForm from "../components/NewQuestionForm"
 import EditQuestionForm from "../components/EditQuestionForm"
 import Confirm from "../components/Confirm"
-
-interface NewQuestionInputObject {
-    question: string,
-    correctAnswer: string,
-    firstWrongAnswer: string,
-    secondWrongAnswer: string,
-    thirdWrongAnswer: string
-}
-
-interface newQuestionInterface {
-    questionText: string,
-    answers: {
-        isCorrect: boolean,
-        text: string
-    }[]
-}
-
-type FormData = {
-    name: string,
-    category: string,
-    description: string,
-    tags: string,
-    visibility: string,
-    questionname: string
-}
-
-interface quiz {
-    authorId: string,
-    authorName: string,
-    category: string,
-    createdAt: string,
-    description: string,
-    name: string,
-    questions: newQuestionInterface[],
-    tags: string[],
-    visibility: string
-}
+import { FormData } from "../interfaces/FormData"
+import { Quiz } from "../interfaces/Quiz"
+import { NewQuestionItem } from "../interfaces/NewQuestionItem"
+import { NewQuestionInput } from "../interfaces/NewQuestionInput"
 
 const UpdateQuizPage = () => {
 
@@ -59,31 +26,31 @@ const UpdateQuizPage = () => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
 
     // Funtions and variabels to use from auth context
-    const { updateQuiz, getCategories, getOneQuiz, removeQuiz, currentUser } = useAuthContext()
+    const { updateQuizDocument, getAllCategoryDocuments, getQuizDocument, deleteQuizDocument, currentUser } = useAuthContext()
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState()
     const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
-    const [questionsList, setQuestionsList] = useState<newQuestionInterface[]>([])
+    const [questionsList, setQuestionsList] = useState<NewQuestionItem[]>([])
     const [categories, setCategories] = useState<{id: string, name: string}[]>([])
 
-    const [quiz, setQuiz] = useState<quiz>()
+    const [quiz, setQuiz] = useState<Quiz>()
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
-    const submitQuiz = async (data: any) => {
+    const submitQuiz = async (data: FormData) => {
 
         if (data.description) {
             data.description = data.description.trim()
         }
 
-        if (data.tags) {
+        if (data.tags && typeof data.tags === "string") {
             data.tags = data.tags.trim().split(' ')
         }
         
         try {
-            await updateQuiz({
+            await updateQuizDocument({
                 ...data,
-                name: data.name.trim(),
+                name: data.quizname.trim(),
                 questions: questionsList
             }, id)
             navigate(`/quiz/${id}`)
@@ -93,7 +60,7 @@ const UpdateQuizPage = () => {
 
     }
 
-    const addNewQuestion = (question: NewQuestionInputObject) => {
+    const addNewQuestion = (question: NewQuestionInput) => {
 
         setQuestionsList( [...questionsList, {
             questionText: question.question,
@@ -130,7 +97,7 @@ const UpdateQuizPage = () => {
 
     }
 
-    const editQuestion = (index: number, updatedQuestion: NewQuestionInputObject) => {
+    const editQuestion = (index: number, updatedQuestion: NewQuestionInput) => {
 
         if (
             !updatedQuestion.question ||
@@ -167,12 +134,12 @@ const UpdateQuizPage = () => {
     }
 
     const applyCategories = async () => {
-        setCategories([...await getCategories()])
+        setCategories([...await getAllCategoryDocuments()])
     }
 
     const applyQuiz = async () => {
 
-        setQuiz(await getOneQuiz(id))
+        setQuiz(await getQuizDocument(id))
 
     }
 
@@ -197,7 +164,7 @@ const UpdateQuizPage = () => {
     const handleDeleteQuiz = async () => {
 
         try {
-            await removeQuiz(id)
+            await deleteQuizDocument(id)
             closeConfirmModal()
             navigate('/')
         } catch (error) {
@@ -250,14 +217,14 @@ const UpdateQuizPage = () => {
                         <input 
                             id="quizname" 
                             type='text' 
-                            {...register('name', {
+                            {...register('quizname', {
                                 required: 'Name of quiz is required'
                             })}
                             placeholder='name'
-                            className={classNames({'error-input': errors.name})}
+                            className={classNames({'error-input': errors.quizname})}
                             defaultValue={quiz.name}
                         />
-                        {errors.name && <span className="form-error-message">{errors.name?.message}</span>}
+                        {errors.quizname && <span className="form-error-message">{errors.quizname?.message}</span>}
 
                         <label>Category *</label>
                         <select

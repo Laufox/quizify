@@ -37,16 +37,22 @@ import {
     collection, 
     getDocs, 
     where, 
-    query 
+    query, 
+    QuerySnapshot,
+    DocumentData,
+    Query
 } from 'firebase/firestore'
 
 import { 
     getDownloadURL, 
     ref, 
     uploadBytes, 
-    deleteObject ,
-    getBlob
+    deleteObject
 } from "firebase/storage"
+
+import { User } from "../interfaces/User"
+import { Categories } from "../interfaces/Categories"
+import { Quiz } from "../interfaces/Quiz"
 
 // Initiate context
 const AuthContext = createContext<any>(undefined)
@@ -254,80 +260,56 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
-    // Gett all public quiz documents from a specific user
-    const getAllPublicQuizDocumentsByUser = async (uid: string) => {
+    const getMultipleQuizDocuments = async (collectionReference: Query<DocumentData>) => {
 
-        const arrayOfQuizzes: {id: string, name: string, createdAt: string}[] = []
+        const arrayOfQuizzes: Quiz[] = []
 
-        const allQuizzesSnap = await getDocs(query(collection(db, "quizzes"), where("authorId", "==", uid), where("visibility", "==", "public")))
+        const allQuizzesSnap: QuerySnapshot<DocumentData> = await getDocs(collectionReference)
 
         allQuizzesSnap.forEach(quiz => {
             arrayOfQuizzes.push({
                 id: quiz.id,
+                authorId: quiz.data().authorId,
+                authorName: quiz.data().authorName,
                 name: quiz.data().name,
+                category: quiz.data().category,
+                description: quiz.data().description,
+                tags: quiz.data().tags,
+                questions: quiz.data().questions,
+                visibility: quiz.data().visibility,
                 createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
             })
         })
 
         return arrayOfQuizzes
 
+    }
+
+    // Gett all public quiz documents from a specific user
+    const getAllPublicQuizDocumentsByUser = async (uid: string) => {
+
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("authorId", "==", uid), where("visibility", "==", "public")))
+        
     }
 
     // Get all quiz document from a specific user 
     const getAllQuizDocumentsByUser = async (uid: string) => {
 
-        const arrayOfQuizzes: {id: string, name: string, createdAt: string}[] = []
-
-        const allQuizzesSnap = await getDocs(query(collection(db, "quizzes"), where("authorId", "==", uid)))
-
-        allQuizzesSnap.forEach(quiz => {
-            arrayOfQuizzes.push({
-                id: quiz.id,
-                name: quiz.data().name,
-                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
-            })
-        })
-
-        return arrayOfQuizzes
-
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("authorId", "==", uid)))
+        
     }
 
     // Get all public quiz documents from firestore
     const getAllPublicQuizDocuments = async () => {
 
-        const arrayOfQuizzes: {id: string, name: string, description: string, createdAt: string}[] = []
-
-        const allQuizzesSnap = await getDocs(query(collection(db, "quizzes"), where("visibility", "==", "public")))
-
-        allQuizzesSnap.forEach(quiz => {
-            arrayOfQuizzes.push({
-                id: quiz.id,
-                name: quiz.data().name,
-                description: quiz.data().description,
-                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
-            })
-        })
-
-        return arrayOfQuizzes
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("visibility", "==", "public")))
 
     }
 
     // Get all quiz documents from firestore
     const getAllQuizDocuments = async () => {
 
-        const arrayOfQuizzes: {}[] = []
-
-        const allQuizzesSnap = await getDocs(collection(db, "quizzes"))
-
-        allQuizzesSnap.forEach(quiz => {
-            arrayOfQuizzes.push({
-                id: quiz.id,
-                ...quiz.data(),
-                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
-            })
-        })
-
-        return arrayOfQuizzes
+        return await getMultipleQuizDocuments(collection(db, "quizzes"))
 
     }
     
@@ -356,7 +338,7 @@ const AuthContextProvider = ({ children }: any) => {
     // Get all category documents from database
     const getAllCategoryDocuments = async () => {
 
-        const arrayOfCategories: {id: string, name: string}[] = []
+        const arrayOfCategories: Categories[] = []
 
         const allCategoriesSnap = await getDocs(collection(db, "categories"))
 
@@ -409,14 +391,14 @@ const AuthContextProvider = ({ children }: any) => {
     // Get all user documents from firestore
     const getAllUserDocuments = async () => {
 
-        const arrayOfUsers: {id: string, username: string, createdAt: string}[] = []
+        const arrayOfUsers: User[] = []
 
         const allUsersSnap = await getDocs(collection(db, "users"))
 
         allUsersSnap.forEach(user => {
             arrayOfUsers.push({
                 id: user.id,
-                username: user.data().username,
+                name: user.data().username,
                 createdAt: new Date(user.data().createdAt.toMillis()).toISOString().slice(0, 10)
             })
         })

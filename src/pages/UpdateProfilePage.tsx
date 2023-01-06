@@ -8,24 +8,12 @@ import { useForm } from "react-hook-form"
 // Context with data and functions for user authentication
 import { useAuthContext } from '../contexts/AuthContext'
 
+import { FormData } from '../interfaces/FormData'
+import { UserData } from '../interfaces/UserData'
+
 import classNames from "classnames"
 import Confirm from '../components/Confirm'
 import AvatarInput from '../components/Forms/AvatarInput'
-
-interface userData {
-    uid: string,
-    username: string,
-    photoURL: string,
-    email: string
-}
-
-type FormData = {
-    email: string,
-    password: string,
-    passwordrepeat: string,
-    currentpassword: string,
-    username: string
-}
 
 const UpdateProfilePage = () => {
 
@@ -41,7 +29,7 @@ const UpdateProfilePage = () => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
 
     // State with data about current signed in user
-    const [userData, setUserData] = useState<userData>()
+    const [userData, setUserData] = useState<UserData>()
 
     // States for error messages to display within form
     const [submitErrorMessage, setSubmitErrorMessage] = useState('')

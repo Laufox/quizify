@@ -19,13 +19,13 @@ const QuizPage = () => {
 
     const { id } = useParams()
 
-    const { getOneQuiz } = useAuthContext()
+    const { getQuizDocument } = useAuthContext()
 
     const [quiz, setQuiz] = useState<quiz>()
 
     const applyQuiz = async () => {
 
-        setQuiz(await getOneQuiz(id))
+        setQuiz(await getQuizDocument(id))
 
     }
 
