@@ -16,7 +16,7 @@ interface userData {
 
 const ProfilePage = () => {
 
-    const { currentUser, getUserDocument, getCategories, createCategorie, deleteCategorie, getQuizzesByUser, getAllUsers, getAllQuizzes, removeQuiz } = useAuthContext()
+    const { currentUser, getUserDocument, getAllCategoryDocuments,createCategoryDocument, deleteCategoryDocument, getAllQuizDocumentsByUser, getAllUserDocuments, getAllQuizDocuments, deleteQuizDocument, getAllPublicQuizDocumentsByUser } = useAuthContext()
     const { uid } = useParams()
 
     const [userData, setUserData] = useState<userData>()
@@ -63,7 +63,7 @@ const ProfilePage = () => {
         }
 
         try {
-            await createCategorie(newCategorieInput)
+            await createCategoryDocument(newCategorieInput)
             applyCategories()
             setNewCategorieInput('')
         } catch (error) {
@@ -74,7 +74,7 @@ const ProfilePage = () => {
     const handleDeleteCategorie = async (id: string) => {
         
         try {
-            await deleteCategorie(id)
+            await deleteCategoryDocument(id)
             applyCategories()
         } catch (error) {
             console.log(error)
@@ -83,25 +83,34 @@ const ProfilePage = () => {
     }
 
     const applyCategories = async () => {
-        setCategories([...await getCategories()])
+        setCategories([...await getAllCategoryDocuments()])
     }
 
     const applyQuizzesCreatedByUser = async () => {
-        setQuizzesCreatedByUser([...await getQuizzesByUser(userData?.uid)])
+        
+        if (!uid || !currentUser?.uid) {
+            return
+        }
+        
+        setQuizzesCreatedByUser(
+            uid === currentUser.uid 
+            ? [...await getAllQuizDocumentsByUser(userData?.uid)] 
+            : [...await getAllPublicQuizDocumentsByUser(userData?.uid)]
+        )
     }
 
     const applyAllUsers = async () => {
-        setAllUsers([...await getAllUsers()])
+        setAllUsers([...await getAllUserDocuments()])
     }
 
     const applyAllQuizzes = async () => {
-        setAllQuizzes([...await getAllQuizzes()])
+        setAllQuizzes([...await getAllQuizDocuments()])
     }
 
     const handleDeleteQuiz = async () => {
 
         try {
-            await removeQuiz(quizToDelete?.id)
+            await deleteQuizDocument(quizToDelete?.id)
             applyQuizzesCreatedByUser()
             if (userData?.role === "admin") {
                 applyAllQuizzes()
@@ -151,13 +160,17 @@ const ProfilePage = () => {
         
     }, [userData])
 
-    useEffect(()=>{
-        console.log('here are users: ', allUsers)
-    }, [allUsers])
+    // useEffect(()=>{
+    //     console.log('here are users: ', allUsers)
+    // }, [allUsers])
 
-    useEffect(()=>{
-        console.log('here are quizzes: ', allQuizzes)
-    }, [allQuizzes])
+    // useEffect(()=>{
+    //     console.log('here are quizzes: ', allQuizzes)
+    // }, [allQuizzes])
+
+    // useEffect(()=>{
+    //     console.log('uq: ', quizzesCreatedByUser)
+    // }, [quizzesCreatedByUser])
 
     return (
         <div className="page-container">

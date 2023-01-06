@@ -13,19 +13,19 @@ interface QuizList {
 
 const QuizListPage = () => {
 
-    const { getAllQuizzes, getCategories } = useAuthContext()
+    const { getAllPublicQuizDocuments, getAllCategoryDocuments } = useAuthContext()
 
     const [quizList, setQuizList] = useState<QuizList[]>([])
     const [categories, setCategories] = useState<{id: string, name: string}[]>([])
 
     const applyQuizzes = async () => {
 
-        setQuizList([...await getAllQuizzes()])
+        setQuizList([...await getAllPublicQuizDocuments()])
 
     }
 
     const applyCategories = async () => {
-        setCategories([...await getCategories()])
+        setCategories([...await getAllCategoryDocuments()])
     }
 
     useEffect(()=>{

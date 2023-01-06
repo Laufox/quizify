@@ -255,9 +255,21 @@ const AuthContextProvider = ({ children }: any) => {
     }
 
     // Gett all public quiz documents from a specific user
-    const getAllPublicDocumentsByUser = async (uid: string) => {
+    const getAllPublicQuizDocumentsByUser = async (uid: string) => {
 
+        const arrayOfQuizzes: {id: string, name: string, createdAt: string}[] = []
 
+        const allQuizzesSnap = await getDocs(query(collection(db, "quizzes"), where("authorId", "==", uid), where("visibility", "==", "public")))
+
+        allQuizzesSnap.forEach(quiz => {
+            arrayOfQuizzes.push({
+                id: quiz.id,
+                name: quiz.data().name,
+                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
+            })
+        })
+
+        return arrayOfQuizzes
 
     }
 
@@ -281,9 +293,22 @@ const AuthContextProvider = ({ children }: any) => {
     }
 
     // Get all public quiz documents from firestore
-    const getAllPublicDocuments = async () => {
+    const getAllPublicQuizDocuments = async () => {
 
+        const arrayOfQuizzes: {id: string, name: string, description: string, createdAt: string}[] = []
 
+        const allQuizzesSnap = await getDocs(query(collection(db, "quizzes"), where("visibility", "==", "public")))
+
+        allQuizzesSnap.forEach(quiz => {
+            arrayOfQuizzes.push({
+                id: quiz.id,
+                name: quiz.data().name,
+                description: quiz.data().description,
+                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
+            })
+        })
+
+        return arrayOfQuizzes
 
     }
 
@@ -413,6 +438,8 @@ const AuthContextProvider = ({ children }: any) => {
         getQuizDocument,
         getAllQuizDocumentsByUser,
         getAllQuizDocuments,
+        getAllPublicQuizDocuments,
+        getAllPublicQuizDocumentsByUser,
         updateQuizDocument,
         deleteQuizDocument,
         getAllCategoryDocuments,
