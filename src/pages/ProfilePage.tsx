@@ -16,7 +16,7 @@ interface userData {
 
 const ProfilePage = () => {
 
-    const { currentUser, getUser, getCategories, createCategorie, deleteCategorie, getQuizzesByUser, getAllUsers, getAllQuizzes, removeQuiz } = useAuthContext()
+    const { currentUser, getUserDocument, getCategories, createCategorie, deleteCategorie, getQuizzesByUser, getAllUsers, getAllQuizzes, removeQuiz } = useAuthContext()
     const { uid } = useParams()
 
     const [userData, setUserData] = useState<userData>()
@@ -125,7 +125,7 @@ const ProfilePage = () => {
 
         const asyncFunction = async () => {
             try {
-                setUserData(await getUser(uid))
+                setUserData(await getUserDocument(uid))
             } catch (error) {
                 console.log(error)
             }

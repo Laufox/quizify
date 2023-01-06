@@ -10,7 +10,7 @@ type FormData = {
 
 const ResetPasswordPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
-    const { passwordReset } = useAuthContext()
+    const { resetUserAccountPassword } = useAuthContext()
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState('')
     const [submitSuccessMessage, setSubmitSuccessMessage] = useState('')
@@ -19,7 +19,7 @@ const ResetPasswordPage = () => {
         console.log(data)
 
         try {
-            await passwordReset(data.email)
+            await resetUserAccountPassword(data.email)
             setSubmitSuccessMessage('An email has been sent to your email with further instruction on how to reset your password')
             // navigate('/')
         } catch (error: any) {

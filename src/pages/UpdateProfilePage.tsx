@@ -35,7 +35,7 @@ const UpdateProfilePage = () => {
     const navigate = useNavigate()
 
     // Funtions and variabels to use from auth context
-    const { getUser, currentUser, updateAccount, verifyUser, removeUser } = useAuthContext()
+    const { getUserDocument, currentUser, updateUserAccount, verifyUserAccount, deleteUserAccount } = useAuthContext()
 
     const { uid } = useParams()
 
@@ -62,10 +62,10 @@ const UpdateProfilePage = () => {
         try {
 
             if ((data.password && data.passwordrepeat && data.currentpassword) || (data.email !== currentUser.email)) {
-                await verifyUser(data.currentpassword)
+                await verifyUserAccount(data.currentpassword)
             }
 
-            await updateAccount(
+            await updateUserAccount(
                 data.email !== currentUser.email ? data.email : null, 
                 data.password ?? null, 
                 data.username, 
@@ -109,7 +109,7 @@ const UpdateProfilePage = () => {
 
     const handleDeleteUser = async () => {
         try {
-            await removeUser()
+            await deleteUserAccount()
             navigate('/')
         } catch (error) {
             console.log(error)
@@ -128,7 +128,7 @@ const UpdateProfilePage = () => {
 
         const asyncFunction = async () => {
             try {
-                setUserData(await getUser(uid))
+                setUserData(await getUserDocument(uid))
             } catch (error) {
                 console.log(error)
             }

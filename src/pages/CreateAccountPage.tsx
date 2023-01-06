@@ -26,7 +26,7 @@ const CreateAccountPage = () => {
     const navigate = useNavigate()
 
     // Funtions and variabels to use from auth context
-    const { signup } = useAuthContext()
+    const { createUserAccount } = useAuthContext()
 
     // Functions to use from react-hook-form
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
@@ -44,7 +44,7 @@ const CreateAccountPage = () => {
     const createUser = async (data: any) => {
 
         try {
-            await signup(data.email, data.password, data.username, currentPhoto)
+            await createUserAccount(data.email, data.password, data.username, currentPhoto)
             navigate('/')
         } catch (error: any) {
             setSubmitErrorMessage(error?.message)

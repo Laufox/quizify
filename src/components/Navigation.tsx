@@ -27,7 +27,7 @@ const Navigaion = () => {
     const navigate = useNavigate()
 
     // Funtions and variabels to use from auth context
-    const { logout, currentUser } = useAuthContext()
+    const { signoutUserAccount, currentUser } = useAuthContext()
 
     // State for if the dropdown content on smaller screens are open or not
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -35,7 +35,7 @@ const Navigaion = () => {
     // Funtcion to request to sign out the signed in user
     const signOut = async () => {
         try {
-            await logout()
+            await signoutUserAccount()
             navigate('/')
         } catch (error: any) {
             console.log(error?.message)
