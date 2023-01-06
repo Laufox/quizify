@@ -44,7 +44,8 @@ import {
     getDownloadURL, 
     ref, 
     uploadBytes, 
-    deleteObject 
+    deleteObject ,
+    getBlob
 } from "firebase/storage"
 
 // Initiate context
@@ -130,7 +131,7 @@ const AuthContextProvider = ({ children }: any) => {
     }
     
     // Function to update a user account
-    const updateUserAccount = async (email: string, password: string, username: string, photo: File, removePhoto: boolean) => {
+    const updateUserAccount = async (email: string, password: string, username: string, photo: File) => {
         
         if (!auth.currentUser) {
             return
@@ -154,7 +155,7 @@ const AuthContextProvider = ({ children }: any) => {
         }
 
         // If user had a profile photo but removed it, delete it from storage and update profile data
-        if (removePhoto) {
+        if (!photo && auth.currentUser.photoURL) {
             await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
             await updateProfile(auth.currentUser, {
                 photoURL: ""
@@ -397,8 +398,6 @@ const AuthContextProvider = ({ children }: any) => {
 
         return arrayOfUsers
     }
-
-    
 
     // Object with variables and functions that children components can use
     const contextValues= {
