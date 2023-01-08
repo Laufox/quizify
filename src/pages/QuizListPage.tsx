@@ -5,12 +5,16 @@ import { useAuthContext } from "../contexts/AuthContext"
 import { Quiz } from '../interfaces/Quiz'
 import { Categories } from '../interfaces/Categories'
 
+import classNames from 'classnames'
+
 const QuizListPage = () => {
 
     const { getAllPublicQuizDocuments, getAllCategoryDocuments } = useAuthContext()
 
     const [quizList, setQuizList] = useState<Quiz[]>([])
+    const [quizListFiltered, setQuizListFiltered] = useState<Quiz[]>([])
     const [categories, setCategories] = useState<Categories[]>([])
+    const [selectedCategory, setSelectedCategory] = useState('all')
 
     const applyQuizzes = async () => {
 
@@ -19,7 +23,22 @@ const QuizListPage = () => {
     }
 
     const applyCategories = async () => {
+
         setCategories([...await getAllCategoryDocuments()])
+
+    }
+
+    const filterQuizzesByCategory = (category: string) => {
+
+        setSelectedCategory(category)
+
+        if (category.toLowerCase() === 'all') {
+            setQuizListFiltered([...quizList])
+            return
+        }
+
+        setQuizListFiltered( [...quizList.filter((quiz) => quiz.category === category)] )
+
     }
 
     useEffect(()=>{
@@ -31,7 +50,7 @@ const QuizListPage = () => {
 
     useEffect(()=>{
 
-        console.log(quizList)
+        setQuizListFiltered([...quizList])
 
     }, [quizList])
 
@@ -45,10 +64,27 @@ const QuizListPage = () => {
             <h2>Filter by category</h2>
             <div className='filterbox-container'>
 
-                <p className='filterbox-item link selected'>All</p>
+                <p 
+                    className={classNames({
+                        'filterbox-item link' : true,
+                        'selected': selectedCategory === 'all'
+                    })}
+                    onClick={()=>{filterQuizzesByCategory('all')}}
+                >
+                    All
+                </p>
                 {
                     !!categories.length && categories.map((cat)=>(
-                        <p key={cat.id} className='filterbox-item link'>{cat.name}</p>
+                        <p 
+                            key={cat.id} 
+                            className={classNames({
+                                'filterbox-item link' : true,
+                                'selected': selectedCategory === cat.name
+                            })}
+                            onClick={()=>{filterQuizzesByCategory(cat.name)}}
+                        >
+                            {cat.name}
+                        </p>
                     ))
                 }
 
@@ -57,7 +93,7 @@ const QuizListPage = () => {
             <div className='quizlist-container'>
                 <h2>List of quizzes</h2>
                 {
-                    !!quizList.length && quizList.map((quiz)=>(
+                    !!quizListFiltered.length && quizListFiltered.map((quiz)=>(
                         <div key={quiz.id} className='quizlist-item'>
                             <header>
                                 <Link to={`/quiz/${quiz.id}`}>{quiz.name}</Link>
