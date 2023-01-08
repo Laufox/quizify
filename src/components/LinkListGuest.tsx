@@ -17,22 +17,24 @@ const LinkListGuest = ({onNavClick} : Props) => {
                 View quiz list
             </Link>
             <Link 
-                to='/signup'
+                to='/about'
                 onClick={onNavClick}
             >
-                Sign up
+                About website
             </Link>
             <Link 
                 to='/signin'
+                className="sign-in-link"
                 onClick={onNavClick}
             >
                 Sign in
             </Link>
             <Link 
-                to='/about'
+                to='/signup'
+                className="sign-up-link"
                 onClick={onNavClick}
             >
-                About website
+                Sign up
             </Link>
         </nav>
     )

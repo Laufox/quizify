@@ -15,6 +15,7 @@ import { useAuthContext } from '../contexts/AuthContext'
 import menuOpenIcon from '../assets/icons/menu-open-icon.svg'
 import menuCloseIcon from '../assets/icons/menu-close-icon.svg'
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
+import navLogo from '../assets/icons/quizify-logo.svg'
 
 // Components for various page elements
 import LinkListGuest from './LinkListGuest'
@@ -73,12 +74,13 @@ const Navigaion = () => {
         <header className='navigation-header'>
             <div className='nav-top-wrapper'>
                 <div className='nav-top'>
+
                     <Link 
                         to='/'
                         onClick={()=>{setIsMenuOpen(false)}}
                         className='nav-logo-link'
                     >
-                        Quizify
+                        <img src={navLogo} alt='website logo' />
                     </Link>
 
                     <div className='nav-top-content-wrapper'>
@@ -95,14 +97,32 @@ const Navigaion = () => {
                         {
                             // Only show sign up button if no user is signed in
                             !currentUser
-                            &&
-                            <Link 
-                                to='/signup' 
-                                className='btn btn-info'
-                                onClick={()=>{setIsMenuOpen(false)}}
-                            >
-                                Sign up!
-                            </Link>
+                            ?
+                            <div className='btn-group'>
+                                <Link 
+                                    to='/signin' 
+                                    className='btn btn-info-open sign-in-button'
+                                    onClick={()=>{setIsMenuOpen(false)}}
+                                >
+                                    Sign in
+                                </Link>
+                                <Link 
+                                    to='/signup' 
+                                    className='btn btn-info sign-up-button'
+                                    onClick={()=>{setIsMenuOpen(false)}}
+                                >
+                                    Sign up
+                                </Link>
+                            </div>
+                            :
+                            <div className='btn-group'>
+                                <p  
+                                    className='btn btn-info-open sign-out-button'
+                                    onClick={signOut}
+                                >
+                                    Sign out
+                                </p>
+                            </div>
                         }
 
                         {
