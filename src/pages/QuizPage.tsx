@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import QuizIntro from '../components/QuizPlay/QuizIntro'
+import QuizPlaying from '../components/QuizPlay/QuizPlaying'
 
 import { useAuthContext } from '../contexts/AuthContext'
 import { Quiz } from '../interfaces/Quiz'
@@ -50,6 +51,12 @@ const QuizPage = () => {
                     {
                         quizStatus === 'intro' && (
                             <QuizIntro quiz={quiz} onBegin={beginQuiz} />
+                        )
+                    }
+
+                    {
+                        quizStatus === 'playing' && (
+                            <QuizPlaying questions={quiz.questions} />
                         )
                     }
                     
