@@ -1,19 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import QuizIntro from '../components/QuizPlay/QuizIntro'
 
 import { useAuthContext } from '../contexts/AuthContext'
-
-interface quiz {
-    authorId: string,
-    authorName: string,
-    category: string,
-    createdAt: string,
-    description: string,
-    name: string,
-    questions: {}[],
-    tags: string[],
-    visibility: string
-}
+import { Quiz } from '../interfaces/Quiz'
 
 const QuizPage = () => {
 
@@ -21,11 +11,19 @@ const QuizPage = () => {
 
     const { getQuizDocument } = useAuthContext()
 
-    const [quiz, setQuiz] = useState<quiz>()
+    const [quiz, setQuiz] = useState<Quiz>()
+    const [quizStatus, setQuizStatus] = useState<'intro'|'playing'|'over'>('intro')
 
     const applyQuiz = async () => {
 
         setQuiz(await getQuizDocument(id))
+
+    }
+
+    const beginQuiz = () => {
+
+        setQuizStatus('playing')
+        console.log('to start')
 
     }
 
@@ -49,24 +47,12 @@ const QuizPage = () => {
                 quiz && (
                     <>
                     <h1>{quiz.name}</h1>
-                    <p>
-                        Created by 
-                        <Link to={`/profile/${quiz.authorId}`} >{quiz.authorName}</Link> 
-                        - {quiz.createdAt}
-                    </p>
-                    <div className='tags-container'>
-                        {
-                            !!quiz.tags.length && quiz.tags.map((tag, i)=>(
-                                <span key={i}>#{tag}</span>
-                            ))
-                        }
-                    </div>
-                    <p>
-                        {quiz.description}
-                    </p>
-                    <span>{quiz.questions.length} questions - max time {quiz.questions.length / 2} minutes</span>
-
-                    <button className='btn btn-confirm'>Begin quiz</button>
+                    {
+                        quizStatus === 'intro' && (
+                            <QuizIntro quiz={quiz} onBegin={beginQuiz} />
+                        )
+                    }
+                    
                     </>
                 )
             }

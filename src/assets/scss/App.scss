@@ -9,7 +9,7 @@
 @import 'ProfilePage';
 @import 'Confirm';
 @import 'CreateQuizPage';
-@import 'QuizContainer';
+@import 'QuizPage';
 @import 'QuizListPage';
 
 /* Generic default style rules for all elements */
@@ -125,7 +125,7 @@ img {
 .btn {
     padding: 1rem 2rem;
     border-radius: 0.4rem;
-    align-self: center;
+    align-self: flex-start;
     font-size: 1.4rem;
     margin: 2rem 0;
 
