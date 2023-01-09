@@ -47,7 +47,7 @@ const CreateAccountPage = () => {
             <h1>Create your account</h1>
 
             <form onSubmit={handleSubmit(createUser)} noValidate>
-                <label>Email *</label>
+                <label htmlFor='createemail'>Email *</label>
                 <input 
                     id="createemail" 
                     type='email' 
@@ -55,7 +55,7 @@ const CreateAccountPage = () => {
                         required: 'Please enter email',
                         pattern: {
                             value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/gi, 
-                            message: 'incorrect email format'
+                            message: 'Incorrect email format'
                         }
                     })}
                     placeholder='name@mail.com'
@@ -63,7 +63,7 @@ const CreateAccountPage = () => {
                 />
                 {errors.email && <span className="form-error-message">{errors.email?.message}</span>}
 
-                <label>Password *</label>
+                <label htmlFor='createpassword'>Password *</label>
                 <input 
                     id="createpassword" 
                     type='password' 
@@ -79,7 +79,7 @@ const CreateAccountPage = () => {
                 />
                 {errors.password && <span className="form-error-message">{errors.password?.message}</span>}
 
-                <label>Repeat password *</label>
+                <label htmlFor='createpasswordrepeat'>Repeat password *</label>
                 <input 
                     id="createpasswordrepeat" 
                     type='password' 
@@ -98,7 +98,7 @@ const CreateAccountPage = () => {
 
                 <hr />
 
-                <label>Username *</label>
+                <label htmlFor='createusername'>Username *</label>
                 <input 
                     id="createusername" 
                     type='text' 
@@ -121,7 +121,7 @@ const CreateAccountPage = () => {
 
                 <button type="submit" className="btn btn-info">Create Account</button>
 
-                <Link to='/signin'>Already have an account? sig in instead!</Link>
+                <Link to='/signin'>Already have an account? sign in instead!</Link>
             </form>
         </div>
     )
