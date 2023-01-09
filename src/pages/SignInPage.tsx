@@ -45,7 +45,7 @@ const SignInPage = () => {
             <h1>Log in to your account</h1>
 
             <form onSubmit={handleSubmit(loginUser)} noValidate>
-                <label>Email</label>
+                <label htmlFor="loginemail">Email</label>
                 <input 
                     id="loginemail" 
                     type='email' 
@@ -57,7 +57,7 @@ const SignInPage = () => {
                 />
                 {errors.email && <span className="form-error-message">{errors.email?.message}</span>}
 
-                <label>Password</label>
+                <label htmlFor="loginpassword">Password</label>
                 <input 
                     id="loginpassword" 
                     type='password' 

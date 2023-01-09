@@ -9,7 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import CreateAccountPage from "../CreateAccountPage";
 import AuthContextProvider from '../../contexts/AuthContext'
 
-test('Renders sign in form', async () => {
+test('Renders sign up form', async () => {
 
     // Making sure the create account component renders/loads
     await act(async ()=>{
@@ -37,41 +37,6 @@ test('Renders sign in form', async () => {
     expect(passwordRepeatInputEl).toBeInTheDocument()
     expect(usernameInputEl).toBeInTheDocument()
     expect(submitButton).toBeInTheDocument()
-
-})
-
-test('Filling in and submitting the form', async () => {
-
-    // Making sure the create account component renders/loads
-    render(
-        <BrowserRouter>
-            <AuthContextProvider>
-                <CreateAccountPage />
-            </AuthContextProvider>
-        </BrowserRouter>
-    )
-
-    // Finds various elements on the page and saves them to variables
-    const emailInputEl :HTMLInputElement = screen.getByLabelText(/^email/i)
-    const passwordInputEl :HTMLInputElement = screen.getByLabelText(/^password/i)
-    const passwordRepeatInputEl :HTMLInputElement = screen.getByLabelText(/^repeat password/i)
-    const usernameInputEl :HTMLInputElement = screen.getByLabelText(/^username/i)
-    const submitButton :HTMLInputElement = screen.getByRole('button')
-
-    // Making sure input fields are typeable
-    await userEvent.type(emailInputEl, 'mail@mail.com')
-    await userEvent.type(passwordInputEl, 'abc123')
-    await userEvent.type(passwordRepeatInputEl, 'abc123')
-    await userEvent.type(usernameInputEl, 'useruser')
-    
-    // Making sure input fields have right value
-    expect(emailInputEl.value).toBe('mail@mail.com')
-    expect(passwordInputEl.value).toBe('abc123')
-    expect(passwordRepeatInputEl.value).toBe('abc123')
-    expect(usernameInputEl.value).toBe('useruser')
-    
-    // Making sure submit button can be clicked
-    await userEvent.click(submitButton)
 
 })
 
@@ -103,5 +68,46 @@ test('Getting error feedback when typing invalid data', async () => {
     expect(screen.getByText(/password must be at least six characters/i)).toBeInTheDocument()
     expect(screen.getByText(/password does not match/i)).toBeInTheDocument()
     expect(screen.getByText(/username is required/i)).toBeInTheDocument()
+
+})
+
+test('Filling in and submitting the form', async () => {
+
+    // Making sure the create account component renders/loads
+    render(
+        <BrowserRouter>
+            <AuthContextProvider>
+                <CreateAccountPage />
+            </AuthContextProvider>
+        </BrowserRouter>
+    )
+
+    // Finds various elements on the page and saves them to variables
+    const emailInputEl :HTMLInputElement = screen.getByLabelText(/^email/i)
+    const passwordInputEl :HTMLInputElement = screen.getByLabelText(/^password/i)
+    const passwordRepeatInputEl :HTMLInputElement = screen.getByLabelText(/^repeat password/i)
+    const usernameInputEl :HTMLInputElement = screen.getByLabelText(/^username/i)
+    const submitButton :HTMLButtonElement = screen.getByRole('button')
+
+    // Making sure input fields are typeable
+    await userEvent.type(emailInputEl, 'mail@mail.com')
+    await userEvent.type(passwordInputEl, 'abc123')
+    await userEvent.type(passwordRepeatInputEl, 'abc123')
+    await userEvent.type(usernameInputEl, 'useruser')
+    
+    // Making sure input fields have right value
+    expect(emailInputEl.value).toBe('mail@mail.com')
+    expect(passwordInputEl.value).toBe('abc123')
+    expect(passwordRepeatInputEl.value).toBe('abc123')
+    expect(usernameInputEl.value).toBe('useruser')
+    
+    // Making sure submit button can be clicked
+    await userEvent.click(submitButton)
+
+    // Array for elements with eror messages
+    const errorEls = screen.queryAllByText(/please enter email|incorrect email format|please enter password|password must be at least six characters|please repeat password|password does not match|username is required/i)
+
+    // Makes sure no error messages exists
+    expect(errorEls.length).toBe(0)
 
 })
