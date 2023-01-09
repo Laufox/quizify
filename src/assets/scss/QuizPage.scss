@@ -71,9 +71,14 @@
 
     .quiz-playing-container {
 
-        .quiz-meta-data {
+        .quiz-metadata {
 
             .time-counter {
+
+                align-items: center;
+                border: 0.3rem solid #000;
+                width: 4rem;
+                height: 4rem;
 
             }
 

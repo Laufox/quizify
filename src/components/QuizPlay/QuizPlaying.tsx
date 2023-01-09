@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useRef } from "react"
 import { NewQuestionItem } from "../../interfaces/NewQuestionItem"
 import classNames from "classnames"
 
@@ -16,6 +16,8 @@ const QuizPlaying = ({questions}: Props) => {
     const [timeLeft, setTimeLeft] = useState(30)
     const [questionStatus, setQuestionStatus] = useState<'live'|'finished'>('live')
 
+    const timerRef = useRef<HTMLCanvasElement>(null)
+
     const answerGiven = () => {
 
         if (questionStatus !== "live") {
@@ -25,6 +27,14 @@ const QuizPlaying = ({questions}: Props) => {
         clearInterval(timer)
         console.log('timer should have stopped')
         setQuestionStatus('finished')
+
+    }
+
+    const drawTimer = () => {
+
+        if (!timerRef.current) {
+            return
+        }
 
     }
 
@@ -50,6 +60,7 @@ const QuizPlaying = ({questions}: Props) => {
 
     useEffect(() => {
 
+        drawTimer()
         if (timeLeft <= 0) {
             answerGiven()
         }
@@ -62,7 +73,11 @@ const QuizPlaying = ({questions}: Props) => {
                 !!questionsSet.length && (
                     <>
                     <div className="quiz-metadata">
-                        <p className="time-counter">{timeLeft}</p>
+                        {/* <p className="time-counter">{timeLeft}</p> */}
+                        <svg>
+                            <circle clipPath="" />
+                            <text>30</text>
+                        </svg>
                         <span className="question-number">Question {questionNumber} / {questionsSet.length}</span>
                         <span className="score-counter">Score: {score}</span>
                     </div>
