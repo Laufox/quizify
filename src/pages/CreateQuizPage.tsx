@@ -9,31 +9,10 @@ import classNames from "classnames"
 import accordionIcon from '../assets/icons/accordion-icon.svg'
 import NewQuestionForm from "../components/NewQuestionForm"
 import EditQuestionForm from "../components/EditQuestionForm"
-
-interface NewQuestionInputObject {
-    question: string,
-    correctAnswer: string,
-    firstWrongAnswer: string,
-    secondWrongAnswer: string,
-    thirdWrongAnswer: string
-}
-
-interface newQuestionInterface {
-    questionText: string,
-    answers: {
-        isCorrect: boolean,
-        text: string
-    }[]
-}
-
-type FormData = {
-    name: string,
-    category: string,
-    description: string,
-    tags: string,
-    visibility: string,
-    questionname: string
-}
+import { FormData } from "../interfaces/FormData"
+import { NewQuestionItem } from "../interfaces/NewQuestionItem"
+import { Categories } from "../interfaces/Categories"
+import { NewQuestionInput } from "../interfaces/NewQuestionInput"
 
 const CreateQuizPage = () => {
 
@@ -41,27 +20,27 @@ const CreateQuizPage = () => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
 
     // Funtions and variabels to use from auth context
-    const { createQuiz, getCategories } = useAuthContext()
+    const { createQuizDocument, getAllCategoryDocuments } = useAuthContext()
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState()
     const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
-    const [questionsList, setQuestionsList] = useState<newQuestionInterface[]>([])
-    const [categories, setCategories] = useState<{id: string, name: string}[]>([])
+    const [questionsList, setQuestionsList] = useState<NewQuestionItem[]>([])
+    const [categories, setCategories] = useState<Categories[]>([])
 
-    const submitQuiz = async (data: any) => {
+    const submitQuiz = async (data: FormData) => {
 
         if (data.description) {
             data.description = data.description.trim()
         }
 
-        if (data.tags) {
+        if (data.tags && typeof data.tags === "string") {
             data.tags = data.tags.trim().split(' ')
         }
         
         try {
-            await createQuiz({
+            await createQuizDocument({
                 ...data,
-                name: data.name.trim(),
+                name: data.quizname.trim(),
                 questions: questionsList
             })
         } catch (error: any) {
@@ -70,7 +49,7 @@ const CreateQuizPage = () => {
 
     }
 
-    const addNewQuestion = (question: NewQuestionInputObject) => {
+    const addNewQuestion = (question: NewQuestionInput) => {
 
         setQuestionsList( [...questionsList, {
             questionText: question.question,
@@ -107,7 +86,7 @@ const CreateQuizPage = () => {
 
     }
 
-    const editQuestion = (index: number, updatedQuestion: NewQuestionInputObject) => {
+    const editQuestion = (index: number, updatedQuestion: NewQuestionInput) => {
 
         if (
             !updatedQuestion.question ||
@@ -144,7 +123,7 @@ const CreateQuizPage = () => {
     }
 
     const applyCategories = async () => {
-        setCategories([...await getCategories()])
+        setCategories([...await getAllCategoryDocuments()])
     }
 
     useEffect(()=>{
@@ -166,13 +145,13 @@ const CreateQuizPage = () => {
                 <input 
                     id="quizname" 
                     type='text' 
-                    {...register('name', {
+                    {...register('quizname', {
                         required: 'Name of quiz is required'
                     })}
                     placeholder='name'
-                    className={classNames({'error-input': errors.name})}
+                    className={classNames({'error-input': errors.quizname})}
                 />
-                {errors.name && <span className="form-error-message">{errors.name?.message}</span>}
+                {errors.quizname && <span className="form-error-message">{errors.quizname?.message}</span>}
 
                 <label>Category *</label>
                 <select

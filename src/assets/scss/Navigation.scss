@@ -3,7 +3,7 @@
 .navigation-header {
     position: sticky;
     inset: 0;
-    z-index: 9999;
+    z-index: 999;
     width: 100vw;
     background-color: #bcc;
 
@@ -23,15 +23,50 @@
         align-items: center;
         padding: 0 2rem;
 
+        .nav-logo-link {
+            display: flex;
+            align-items: center;
+        }
+
         .nav-top-content-wrapper {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1rem;
+
+            .sign-in-button {
+                display: none;
+
+                @media screen and (min-width: 400px) {
+                    display: block;
+                }
+            }
+
+            form {
+
+                .nav-search {
+                    width: 24rem;
+
+                    @media screen and (min-width: 1280px) {
+                        width: 30rem;
+                    }
+                }
+            }
+
+            @media screen and (min-width: 400px) {
+                gap: 2rem;
+            }
         }
 
         .link-collection {
 
             display: none;
+
+            .sign-up-link, .sign-in-link, .profile-page-link, .sign-out-link {
+
+                @media screen and (min-width: 992px) {
+                    display: none;
+                }
+            }
 
             @media screen and (min-width: 992px) {
                 
@@ -48,30 +83,30 @@
 
         }
 
-        a.btn.btn-info {
+        a.btn.btn-info, .btn-info-open {
 
             margin: 0;
 
-            @media screen and (min-width: 992px) {
+            // @media screen and (min-width: 992px) {
                 
-                display: none;
+            //     display: none;
 
-            }
+            // }
 
         }
     
         .nav-avatar-container {
             display: flex;
-            width: 3.2rem;
-            height: 3.2rem;
-            border-radius: 1.6rem;
+            width: 3.8rem;
+            height: 3.8rem;
+            border-radius: 1.9rem;
             border: 0.1rem solid #000;
             padding: 0.1rem;
             cursor: pointer;
 
             img {
-                border-radius: 1.6rem;
-                width: 3.0rem;
+                border-radius: 1.9rem;
+                width: 3.6rem;
             }
         }
 
@@ -122,6 +157,13 @@
 
         @media screen and (min-width: 992px) {
             display: none;
+        }
+    }
+
+    form {
+
+        .nav-search {
+            max-width: 40rem;
         }
     }
 

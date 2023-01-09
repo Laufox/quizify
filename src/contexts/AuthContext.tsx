@@ -8,10 +8,51 @@
 import { useContext, createContext, useEffect, useState } from "react"
 
 // FIrebase imports
-import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from 'firebase/auth'
-import { auth, db, storage } from '../firebase'
-import { doc, setDoc, getDoc, deleteDoc, addDoc, collection, getDocs, where, query } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage"
+import { 
+    createUserWithEmailAndPassword, 
+    onAuthStateChanged, 
+    signOut, 
+    signInWithEmailAndPassword, 
+    sendPasswordResetEmail, 
+    updateProfile, 
+    updateEmail, 
+    updatePassword, 
+    reauthenticateWithCredential, 
+    EmailAuthProvider, 
+    deleteUser 
+} from 'firebase/auth'
+
+import { 
+    auth, 
+    db, 
+    storage 
+} from '../firebase'
+
+import { 
+    doc, 
+    setDoc, 
+    getDoc, 
+    deleteDoc, 
+    addDoc, 
+    collection, 
+    getDocs, 
+    where, 
+    query, 
+    QuerySnapshot,
+    DocumentData,
+    Query
+} from 'firebase/firestore'
+
+import { 
+    getDownloadURL, 
+    ref, 
+    uploadBytes, 
+    deleteObject
+} from "firebase/storage"
+
+import { User } from "../interfaces/User"
+import { Categories } from "../interfaces/Categories"
+import { Quiz } from "../interfaces/Quiz"
 
 // Initiate context
 const AuthContext = createContext<any>(undefined)
@@ -26,8 +67,17 @@ const AuthContextProvider = ({ children }: any) => {
     // State for user currently signed in through firebase
     const [currentUser, setCurrentUser] = useState<any>()
 
+
+    /********************************************************
+     **                                                    **
+     *   Functions related to USER AUTHENTICATION actions   *
+     **                                                    **
+     ********************************************************/
+
+
     // Function for creating a new user 
-    const signup = async (email: string, password: string, username: string, photo: File) => {
+    const createUserAccount = async (email: string, password: string, username: string, photo: File) => {
+
         // Create user through firebase with given credentials
         await createUserWithEmailAndPassword(auth, email, password)
 
@@ -63,45 +113,43 @@ const AuthContextProvider = ({ children }: any) => {
             photoURL: photoURL ?? ""
         })
 
-
     }
 
     // Function to sign in user with firebase
-    const signin = async (email: string, password: string) => {
+    const signinUserAccount = async (email: string, password: string) => {
+
         await signInWithEmailAndPassword(auth, email, password)
+
     }
 
     // FUnction to sign out user with firebase
-    const logout = () => {
+    const signoutUserAccount = () => {
+
         return signOut(auth)
+
     }
 
     // Function to send email to reset user password with firebase
-    const passwordReset = async (email: string) => {
+    const resetUserAccountPassword = async (email: string) => {
+
         await sendPasswordResetEmail(auth, email)
+
     }
-
-    const getUser = async (uid: string) => {
-        const docSnap = await getDoc(doc(db, "users", uid))
-
-        if (docSnap.exists()) {
-            return docSnap.data()
-        }
-    }
-
-    const updateAccount = async (email: string, password: string, username: string, photo: File, removePhoto: boolean) => {
-
+    
+    // Function to update a user account
+    const updateUserAccount = async (email: string, password: string, username: string, photo: File) => {
+        
         if (!auth.currentUser) {
             return
         }
-
+        
         let photoURL
-
+        
         // If a photo was given, upload photo to storage and then asign photo and username to currentuser profile
         if (photo) {
             const uploadPhoto = await uploadBytes(ref(storage, `avatars/${auth.currentUser.uid}`), photo)
             photoURL = await getDownloadURL(uploadPhoto.ref)
-
+            
             await updateProfile(auth.currentUser, {
                 displayName: username,
                 photoURL
@@ -112,21 +160,23 @@ const AuthContextProvider = ({ children }: any) => {
             })
         }
 
-        if (removePhoto) {
+        // If user had a profile photo but removed it, delete it from storage and update profile data
+        if (!photo && auth.currentUser.photoURL) {
             await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
             await updateProfile(auth.currentUser, {
                 photoURL: ""
             })
         }
-
+        
         if (email) {
             await updateEmail(auth.currentUser, email)
         }
-
+        
         if (password) {
             await updatePassword(auth.currentUser, password)
         }
-
+        
+        // Update user document in firestore
         await setDoc(doc(db, 'users', auth.currentUser.uid), {
             email: email ?? auth.currentUser.email,
             username,
@@ -136,16 +186,19 @@ const AuthContextProvider = ({ children }: any) => {
         })
     }
 
-    const verifyUser = async (password: string) => {
+    // Function for when user has to verify their account by reentering their password
+    const verifyUserAccount = async (password: string) => {
 
         if (!auth.currentUser || !auth.currentUser.email) {
             return
         }
 
         await reauthenticateWithCredential(auth.currentUser, EmailAuthProvider.credential(auth.currentUser?.email, password))
+
     }
 
-    const removeUser = async () => {
+    // Function to delete a user
+    const deleteUserAccount = async () => {
 
         if (!auth.currentUser) {
             return
@@ -162,7 +215,16 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
-    const createQuiz = async (data: any) => {
+
+    /********************************************************
+     **                                                    **
+     *      Functions related to QUIZ database actions      *
+     **                                                    **
+     ********************************************************/
+
+
+    // Create new quiz document to firestore
+    const createQuizDocument = async (data: any) => {
 
         if (!auth.currentUser) {
             return
@@ -170,21 +232,113 @@ const AuthContextProvider = ({ children }: any) => {
 
         await addDoc(collection(db, "quizzes"), {
             authorId: auth.currentUser.uid,
+            authorName: auth.currentUser.displayName,
             createdAt: new Date(),
             ...data
         })
 
     }
 
-    const removeQuiz = async (id: string) => {
+    // Delete quiz document from firestore
+    const deleteQuizDocument = async (id: string) => {
 
         await deleteDoc(doc(db, "quizzes", id))
 
     }
 
-    const getCategories = async () => {
+    // Get one quiz document from firestore
+    const getQuizDocument = async (id: string) => {
 
-        const arrayOfCategories: {id: string, name: string}[] = []
+        const quizSnap = await getDoc(doc(db, 'quizzes', id))
+
+        if (quizSnap.exists()) {
+            return {
+                ...quizSnap.data(),
+                createdAt: new Date(quizSnap.data().createdAt.toMillis()).toISOString().slice(0, 10)
+            }
+        }
+
+    }
+
+    const getMultipleQuizDocuments = async (collectionReference: Query<DocumentData>) => {
+
+        const arrayOfQuizzes: Quiz[] = []
+
+        const allQuizzesSnap: QuerySnapshot<DocumentData> = await getDocs(collectionReference)
+
+        allQuizzesSnap.forEach(quiz => {
+            arrayOfQuizzes.push({
+                id: quiz.id,
+                authorId: quiz.data().authorId,
+                authorName: quiz.data().authorName,
+                name: quiz.data().name,
+                category: quiz.data().category,
+                description: quiz.data().description,
+                tags: quiz.data().tags,
+                questions: quiz.data().questions,
+                visibility: quiz.data().visibility,
+                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
+            })
+        })
+
+        return arrayOfQuizzes
+
+    }
+
+    // Gett all public quiz documents from a specific user
+    const getAllPublicQuizDocumentsByUser = async (uid: string) => {
+
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("authorId", "==", uid), where("visibility", "==", "public")))
+        
+    }
+
+    // Get all quiz document from a specific user 
+    const getAllQuizDocumentsByUser = async (uid: string) => {
+
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("authorId", "==", uid)))
+        
+    }
+
+    // Get all public quiz documents from firestore
+    const getAllPublicQuizDocuments = async () => {
+
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("visibility", "==", "public")))
+
+    }
+
+    // Get all quiz documents from firestore
+    const getAllQuizDocuments = async () => {
+
+        return await getMultipleQuizDocuments(collection(db, "quizzes"))
+
+    }
+    
+    // Update a quiz document in firestore
+    const updateQuizDocument = async (data: any, id: string) => {
+
+        if (!auth.currentUser) {
+            return
+        }
+
+        await setDoc(doc(db, 'quizzes', id), {
+            ...data
+        }, {
+            merge: true
+        })
+    }
+
+
+    /********************************************************
+     **                                                    **
+     *    Functions related to CATEGORY database actions    *
+     **                                                    **
+     ********************************************************/
+
+
+    // Get all category documents from database
+    const getAllCategoryDocuments = async () => {
+
+        const arrayOfCategories: Categories[] = []
 
         const allCategoriesSnap = await getDocs(collection(db, "categories"))
 
@@ -199,7 +353,8 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
-    const createCategorie = async (name: string) => {
+    // Create new category document to firestore
+    const createCategoryDocument = async (name: string) => {
 
         await addDoc(collection(db, "categories"), {
             name
@@ -207,40 +362,43 @@ const AuthContextProvider = ({ children }: any) => {
 
     }
 
-    const deleteCategorie = async (id: string) => {
+    // Delete category document from firestore
+    const deleteCategoryDocument = async (id: string) => {
         
         await deleteDoc(doc(db, "categories", id))
 
     }
 
-    const getQuizzesByUser = async (uid: string) => {
 
-        const arrayOfQuizzes: {id: string, name: string, createdAt: string}[] = []
+    /********************************************************
+     **                                                    **
+     *     Functions related to USER database actions       *
+     **                                                    **
+     ********************************************************/
 
-        const allQuizzesSnap = await getDocs(query(collection(db, "quizzes"), where("authorId", "==", uid)))
 
-        allQuizzesSnap.forEach(quiz => {
-            arrayOfQuizzes.push({
-                id: quiz.id,
-                name: quiz.data().name,
-                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
-            })
-        })
+    // Get a user document from firestore
+    const getUserDocument = async (uid: string) => {
 
-        return arrayOfQuizzes
+        const docSnap = await getDoc(doc(db, "users", uid))
+
+        if (docSnap.exists()) {
+            return docSnap.data()
+        }
 
     }
 
-    const getAllUsers = async () => {
+    // Get all user documents from firestore
+    const getAllUserDocuments = async () => {
 
-        const arrayOfUsers: {id: string, username: string, createdAt: string}[] = []
+        const arrayOfUsers: User[] = []
 
         const allUsersSnap = await getDocs(collection(db, "users"))
 
         allUsersSnap.forEach(user => {
             arrayOfUsers.push({
                 id: user.id,
-                username: user.data().username,
+                name: user.data().username,
                 createdAt: new Date(user.data().createdAt.toMillis()).toISOString().slice(0, 10)
             })
         })
@@ -248,43 +406,29 @@ const AuthContextProvider = ({ children }: any) => {
         return arrayOfUsers
     }
 
-    const getAllQuizzes = async () => {
-
-        const arrayOfQuizzes: {id: string, name: string, createdAt: string}[] = []
-
-        const allQuizzesSnap = await getDocs(collection(db, "quizzes"))
-
-        allQuizzesSnap.forEach(quiz => {
-            arrayOfQuizzes.push({
-                id: quiz.id,
-                name: quiz.data().name,
-                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
-            })
-        })
-
-        return arrayOfQuizzes
-
-    }
-
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
-        signup,
-        signin,
-        logout,
-        passwordReset,
-        getUser,
-        updateAccount,
-        verifyUser,
-        removeUser,
-        createQuiz,
-        getCategories,
-        createCategorie,
-        deleteCategorie,
-        getQuizzesByUser,
-        getAllUsers,
-        getAllQuizzes,
-        removeQuiz
+        createUserAccount,
+        signinUserAccount,
+        signoutUserAccount,
+        resetUserAccountPassword,
+        updateUserAccount,
+        verifyUserAccount,
+        deleteUserAccount,
+        createQuizDocument,
+        getQuizDocument,
+        getAllQuizDocumentsByUser,
+        getAllQuizDocuments,
+        getAllPublicQuizDocuments,
+        getAllPublicQuizDocumentsByUser,
+        updateQuizDocument,
+        deleteQuizDocument,
+        getAllCategoryDocuments,
+        createCategoryDocument,
+        deleteCategoryDocument,
+        getUserDocument,
+        getAllUserDocuments,
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable

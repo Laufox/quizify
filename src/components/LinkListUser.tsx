@@ -10,7 +10,7 @@ interface Props {
 
 const LinkListUser = ({onNavClick, signOut} : Props) => {
 
-    const { logout, currentUser } = useAuthContext()
+    const { currentUser } = useAuthContext()
 
     return (
         <nav className='link-collection'>
@@ -27,13 +27,20 @@ const LinkListUser = ({onNavClick, signOut} : Props) => {
                 Create a quiz
             </Link>
             <Link 
-                to={`/profile/${currentUser.uid}`}
+                to='/about'
                 onClick={onNavClick}
             >
-                Sign in
+                About website
+            </Link>
+            <Link 
+                to={`/profile/${currentUser.uid}`}
+                className='profile-page-link'
+                onClick={onNavClick}
+            >
+                Profile page
             </Link>
             <p 
-                className='link' 
+                className='link sign-out-link'
                 onClick={()=>{
                     onNavClick()
                     signOut()
@@ -41,12 +48,6 @@ const LinkListUser = ({onNavClick, signOut} : Props) => {
             >
                 logout
             </p>
-            <Link 
-                to='/about'
-                onClick={onNavClick}
-            >
-                About website
-            </Link>
         </nav>
     )
 }

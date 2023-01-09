@@ -7,33 +7,31 @@ import accordionIcon from '../assets/icons/accordion-icon.svg'
 import SearchForm from '../components/SearchForm'
 import Confirm from '../components/Confirm'
 
-interface userData {
-    uid: string,
-    username: string,
-    photoURL: string,
-    role: string
-}
+import { UserData } from '../interfaces/UserData'
+import { Categories } from '../interfaces/Categories'
+import { Quiz } from '../interfaces/Quiz'
+import { User } from '../interfaces/User'
 
 const ProfilePage = () => {
 
-    const { currentUser, getUser, getCategories, createCategorie, deleteCategorie, getQuizzesByUser, getAllUsers, getAllQuizzes, removeQuiz } = useAuthContext()
+    const { currentUser, getUserDocument, getAllCategoryDocuments,createCategoryDocument, deleteCategoryDocument, getAllQuizDocumentsByUser, getAllUserDocuments, getAllQuizDocuments, deleteQuizDocument, getAllPublicQuizDocumentsByUser } = useAuthContext()
     const { uid } = useParams()
 
-    const [userData, setUserData] = useState<userData>()
-    const [categories, setCategories] = useState<{id: string, name: string}[]>([])
+    const [userData, setUserData] = useState<UserData>()
+    const [categories, setCategories] = useState<Categories[]>([])
     const [showCreated, setShowCreated] = useState(false)
     const [showPlayed, setShowPlayed] = useState(false)
     const [showAddedQuizzes, setShowAddedQuizzes] = useState(false)
     const [showAddedUsers, setShowAddedUsers] = useState(false)
     const [showCategories, setShowCategories] = useState(false)
     const [newCategorieInput, setNewCategorieInput] = useState('')
-    const [quizzesCreatedByUser, setQuizzesCreatedByUser] = useState<{id: string, name: string, createdAt: string}[]>([])
-    const [allUsers, setAllUsers] = useState<{id: string, username: string, createdAt: string}[]>([])
-    const [allQuizzes, setAllQuizzes] = useState<{id: string, name: string, createdAt: string}[]>([])
+    const [quizzesCreatedByUser, setQuizzesCreatedByUser] = useState<Quiz[]>([])
+    const [allUsers, setAllUsers] = useState<User[]>([])
+    const [allQuizzes, setAllQuizzes] = useState<Quiz[]>([])
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
-    const [quizToDelete, setQuizToDelete] = useState<{id: string, name: string}>()
+    const [objectToDelete, setObjectToDelete] = useState<{id: string, name: string}>()
 
     const toggleShowCreated = () => {
         setShowCreated( prevState => !prevState )
@@ -63,7 +61,7 @@ const ProfilePage = () => {
         }
 
         try {
-            await createCategorie(newCategorieInput)
+            await createCategoryDocument(newCategorieInput)
             applyCategories()
             setNewCategorieInput('')
         } catch (error) {
@@ -74,7 +72,7 @@ const ProfilePage = () => {
     const handleDeleteCategorie = async (id: string) => {
         
         try {
-            await deleteCategorie(id)
+            await deleteCategoryDocument(id)
             applyCategories()
         } catch (error) {
             console.log(error)
@@ -83,25 +81,34 @@ const ProfilePage = () => {
     }
 
     const applyCategories = async () => {
-        setCategories([...await getCategories()])
+        setCategories([...await getAllCategoryDocuments()])
     }
 
     const applyQuizzesCreatedByUser = async () => {
-        setQuizzesCreatedByUser([...await getQuizzesByUser(userData?.uid)])
+        
+        if (!uid || !currentUser?.uid) {
+            return
+        }
+        
+        setQuizzesCreatedByUser(
+            uid === currentUser.uid 
+            ? [...await getAllQuizDocumentsByUser(userData?.uid)] 
+            : [...await getAllPublicQuizDocumentsByUser(userData?.uid)]
+        )
     }
 
     const applyAllUsers = async () => {
-        setAllUsers([...await getAllUsers()])
+        setAllUsers([...await getAllUserDocuments()])
     }
 
     const applyAllQuizzes = async () => {
-        setAllQuizzes([...await getAllQuizzes()])
+        setAllQuizzes([...await getAllQuizDocuments()])
     }
 
     const handleDeleteQuiz = async () => {
 
         try {
-            await removeQuiz(quizToDelete?.id)
+            await deleteQuizDocument(objectToDelete?.id)
             applyQuizzesCreatedByUser()
             if (userData?.role === "admin") {
                 applyAllQuizzes()
@@ -125,7 +132,7 @@ const ProfilePage = () => {
 
         const asyncFunction = async () => {
             try {
-                setUserData(await getUser(uid))
+                setUserData(await getUserDocument(uid))
             } catch (error) {
                 console.log(error)
             }
@@ -151,13 +158,17 @@ const ProfilePage = () => {
         
     }, [userData])
 
-    useEffect(()=>{
-        console.log('here are users: ', allUsers)
-    }, [allUsers])
+    // useEffect(()=>{
+    //     console.log('here are users: ', allUsers)
+    // }, [allUsers])
 
-    useEffect(()=>{
-        console.log('here are quizzes: ', allQuizzes)
-    }, [allQuizzes])
+    // useEffect(()=>{
+    //     console.log('here are quizzes: ', allQuizzes)
+    // }, [allQuizzes])
+
+    // useEffect(()=>{
+    //     console.log('uq: ', quizzesCreatedByUser)
+    // }, [quizzesCreatedByUser])
 
     return (
         <div className="page-container">
@@ -195,10 +206,10 @@ const ProfilePage = () => {
                                                 {
                                                     userData.uid === uid && (
                                                         <div className='action-links'>
-                                                            <Link to=''>Update</Link>
+                                                            <Link to={`/updatequiz/${quiz.id}`}>Update</Link>
                                                             <p 
                                                                 onClick={()=>{
-                                                                    setQuizToDelete({
+                                                                    setObjectToDelete({
                                                                         id: quiz.id,
                                                                         name: quiz.name
                                                                     })
@@ -285,7 +296,7 @@ const ProfilePage = () => {
                                                             <div className='action-links'>
                                                             <p 
                                                                 onClick={()=>{
-                                                                    setQuizToDelete({
+                                                                    setObjectToDelete({
                                                                         id: quiz.id,
                                                                         name: quiz.name
                                                                     })
@@ -317,7 +328,7 @@ const ProfilePage = () => {
                                                 {
                                                     !!allUsers.length && allUsers.map(user => (
                                                         <div key={user.id} className='created-quiz-item'>
-                                                            <Link to={`/profile/${user.id}`}>{user.createdAt} - {user.username}</Link>
+                                                            <Link to={`/profile/${user.id}`}>{user.createdAt} - {user.name}</Link>
                                                             <div className='action-links'>
                                                                 <Link to=''>Delete</Link>
                                                             </div>
@@ -385,7 +396,7 @@ const ProfilePage = () => {
                 <Confirm 
                     onConfirm={handleDeleteQuiz}
                     onCancel={closeConfirmModal}
-                    actionText={`You are about to delete ${quizToDelete?.name}`}
+                    actionText={`You are about to delete ${objectToDelete?.name}`}
                     requiresAuth={false}
                 />
             }

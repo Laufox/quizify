@@ -1,24 +1,12 @@
 import { useState, useEffect } from 'react'
 
 import classNames from 'classnames'
-
-interface NewQuestionInputObject {
-    question: string,
-    correctAnswer: string,
-    firstWrongAnswer: string,
-    secondWrongAnswer: string,
-    thirdWrongAnswer: string
-}
+import { NewQuestionInput } from '../interfaces/NewQuestionInput'
+import { NewQuestionItem } from '../interfaces/NewQuestionItem'
 
 interface Props {
-    question: {
-        questionText: string,
-        answers: {
-            isCorrect: boolean,
-            text: string
-        }[]
-    },
-    onEdit: (updatedQuestion: NewQuestionInputObject) => void,
+    question: NewQuestionItem,
+    onEdit: (updatedQuestion: NewQuestionInput) => void,
     onDelete: () => void
 }
 

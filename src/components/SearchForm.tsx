@@ -28,6 +28,7 @@ const SearchForm = ({onSearch} : Props) => {
             <input 
                 type="search" 
                 placeholder='Search...' 
+                className='nav-search'
                 ref={searchInput} 
                 role="search"
             />

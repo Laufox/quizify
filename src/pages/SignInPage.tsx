@@ -9,11 +9,7 @@ import { useForm } from "react-hook-form"
 import { useAuthContext } from '../contexts/AuthContext'
 
 import classNames from "classnames"
-
-type FormData = {
-    email: string,
-    password: string,
-}
+import { FormData } from "../interfaces/FormData"
 
 const SignInPage = () => {
 
@@ -21,7 +17,7 @@ const SignInPage = () => {
     const navigate = useNavigate()
     
     // Funtions and variabels to use from auth context
-    const { signin } = useAuthContext()
+    const { signinUserAccount } = useAuthContext()
 
     // Functions to use from react-hook-form
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
@@ -33,7 +29,7 @@ const SignInPage = () => {
     const loginUser = async (data: any) => {
 
         try {
-            await signin(data.email, data.password)
+            await signinUserAccount(data.email, data.password)
             navigate('/')
         } catch (error: any) {
             if (error?.code === "auth/user-not-found" || error?.code === "auth/wrong-password") {

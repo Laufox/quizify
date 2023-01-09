@@ -77,7 +77,7 @@ const Confirm = ({onConfirm, onCancel, actionText, requiresAuth}: Props) => {
                     )
                 }
                 <p className='confirm-permanent-message'>
-                    This action is permanant!
+                    This action is permanent!
                     <br />
                     Are you sure?
                 </p>

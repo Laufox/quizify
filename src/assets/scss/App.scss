@@ -9,6 +9,8 @@
 @import 'ProfilePage';
 @import 'Confirm';
 @import 'CreateQuizPage';
+@import 'QuizContainer';
+@import 'QuizListPage';
 
 /* Generic default style rules for all elements */
 *, *:before, *:after {
@@ -114,6 +116,11 @@ img {
     max-width: 100%;
 }
 
+.btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
 /* Defines generic rules for button classes */
 .btn {
     padding: 1rem 2rem;
@@ -121,11 +128,24 @@ img {
     align-self: center;
     font-size: 1.4rem;
     margin: 2rem 0;
+
+    cursor: pointer;
 }
 
 .btn-info {
     color: #f2f2ff;
     background-color: #00b;
+}
+
+.btn-info-open {
+    border: 0.1rem solid #000;
+    color: #00b;
+    padding: 0.9rem 1.9rem;
+    background-color: #f2f2ff;
+
+    &:hover {
+        background-color: #f2f2ff;
+    }
 }
 
 .btn-danger {
