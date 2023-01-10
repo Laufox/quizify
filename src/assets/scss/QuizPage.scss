@@ -200,10 +200,6 @@
                     padding: 1rem 2rem;
                 }
 
-                .question-text {
-                    
-                }
-
             }
 
             main {
@@ -284,6 +280,118 @@
 
             }
         }
+    }
+
+    .quiz-results-container {
+
+        .quiz-results-stats {
+
+            display: flex;
+            flex-flow: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+
+            span.score-percentage {
+                font-size: 2rem;
+                font-weight: 600;
+
+                @media screen and (min-width: 720px) {
+                    font-size: 2.4rem;
+                }
+
+                @media screen and (min-width: 992px) {
+                    font-size: 2.8rem;
+                }
+            }
+
+            margin-bottom: 2rem;
+
+        }
+
+        .link-collection {
+
+            a, .link {
+                font-size: 1.4rem;
+                text-decoration: underline;
+
+                @media screen and (min-width: 720px) {
+                    font-size: 1.8rem;
+                }
+
+                @media screen and (min-width: 992px) {
+                    font-size: 2.4rem;
+                }
+            }
+
+            margin-bottom: 3rem;
+
+        }
+
+        .quiz-results-summary-container {
+
+            header {
+
+                
+                display: flex;
+                align-items: center;
+                border-bottom: 0.1rem solid #000;
+                padding: 1rem 0;
+                margin-top: 1rem;
+                margin-bottom: 1.5rem;
+
+                @media screen and (min-width: 720px) {
+                    padding: 1rem 0;
+                }
+
+                @media screen and (min-width: 992px) {
+                    padding: 1rem 0;
+                }
+
+            }
+
+            main {
+
+                .question-item {
+
+                    header {
+
+                        padding: 0;
+                        padding-right: 1rem;
+                        gap: 01rem;
+                        border: 0.1rem solid #000;
+                        cursor: pointer;
+
+                        .question-item-number-container {
+                            padding: 1rem;
+
+                            .question-item-number-text {
+                                font-size: 1.6rem;
+                                font-weight: 500;
+                            }
+                        }
+
+                        .question-item-number-container-correct {
+                            background-color: #9d9;
+                        }
+
+                        .question-item-number-container-wrong {
+                            background-color: #d99;
+                        }
+
+                        .question-item-heading {
+                            flex-grow: 1;
+                        }
+
+                        .question-item-accordion-icon {
+                            // align-self: flex-end;
+                        }
+                    }
+                }
+
+            }
+
+        }
+
     }
     
 }

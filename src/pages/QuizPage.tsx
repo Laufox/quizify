@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import QuizIntro from '../components/QuizPlay/QuizIntro'
 import QuizPlaying from '../components/QuizPlay/QuizPlaying'
+import QuizResults from '../components/QuizPlay/QuizResults'
 
 import { useAuthContext } from '../contexts/AuthContext'
+import { AnsweredQuestion } from '../interfaces/AnsweredQuestion'
 import { Quiz } from '../interfaces/Quiz'
 
 const QuizPage = () => {
@@ -14,6 +16,7 @@ const QuizPage = () => {
 
     const [quiz, setQuiz] = useState<Quiz>()
     const [quizStatus, setQuizStatus] = useState<'intro'|'playing'|'over'>('intro')
+    const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([])
 
     const applyQuiz = async () => {
 
@@ -25,6 +28,14 @@ const QuizPage = () => {
 
         setQuizStatus('playing')
         console.log('to start')
+
+    }
+
+    const endQuiz = (answers: AnsweredQuestion[]) => {
+
+        setQuizStatus('over')
+        console.log('quiz done')
+        setAnsweredQuestions([...answers])
 
     }
 
@@ -56,7 +67,13 @@ const QuizPage = () => {
 
                     {
                         quizStatus === 'playing' && (
-                            <QuizPlaying questions={quiz.questions} onFinish={()=>{}} />
+                            <QuizPlaying questions={quiz.questions} onFinish={endQuiz} />
+                        )
+                    }
+
+                    {
+                        quizStatus === 'over' && (
+                            <QuizResults answeredQuestions={answeredQuestions} />
                         )
                     }
                     

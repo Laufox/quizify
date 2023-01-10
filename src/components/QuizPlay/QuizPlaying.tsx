@@ -7,7 +7,7 @@ import { AnsweredQuestion } from "../../interfaces/AnsweredQuestion";
 
 interface Props {
     questions: NewQuestionItem[],
-    onFinish: (answers: AnsweredQuestion[], score: number) => void
+    onFinish: (answers: AnsweredQuestion[]) => void
 }
 
 let timer: any = null;
@@ -62,7 +62,7 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
 
         if (questionNumber === questionsSet.length) {
 
-            onFinish(answeredQuestions, score)
+            onFinish(answeredQuestions)
 
             return
         }
