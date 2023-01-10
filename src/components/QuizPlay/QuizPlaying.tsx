@@ -120,8 +120,12 @@ const QuizPlaying = ({questions}: Props) => {
                     <>
                     <div className="quiz-metadata">
                         <Timer timeLeft={timeLeft} />
-                        <span className="question-number">Question {questionNumber} / {questionsSet.length}</span>
-                        <span className="score-counter">Score: {score}</span>
+                        <div className="number-score-container">
+                            <span className="question-number">Question {questionNumber} / {questionsSet.length}</span>
+                            <span>|</span>
+                            <span className="score-counter">Score: {score}</span>
+                        </div>
+                        
                     </div>
 
                     <div className="question-container">
@@ -154,7 +158,7 @@ const QuizPlaying = ({questions}: Props) => {
                         </main>
                         <footer>
                             {
-                                questionStatus === "finished" && (
+                                questionStatus === "finished" && questionsSet.length !== questionNumber && (
                                     <div className="next-round-timer-container">
                                         <span>Next</span>
                                         <span>{timeToNextQuestion}</span>

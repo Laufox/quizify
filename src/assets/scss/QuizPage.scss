@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .quiz-container {
 
     .quiz-info-container {
@@ -80,13 +82,65 @@
             .time-counter-container {
 
                 position: relative;
-                height: 4.8rem;
+                // height: 4.8rem;
 
                 .time-counter-svg {
 
-                    width: 4.8rem;
-                    height: 4.8rem;
+                    width: 5rem;
+                    height: 5rem;
                     transform: rotate(-90deg);
+
+                    circle {
+                        
+                        // @media screen and (min-width: 720px) {
+                        //     cx: 30;
+                        //     cy: 30;
+                        //     r: 25;
+                        // }
+        
+                        // @media screen and (min-width: 992px) {
+                        //     cx: 37.5;
+                        //     cy: 37.5;
+                        //     r: 30;
+                        // }
+                        
+                    }
+
+                    .time-counter-svg-circle-background {
+
+                        // @media screen and (min-width: 720px) {
+                        //     stroke-width: 7;
+                        // }
+        
+                        // @media screen and (min-width: 992px) {
+                        //     stroke-width: 9;
+                        // }
+
+                    }
+
+                    .time-counter-svg-circle-foreground {
+
+                        // @media screen and (min-width: 720px) {
+                        //     stroke-width: 8;
+                        //     stroke-dasharray: 2 * math.$pi * 25;
+                        // }
+        
+                        // @media screen and (min-width: 992px) {
+                        //     stroke-width: 10;
+                        //     stroke-dasharray: 2 * math.$pi * 30;
+                        // }
+
+                    }
+
+                    @media screen and (min-width: 720px) {
+                        // width: 6rem;
+                        // height: 6rem;
+                    }
+    
+                    @media screen and (min-width: 992px) {
+                        // width: 7.5rem;
+                        // height: 7.5rem;
+                    }
     
                 }
 
@@ -100,11 +154,28 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
+
+                    .time-counter-text {
+                        font-size: 1.4rem;
+                    }
                 }
 
             }
 
-            
+            .number-score-container {
+
+                display: flex;
+                gap: 1rem;
+
+                @media screen and (min-width: 720px) {
+                    gap: 1.5rem;
+                }
+
+                @media screen and (min-width: 992px) {
+                    gap: 2rem;
+                }
+
+            }
 
         }
 
@@ -112,16 +183,25 @@
 
             header {
 
-                margin-top: 0.5rem;
+                
+                display: flex;
+                align-items: center;
+                background-color: #d9d9d9;
+                border-bottom: 0.1rem solid #000;
+                padding: 1rem;
+                margin-top: 1rem;
                 margin-bottom: 1.5rem;
 
+                @media screen and (min-width: 720px) {
+                    padding: 1rem 2rem;
+                }
+
+                @media screen and (min-width: 992px) {
+                    padding: 1rem 2rem;
+                }
+
                 .question-text {
-                    display: flex;
-                    align-items: center;
-                    background-color: #d9d9d9;
-                    border-bottom: 0.1rem solid #000;
-                    height: 4rem;
-                    padding: 0 1rem;
+                    
                 }
 
             }
@@ -142,6 +222,14 @@
                         border: 0.1rem solid #000;
                         cursor: pointer;
                         flex-grow: 1;
+
+                        @media screen and (min-width: 720px) {
+                            padding: 1rem 2rem;
+                        }
+        
+                        @media screen and (min-width: 992px) {
+                            padding: 1rem 2rem;
+                        }
                     }
     
                     .question-answer-correct {
@@ -154,6 +242,14 @@
                         opacity: 0.5;
                         cursor: default;  
                     }
+                }
+
+                @media screen and (min-width: 720px) {
+                    margin-bottom: 3rem;
+                }
+
+                @media screen and (min-width: 992px) {
+                    margin-bottom: 4rem;
                 }
 
             }

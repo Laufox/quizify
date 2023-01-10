@@ -8,23 +8,25 @@ const Timer = ({timeLeft}: Props) => {
         <div className="time-counter-container">
             <svg className="time-counter-svg">
                 <circle 
-                    cx={24}
-                    cy={24}
+                    className="time-counter-svg-circle-background"
+                    cx={25}
+                    cy={25}
                     fill="transparent"
-                    r={20}
+                    r={21}
                     stroke={timeLeft < 10 ? "#a33" : "#3a3"}
-                    strokeWidth={5}
+                    strokeWidth={7}
                 />
                 <circle 
+                    id="circle-fg"
                     className="time-counter-svg-circle-foreground"
-                    cx={24}
-                    cy={24}
+                    cx={25}
+                    cy={25}
                     fill="transparent"
-                    r={20}
+                    r={21}
                     stroke={"#eee"}
-                    strokeWidth={6}
-                    strokeDasharray={2 * Math.PI * 20}
-                    strokeDashoffset={(2 * Math.PI * 20) * ((100 - ((30 - timeLeft) * (100/30))) / 100)}
+                    strokeWidth={8}
+                    strokeDasharray={2 * Math.PI * 21}
+                    strokeDashoffset={(2 * Math.PI * 21) * ((100 - ((30 - timeLeft) * (100/30))) / 100)}
                     strokeLinecap={'butt'}
                 />
             </svg>
