@@ -131,6 +131,7 @@
                 display: flex;
                 flex-flow: column;
                 gap: 1rem;
+                margin-bottom: 2rem;
 
                 .question-answer-container {
                     display: flex;
@@ -150,9 +151,37 @@
     
                     .question-answer-wrong {
                         background-color: #d99;
-                        text-decoration: line-through;
                         opacity: 0.5;
-                        cursor: default;
+                        cursor: default;  
+                    }
+                }
+
+            }
+
+            footer {
+                display: flex;
+                justify-content: center;
+
+                .next-round-timer-container {
+                    display: flex;
+                    flex-flow: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 6rem;
+                    height: 6rem;
+                    border-radius: 50%;
+                    border: 0.1rem solid #000;
+                    padding: 0.5rem;
+                    font-weight: 600;
+
+                    @media screen and (min-width: 720px) {
+                        width: 7rem;
+                        height: 7rem;
+                    }
+
+                    @media screen and (min-width: 992px) {
+                        width: 8.5rem;
+                        height: 8.5rem;
                     }
                 }
 

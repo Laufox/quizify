@@ -10,6 +10,7 @@ interface Props {
 }
 
 let timer: any = null;
+let nextQuestionTimer: any = null;
 
 const QuizPlaying = ({questions}: Props) => {
 
@@ -20,6 +21,7 @@ const QuizPlaying = ({questions}: Props) => {
     const [questionStatus, setQuestionStatus] = useState<'live'|'finished'>('live')
     const [userGuess, setUserGuess] = useState('')
     const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([])
+    const [timeToNextQuestion, setTimeToNextQuestion] = useState(5)
 
     const answerGiven = (guess :string = '') => {
 
@@ -47,7 +49,35 @@ const QuizPlaying = ({questions}: Props) => {
 
         setAnsweredQuestions([...answeredQuestions, newAnswer])
 
+        if (questionNumber === questionsSet.length) {
+            
+            // Set game over
+            return
+
+        }
+        nextQuestionTimer = setInterval(() => {
+            setTimeToNextQuestion( time => time - 1)
+        }, 1000)
+
     }
+
+    const goToNextQuestion = () => {
+
+        clearInterval(nextQuestionTimer)
+        setUserGuess('')
+        setQuestionNumber(question => question + 1)
+        setQuestionStatus('live')
+        setTimeToNextQuestion(5)
+
+    }
+
+    useEffect(()=>{
+
+        if (timeToNextQuestion === 0) {
+            goToNextQuestion()
+        }
+
+    }, [timeToNextQuestion])
 
     useEffect(()=>{
 
@@ -122,6 +152,16 @@ const QuizPlaying = ({questions}: Props) => {
                                 ))
                             }
                         </main>
+                        <footer>
+                            {
+                                questionStatus === "finished" && (
+                                    <div className="next-round-timer-container">
+                                        <span>Next</span>
+                                        <span>{timeToNextQuestion}</span>
+                                    </div>
+                                )
+                            }
+                        </footer>
                     </div>
                     </>
                 )
