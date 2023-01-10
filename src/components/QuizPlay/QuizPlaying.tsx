@@ -55,6 +55,7 @@ const QuizPlaying = ({questions}: Props) => {
             return
 
         }
+
         nextQuestionTimer = setInterval(() => {
             setTimeToNextQuestion( time => time - 1)
         }, 1000)
@@ -68,6 +69,21 @@ const QuizPlaying = ({questions}: Props) => {
         setQuestionNumber(question => question + 1)
         setQuestionStatus('live')
         setTimeToNextQuestion(5)
+
+    }
+
+    const arrayShuffle = (array: any) => {
+
+        const tempArray = [...array]
+
+        for (let i = tempArray.length - 1; i > 0; i--) {
+            const r = Math.floor(Math.random() * (i + 1))
+            const tempElement = tempArray[i]
+            tempArray[i] = tempArray[r]
+            tempArray[r] = tempElement
+        }
+
+        return tempArray
 
     }
 
@@ -87,8 +103,13 @@ const QuizPlaying = ({questions}: Props) => {
 
     useEffect(()=>{
 
-        // TODO: Shuffle order of array
-        setQuestionsSet([...questions])
+        const shuffledArray :NewQuestionItem[] = arrayShuffle(questions)
+
+        shuffledArray.forEach((elm, i)=>{
+            elm.answers = arrayShuffle(elm.answers)
+        })
+
+        setQuestionsSet([...shuffledArray])
 
     }, [questions])
 
