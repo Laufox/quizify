@@ -6,13 +6,14 @@ import userGuessIcon from '../../assets/icons/user-guess-icon.svg'
 import { AnsweredQuestion } from "../../interfaces/AnsweredQuestion";
 
 interface Props {
-    questions: NewQuestionItem[]
+    questions: NewQuestionItem[],
+    onFinish: (answers: AnsweredQuestion[], score: number) => void
 }
 
 let timer: any = null;
 let nextQuestionTimer: any = null;
 
-const QuizPlaying = ({questions}: Props) => {
+const QuizPlaying = ({questions, onFinish}: Props) => {
 
     const [questionsSet, setQuestionsSet] = useState<NewQuestionItem[]>([])
     const [questionNumber, setQuestionNumber] = useState(1)
@@ -49,13 +50,6 @@ const QuizPlaying = ({questions}: Props) => {
 
         setAnsweredQuestions([...answeredQuestions, newAnswer])
 
-        if (questionNumber === questionsSet.length) {
-            
-            // Set game over
-            return
-
-        }
-
         nextQuestionTimer = setInterval(() => {
             setTimeToNextQuestion( time => time - 1)
         }, 1000)
@@ -65,6 +59,14 @@ const QuizPlaying = ({questions}: Props) => {
     const goToNextQuestion = () => {
 
         clearInterval(nextQuestionTimer)
+
+        if (questionNumber === questionsSet.length) {
+
+            onFinish(answeredQuestions, score)
+
+            return
+        }
+
         setUserGuess('')
         setQuestionNumber(question => question + 1)
         setQuestionStatus('live')
@@ -179,9 +181,9 @@ const QuizPlaying = ({questions}: Props) => {
                         </main>
                         <footer>
                             {
-                                questionStatus === "finished" && questionsSet.length !== questionNumber && (
-                                    <div className="next-round-timer-container">
-                                        <span>Next</span>
+                                questionStatus === "finished" && (
+                                    <div className="next-round-timer-container" onClick={goToNextQuestion}>
+                                        <span>{questionsSet.length !== questionNumber ? "Next" : "Finish"}</span>
                                         <span>{timeToNextQuestion}</span>
                                     </div>
                                 )

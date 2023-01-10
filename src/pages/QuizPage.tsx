@@ -56,7 +56,7 @@ const QuizPage = () => {
 
                     {
                         quizStatus === 'playing' && (
-                            <QuizPlaying questions={quiz.questions} />
+                            <QuizPlaying questions={quiz.questions} onFinish={()=>{}} />
                         )
                     }
                     
