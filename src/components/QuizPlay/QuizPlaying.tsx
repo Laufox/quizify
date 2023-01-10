@@ -1,7 +1,9 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { NewQuestionItem } from "../../interfaces/NewQuestionItem"
 import classNames from "classnames"
 import Timer from "./Timer";
+import userGuessIcon from '../../assets/icons/user-guess-icon.svg'
+import { AnsweredQuestion } from "../../interfaces/AnsweredQuestion";
 
 interface Props {
     questions: NewQuestionItem[]
@@ -16,10 +18,10 @@ const QuizPlaying = ({questions}: Props) => {
     const [score, setScore] = useState(0)
     const [timeLeft, setTimeLeft] = useState(30)
     const [questionStatus, setQuestionStatus] = useState<'live'|'finished'>('live')
+    const [userGuess, setUserGuess] = useState('')
+    const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([])
 
-    const timerRef = useRef<HTMLCanvasElement>(null)
-
-    const answerGiven = () => {
+    const answerGiven = (guess :string = '') => {
 
         if (questionStatus !== "live") {
             return
@@ -28,16 +30,30 @@ const QuizPlaying = ({questions}: Props) => {
         clearInterval(timer)
         console.log('timer should have stopped')
         setQuestionStatus('finished')
+        setUserGuess(guess)
 
-    }
+        const wasGuessCorrect = questionsSet[questionNumber - 1].answers.find((ans) => {
+            return ans.isCorrect && (ans.text === guess)
+        })
 
-    const drawTimer = () => {
-
-        if (!timerRef.current) {
-            return
+        if (wasGuessCorrect) {
+            setScore( score => score + 1 )
         }
 
+        const newAnswer = {
+            guess,
+            ...questionsSet[questionNumber - 1]
+        }
+
+        setAnsweredQuestions([...answeredQuestions, newAnswer])
+
     }
+
+    useEffect(()=>{
+
+        console.log(answeredQuestions)
+
+    }, [answeredQuestions])
 
     useEffect(()=>{
 
@@ -61,7 +77,6 @@ const QuizPlaying = ({questions}: Props) => {
 
     useEffect(() => {
 
-        drawTimer()
         if (timeLeft <= 0) {
             answerGiven()
         }
@@ -86,15 +101,23 @@ const QuizPlaying = ({questions}: Props) => {
                         <main>
                             {
                                 !!questionsSet[questionNumber - 1].answers.length && questionsSet[questionNumber - 1].answers.map((ans, i)=>(
-                                    <div 
-                                        key={i} 
-                                        onClick={()=>{answerGiven()}} 
-                                        className={classNames({
-                                            'question-answer': true,
-                                            'question-answer-correct': questionStatus === 'finished'
-                                        })}
-                                    >
-                                        <span>{ans.text}</span>
+                                    <div className="question-answer-container" key={i}>
+                                        {
+                                            ans.text === userGuess && (
+                                                <img src={userGuessIcon} />
+                                            )
+                                        }
+                                        
+                                        <div 
+                                            onClick={()=>{answerGiven(ans.text)}} 
+                                            className={classNames({
+                                                'question-answer': true,
+                                                'question-answer-correct': questionStatus === 'finished' && ans.isCorrect,
+                                                'question-answer-wrong': questionStatus === 'finished' && !ans.isCorrect
+                                            })}
+                                        >
+                                            <span>{ans.text}</span>
+                                        </div>
                                     </div>
                                 ))
                             }
