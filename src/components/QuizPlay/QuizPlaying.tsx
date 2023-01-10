@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import { NewQuestionItem } from "../../interfaces/NewQuestionItem"
 import classNames from "classnames"
+import Timer from "./Timer";
 
 interface Props {
     questions: NewQuestionItem[]
@@ -73,11 +74,7 @@ const QuizPlaying = ({questions}: Props) => {
                 !!questionsSet.length && (
                     <>
                     <div className="quiz-metadata">
-                        {/* <p className="time-counter">{timeLeft}</p> */}
-                        <svg>
-                            <circle clipPath="" />
-                            <text>30</text>
-                        </svg>
+                        <Timer timeLeft={timeLeft} />
                         <span className="question-number">Question {questionNumber} / {questionsSet.length}</span>
                         <span className="score-counter">Score: {score}</span>
                     </div>
