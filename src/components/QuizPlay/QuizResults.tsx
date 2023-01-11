@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnsweredQuestion } from "../../interfaces/AnsweredQuestion"
 import accordionIcon from '../../assets/icons/accordion-icon.svg'
@@ -6,36 +6,14 @@ import userGuessIcon from '../../assets/icons/user-guess-icon.svg'
 import classNames from 'classnames'
 
 interface Props {
-    answeredQuestions: AnsweredQuestion[]
+    answeredQuestions: AnsweredQuestion[],
+    score: number,
+    scorePercent: number
 }
 
-const QuizResults = ({answeredQuestions}: Props) => {
+const QuizResults = ({answeredQuestions, score, scorePercent}: Props) => {
 
-    const [score, setScore] = useState<number>()
-    const [scorePercent, setScorePercent] = useState<number>()
     const [questionToShow, setQuestionToShow] = useState(-1)
-
-    const calculateScore = () => {
-
-        const userScore = answeredQuestions.filter((quest, i) => {
-
-            return quest.answers.find((ans) => {
-                return ans.isCorrect && (ans.text === quest.guess)
-            })
-
-        }).length
-
-        setScore(userScore)
-        setScorePercent(Math.round((userScore / answeredQuestions.length) * 100))
-
-    }
-
-    useEffect(() => {
-
-        console.log(answeredQuestions)
-        calculateScore()
-
-    }, [answeredQuestions])
 
     return (
         <div className="quiz-results-container">

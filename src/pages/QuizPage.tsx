@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import QuizIntro from '../components/QuizPlay/QuizIntro'
 import QuizPlaying from '../components/QuizPlay/QuizPlaying'
 import QuizResults from '../components/QuizPlay/QuizResults'
@@ -12,11 +12,13 @@ const QuizPage = () => {
 
     const { id } = useParams()
 
-    const { getQuizDocument } = useAuthContext()
+    const { getQuizDocument, currentUser, addQuizResultToUser } = useAuthContext()
 
     const [quiz, setQuiz] = useState<Quiz>()
     const [quizStatus, setQuizStatus] = useState<'intro'|'playing'|'over'>('intro')
     const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([])
+    const [score, setScore] = useState<number>(0)
+    const [scorePercent, setScorePercent] = useState<number>(0)
 
     const applyQuiz = async () => {
 
@@ -27,15 +29,38 @@ const QuizPage = () => {
     const beginQuiz = () => {
 
         setQuizStatus('playing')
-        console.log('to start')
 
     }
 
     const endQuiz = (answers: AnsweredQuestion[]) => {
 
-        setQuizStatus('over')
-        console.log('quiz done')
         setAnsweredQuestions([...answers])
+
+        const userScore = answers.filter((quest) => {
+
+            return quest.answers.find((ans) => {
+                return ans.isCorrect && (ans.text === quest.guess)
+            })
+
+        }).length
+
+        const scorePercentage = Math.round((userScore / answers.length) * 100)
+
+        setScore(userScore)
+        setScorePercent(Math.round((userScore / answers.length) * 100))
+        setQuizStatus('over')
+
+        if (!currentUser) {
+            return
+        }
+
+        addQuizResultToUser({
+            id,
+            name: quiz?.name,
+            numberOfQuestions: answers.length,
+            score: userScore,
+            scorePercentage: scorePercentage
+        })
 
     }
 
@@ -46,12 +71,6 @@ const QuizPage = () => {
         }
 
     }, [id])
-
-    useEffect(()=>{
-
-        console.log(quiz)
-
-    }, [quiz])
 
     return (
         <div className='page-container quiz-container'>
@@ -73,7 +92,7 @@ const QuizPage = () => {
 
                     {
                         quizStatus === 'over' && (
-                            <QuizResults answeredQuestions={answeredQuestions} />
+                            <QuizResults answeredQuestions={answeredQuestions} score={score} scorePercent={scorePercent} />
                         )
                     }
                     

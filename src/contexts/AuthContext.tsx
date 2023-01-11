@@ -40,7 +40,8 @@ import {
     query, 
     QuerySnapshot,
     DocumentData,
-    Query
+    Query,
+    arrayUnion
 } from 'firebase/firestore'
 
 import { 
@@ -53,6 +54,7 @@ import {
 import { User } from "../interfaces/User"
 import { Categories } from "../interfaces/Categories"
 import { Quiz } from "../interfaces/Quiz"
+import { QuizResults } from "../interfaces/QuizResults"
 
 // Initiate context
 const AuthContext = createContext<any>(undefined)
@@ -406,6 +408,25 @@ const AuthContextProvider = ({ children }: any) => {
         return arrayOfUsers
     }
 
+    const addQuizResultToUser = async (quizResults: QuizResults) => {
+
+        if (!currentUser.uid) {
+            return
+        }
+
+        await setDoc(doc(db, "users", currentUser.uid), {
+            
+            playedQuizzes: arrayUnion({
+                ...quizResults,
+                playedAt: new Date().toISOString().slice(0, 10)
+            })
+
+        }, {
+            merge: true
+        })
+
+    }
+
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
@@ -429,6 +450,7 @@ const AuthContextProvider = ({ children }: any) => {
         deleteCategoryDocument,
         getUserDocument,
         getAllUserDocuments,
+        addQuizResultToUser
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable

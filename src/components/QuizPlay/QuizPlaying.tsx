@@ -31,7 +31,6 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
         }
 
         clearInterval(timer)
-        console.log('timer should have stopped')
         setQuestionStatus('finished')
         setUserGuess(guess)
 
@@ -99,12 +98,6 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
 
     useEffect(()=>{
 
-        console.log(answeredQuestions)
-
-    }, [answeredQuestions])
-
-    useEffect(()=>{
-
         const shuffledArray :NewQuestionItem[] = arrayShuffle(questions)
 
         shuffledArray.forEach((elm, i)=>{
@@ -116,11 +109,10 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
     }, [questions])
 
     useEffect(() => {
-        console.log(questionNumber)
+        
         setTimeLeft(30)
 
         timer = setInterval(()=>{
-            console.log('lorem ipsum')
             setTimeLeft( timeLeft => timeLeft - 1 )
         }, 1000)
 
@@ -193,9 +185,7 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
                     </>
                 )
             }
-
             
-
         </div>
     )
 }
