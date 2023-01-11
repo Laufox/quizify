@@ -41,9 +41,9 @@ const SearchPage = () => {
         console.log('quizzes:', allQuizzes)
         console.log('users: ', allUsers)
 
-        const quizzes = allQuizzes.filter((quiz, i) => {
+        const quizzes = allQuizzes.filter((quiz) => {
 
-            if (quiz.name.includes(q)) {
+            if (quiz.name.includes(q) || quiz.tags.includes(q)) {
                 return true
             }
 
@@ -51,7 +51,7 @@ const SearchPage = () => {
 
         })
 
-        const users = allUsers.filter((user, i) => {
+        const users = allUsers.filter((user) => {
 
             if (user.name.includes(q)) {
                 return true
@@ -60,7 +60,6 @@ const SearchPage = () => {
             return false
 
         })
-
         
         setSearchResults({
             quizzes,
