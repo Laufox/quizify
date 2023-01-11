@@ -11,10 +11,11 @@ import { useRef } from 'react'
 import searchIcon from '../assets/icons/search-icon.svg'
 
 interface Props {
-    onSearch: (e: any, ref: React.RefObject<HTMLInputElement>) => void
+    onSearch: (e: any, ref: React.RefObject<HTMLInputElement>) => void,
+    defaultValue ?: string
 }
 
-const SearchForm = ({onSearch} : Props) => {
+const SearchForm = ({onSearch, defaultValue = ''} : Props) => {
 
     // Variable to hold text entered in search input field
     const searchInput = useRef<HTMLInputElement>(null)
@@ -31,6 +32,7 @@ const SearchForm = ({onSearch} : Props) => {
                 className='nav-search'
                 ref={searchInput} 
                 role="search"
+                defaultValue={defaultValue}
             />
             <img 
                 src={searchIcon} 

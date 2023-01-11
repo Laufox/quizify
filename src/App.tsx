@@ -56,7 +56,7 @@ function App() {
                     <Route path='/profile/:uid' element={<ProfilePage />} />
                     <Route path='/updateprofile/:uid' element={<UpdateProfilePage />} />
 
-                    <Route path='/search/:query' element={<SearchPage />} />
+                    <Route path='/search' element={<SearchPage />} />
                 </Routes>
             </div>
         </div>

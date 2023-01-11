@@ -66,7 +66,7 @@ const Navigaion = () => {
         // Close dropdown menu
         setIsMenuOpen(false)
         // Go to search page
-        navigate(`/search/${searchTerm}`)
+        navigate(`/search?query=${searchTerm}`)
         
     }
 
