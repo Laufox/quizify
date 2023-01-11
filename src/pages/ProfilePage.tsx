@@ -92,17 +92,17 @@ const ProfilePage = () => {
         
         setQuizzesCreatedByUser(
             uid === currentUser.uid 
-            ? [...await getAllQuizDocumentsByUser(userData?.uid)] 
-            : [...await getAllPublicQuizDocumentsByUser(userData?.uid)]
+            ? [...await getAllQuizDocumentsByUser(userData?.uid)].reverse()
+            : [...await getAllPublicQuizDocumentsByUser(userData?.uid)].reverse()
         )
     }
 
     const applyAllUsers = async () => {
-        setAllUsers([...await getAllUserDocuments()])
+        setAllUsers([...await getAllUserDocuments()].reverse())
     }
 
     const applyAllQuizzes = async () => {
-        setAllQuizzes([...await getAllQuizDocuments()])
+        setAllQuizzes([...await getAllQuizDocuments()].reverse())
     }
 
     const handleDeleteQuiz = async () => {
@@ -132,7 +132,9 @@ const ProfilePage = () => {
 
         const asyncFunction = async () => {
             try {
-                setUserData(await getUserDocument(uid))
+                const tempUserData: UserData = await getUserDocument(uid)
+                tempUserData.playedQuizzes = tempUserData.playedQuizzes.reverse()
+                setUserData(tempUserData)
             } catch (error) {
                 console.log(error)
             }
@@ -157,18 +159,6 @@ const ProfilePage = () => {
         }
         
     }, [userData])
-
-    // useEffect(()=>{
-    //     console.log('here are users: ', allUsers)
-    // }, [allUsers])
-
-    // useEffect(()=>{
-    //     console.log('here are quizzes: ', allQuizzes)
-    // }, [allQuizzes])
-
-    // useEffect(()=>{
-    //     console.log('uq: ', quizzesCreatedByUser)
-    // }, [quizzesCreatedByUser])
 
     return (
         <div className="page-container">

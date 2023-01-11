@@ -25,7 +25,7 @@ const QuizResults = ({answeredQuestions, score, scorePercent, onReplay}: Props) 
 
             <div className='link-collection'>
                 <p className='link' onClick={onReplay}>Play this quiz again</p>
-                <Link to='/quizlist'>Back to quiz link</Link>
+                <Link to='/quizlist'>Back to quiz list</Link>
             </div>
 
             <div className='quiz-results-summary-container'>

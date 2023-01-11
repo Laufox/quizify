@@ -41,7 +41,8 @@ import {
     QuerySnapshot,
     DocumentData,
     Query,
-    arrayUnion
+    arrayUnion,
+    orderBy
 } from 'firebase/firestore'
 
 import { 
@@ -343,7 +344,7 @@ const AuthContextProvider = ({ children }: any) => {
 
         const arrayOfCategories: Categories[] = []
 
-        const allCategoriesSnap = await getDocs(collection(db, "categories"))
+        const allCategoriesSnap = await getDocs(query(collection(db, "categories"), orderBy("name")))
 
         allCategoriesSnap.forEach((cat) => {
             arrayOfCategories.push({
