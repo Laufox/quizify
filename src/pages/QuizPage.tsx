@@ -64,6 +64,12 @@ const QuizPage = () => {
 
     }
 
+    const handleReplay = () => {
+
+        setQuizStatus('intro')
+
+    }
+
     useEffect(()=>{
 
         if(id) {
@@ -92,7 +98,7 @@ const QuizPage = () => {
 
                     {
                         quizStatus === 'over' && (
-                            <QuizResults answeredQuestions={answeredQuestions} score={score} scorePercent={scorePercent} />
+                            <QuizResults answeredQuestions={answeredQuestions} score={score} scorePercent={scorePercent} onReplay={handleReplay} />
                         )
                     }
                     

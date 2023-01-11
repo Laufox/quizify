@@ -8,10 +8,11 @@ import classNames from 'classnames'
 interface Props {
     answeredQuestions: AnsweredQuestion[],
     score: number,
-    scorePercent: number
+    scorePercent: number,
+    onReplay: () => void
 }
 
-const QuizResults = ({answeredQuestions, score, scorePercent}: Props) => {
+const QuizResults = ({answeredQuestions, score, scorePercent, onReplay}: Props) => {
 
     const [questionToShow, setQuestionToShow] = useState(-1)
 
@@ -23,7 +24,7 @@ const QuizResults = ({answeredQuestions, score, scorePercent}: Props) => {
             </div>
 
             <div className='link-collection'>
-                <p className='link'>Play this quiz again</p>
+                <p className='link' onClick={onReplay}>Play this quiz again</p>
                 <Link to='/quizlist'>Back to quiz link</Link>
             </div>
 
