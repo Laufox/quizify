@@ -112,7 +112,8 @@ const AuthContextProvider = ({ children }: any) => {
             username,
             role: 'user',
             createdAt: new Date(),
-            photoURL: photoURL ?? ""
+            photoURL: photoURL ?? "",
+            playedQuizzes: []
         })
 
     }

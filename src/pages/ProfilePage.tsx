@@ -226,6 +226,14 @@ const ProfilePage = () => {
                                             </div>
                                         ))
                                     }
+
+                                    {
+                                        !quizzesCreatedByUser.length && (
+                                            <div>
+                                                <p>No quizzes created yet</p>
+                                            </div>
+                                        )
+                                    }
                                     
                                     {/* Only show if this is signed in user */}
                                     {
@@ -247,22 +255,24 @@ const ProfilePage = () => {
                         {
                             showPlayed && (
                                 <main className='played-quizzes-collection'>
-                                    <div className='played-quiz-item'>
-                                        <Link to=''>Date played - Quiz title</Link>
-                                        <span>score%</span>
-                                    </div>
-                                    <div className='played-quiz-item'>
-                                        <Link to=''>Date played - Quiz title</Link>
-                                        <span>score%</span>
-                                    </div>
-                                    <div className='played-quiz-item'>
-                                        <Link to=''>Date played - Quiz title</Link>
-                                        <span>score%</span>
-                                    </div>
-                                    <div className='played-quiz-item'>
-                                        <Link to=''>Date played - Quiz title</Link>
-                                        <span>score%</span>
-                                    </div>
+                                    {
+                                        !!userData.playedQuizzes.length && userData.playedQuizzes.map((quiz, i) => (
+                                            <div key={i} className='played-quiz-item'>
+                                                <Link to={`/quiz/${quiz.id}`}>{quiz.playedAt} - {quiz.name}</Link>
+                                                <span>{quiz.scorePercentage} %</span>
+                                            </div>
+                                        ))
+                                        
+                                    }
+
+                                    {
+                                        !userData.playedQuizzes.length && (
+                                            <div>
+                                                <p>No quizzes played yet</p>
+                                            </div>
+                                        )
+                                    }
+                                    
                                 </main>
                             )
                         }
