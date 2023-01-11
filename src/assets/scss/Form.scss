@@ -258,7 +258,7 @@ form, .new-question-form {
         font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
         font-size: 1.6rem;
         margin-bottom: 0.5rem;
-        max-width: 24rem;
+        max-width: 80rem;
 
         &:focus {
             background-color: #f8ffff;
@@ -276,11 +276,15 @@ form, .new-question-form {
 .search-form {
     display: flex;
     flex-flow: row;
+    justify-content: flex-start;
     gap: 2rem;
     margin-bottom: 4rem;
 
     input {
         flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 200px;
+        min-width: 200px;
     }
 
     .search-button {

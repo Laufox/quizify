@@ -42,7 +42,9 @@ import {
     DocumentData,
     Query,
     arrayUnion,
-    orderBy
+    orderBy,
+    startAt,
+    endAt
 } from 'firebase/firestore'
 
 import { 
@@ -403,6 +405,7 @@ const AuthContextProvider = ({ children }: any) => {
             arrayOfUsers.push({
                 id: user.id,
                 name: user.data().username,
+                photoURL: user.data().photoURL,
                 createdAt: new Date(user.data().createdAt.toMillis()).toISOString().slice(0, 10)
             })
         })
@@ -452,7 +455,7 @@ const AuthContextProvider = ({ children }: any) => {
         deleteCategoryDocument,
         getUserDocument,
         getAllUserDocuments,
-        addQuizResultToUser
+        addQuizResultToUser,
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable
