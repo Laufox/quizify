@@ -125,54 +125,58 @@ const SearchPage = () => {
             {
                 searchQuery && (
                     <div className='search-results-container'>
-                        <h2>Showing results for {searchQuery}</h2>
+                        <h2>Showing results for "{searchQuery}"</h2>
                     </div>
                 )
             }
 
             {
                 !!searchResults?.quizzes.length && (
-                    <div className='search-quiz-results-container'>
-                        <h3>Quizzes</h3>
-                        <>
+                    <div className='search-results-container'>
+                        <header>
+                            <h3>Quizzes</h3>
+                        </header>
+                        <main>
                         {
                             searchResults.quizzes.map((quiz, i) => (
-                                <div key={i} className='search-quiz-results-item'>
+                                <div key={i} className='search-results-item-quiz'>
                                     <Link to={`/quiz/${quiz.id}`}>{quiz.name}</Link>
-                                    <div>
+                                    <div className='search-results-item-quiz-extras'>
                                         <span>{quiz.category}</span>
                                         <span>{quiz.createdAt}</span>
                                     </div>
                                 </div>
                             ))
                         }
-                        </>
+                        </main>
                     </div>
                 )
             }
 
             {
                 !!searchResults?.users.length && (
-                    <div className='search-user-results-container'>
-                        <h3>Users</h3>
-                        <>
+                    <div className='search-results-container'>
+                        <header>
+                            <h3>Users</h3>
+                        </header>
+                        <main>
                         {
                             searchResults.users.map((user, i) => (
-                                <div key={i} className='search-user-results-item'>
+                                <div key={i} className='search-results-item-user'>
                                     <Link 
                                         to={`/profile/${user.id}`} 
-                                        className='nav-avatar-container'
+                                        className='avatar-container'
                                     >
                                         <img 
                                             src={user.photoURL ? user.photoURL : defaultAvatar} 
-                                            alt='nav-avatar-image' 
+                                            alt='avatar-image' 
                                         />
                                         <span>{user.name}</span>
                                     </Link>
                                 </div>
                             ))
                         }
-                        </>
+                        </main>
                     </div>
                 )
             }
