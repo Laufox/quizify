@@ -15,6 +15,7 @@ const QuizListPage = () => {
     const [quizListFiltered, setQuizListFiltered] = useState<Quiz[]>([])
     const [categories, setCategories] = useState<Categories[]>([])
     const [selectedCategory, setSelectedCategory] = useState('all')
+    const [searchTerm, setSearchTerm] = useState('')
 
     const applyQuizzes = async () => {
 
@@ -32,14 +33,42 @@ const QuizListPage = () => {
 
         setSelectedCategory(category)
 
+        let tempFilteredList = !searchTerm ? [...quizList] : [...quizList.filter((quiz) => {
+
+            if (quiz.name.includes(searchTerm) || quiz.tags.includes(searchTerm)) {
+                return true
+            }
+
+            return false
+
+        })]
+
         if (category.toLowerCase() === 'all') {
-            setQuizListFiltered([...quizList])
+            setQuizListFiltered([...tempFilteredList])
             return
         }
 
-        setQuizListFiltered( [...quizList.filter((quiz) => quiz.category === category)] )
+        setQuizListFiltered( [...tempFilteredList.filter((quiz) => quiz.category === category)] )
 
     }
+
+    const handleSearch = (e: any, ref: React.RefObject<HTMLInputElement>) => {
+
+        // Prevent default form behaviour
+        e.preventDefault()
+
+        // Remove trailing whitespace from search entry and save result to variable
+        const tempSearchTerm = ref.current?.value ? ref.current.value.trim() : ''
+
+        setSearchTerm(tempSearchTerm)
+
+    }
+
+    useEffect(() => {
+        
+        filterQuizzesByCategory(selectedCategory)
+
+    }, [searchTerm])
 
     useEffect(()=>{
 
@@ -59,7 +88,7 @@ const QuizListPage = () => {
 
             <h1>Public quiz list</h1>
 
-            <SearchForm onSearch={()=>{}} />
+            <SearchForm onSearch={handleSearch} />
 
             <h2>Filter by category</h2>
             <div className='filterbox-container'>

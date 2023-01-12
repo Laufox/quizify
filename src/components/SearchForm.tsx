@@ -33,6 +33,9 @@ const SearchForm = ({onSearch, defaultValue = ''} : Props) => {
                 ref={searchInput} 
                 role="search"
                 defaultValue={defaultValue}
+                onChange={(e)=>{if(!e.target.value) {
+                    onSearch(e, searchInput)
+                }}}
             />
             <img 
                 src={searchIcon} 
