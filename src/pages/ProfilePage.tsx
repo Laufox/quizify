@@ -12,9 +12,11 @@ import { Categories } from '../interfaces/Categories'
 import { Quiz } from '../interfaces/Quiz'
 import { User } from '../interfaces/User'
 
+import { adminDeleteUser } from '../api-services/userAPI'
+
 const ProfilePage = () => {
 
-    const { currentUser, getUserDocument, getAllCategoryDocuments,createCategoryDocument, deleteCategoryDocument, getAllQuizDocumentsByUser, getAllUserDocuments, getAllQuizDocuments, deleteQuizDocument, getAllPublicQuizDocumentsByUser } = useAuthContext()
+    const { currentUser, getUserDocument, getAllCategoryDocuments,createCategoryDocument, deleteCategoryDocument, getAllQuizDocumentsByUser, getAllUserDocuments, getAllQuizDocuments, deleteQuizDocument, getAllPublicQuizDocumentsByUser, deleteUserAccountAdmin } = useAuthContext()
     const { uid } = useParams()
 
     const [userData, setUserData] = useState<UserData>()
@@ -330,7 +332,20 @@ const ProfilePage = () => {
                                                         <div key={user.id} className='created-quiz-item'>
                                                             <Link to={`/profile/${user.id}`}>{user.createdAt} - {user.name}</Link>
                                                             <div className='action-links'>
-                                                                <Link to=''>Delete</Link>
+                                                                <p className='link' onClick={async ()=>{
+                                                                    try {
+                                                                        console.log('test')
+                                                                        await deleteUserAccountAdmin(user.id, user.photoURL ? true : false)
+                                                                        console.log('after call')
+                                                                        applyAllUsers()
+                                                                        console.log('after apply')
+
+                                                                    } catch (error: any) {
+                                                                        console.log('error')
+                                                                        console.log('error code: ', error.code)
+                                                                        console.log('error msg: ', error.message)
+                                                                    }
+                                                                    }}>Delete</p>
                                                             </div>
                                                         </div>
                                                     ))

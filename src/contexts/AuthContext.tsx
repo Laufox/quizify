@@ -7,6 +7,8 @@
 // React related imports
 import { useContext, createContext, useEffect, useState } from "react"
 
+import { adminDeleteUser } from '../api-services/userAPI'
+
 // FIrebase imports
 import { 
     createUserWithEmailAndPassword, 
@@ -211,13 +213,36 @@ const AuthContextProvider = ({ children }: any) => {
         }
 
         // Delete possible avatar from storage
-        await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
+        if (auth.currentUser.photoURL) {
+
+            await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
+
+        }
 
         // Delete user doc from firestore
         await deleteDoc(doc(db, "users", auth.currentUser.uid))
 
         // Delete user from auth
         await deleteUser(auth.currentUser)
+
+    }
+
+    // Function fro admins to delete a user
+    const deleteUserAccountAdmin = async (uid: string, hasPhoto: boolean) => {
+
+        if (!auth.currentUser) {
+            return
+        }
+
+        // Delete possible avatar from storage
+        if (hasPhoto) {
+            await deleteObject(ref(storage, `avatars/${uid}`))
+        }
+
+        // Delete user doc from firestore
+        await deleteDoc(doc(db, "users", uid))
+
+        return await adminDeleteUser(uid)
 
     }
 
@@ -456,6 +481,7 @@ const AuthContextProvider = ({ children }: any) => {
         getUserDocument,
         getAllUserDocuments,
         addQuizResultToUser,
+        deleteUserAccountAdmin
     }
 
     // Useeffect to reflect auth changes and apply changes to currentuser variable

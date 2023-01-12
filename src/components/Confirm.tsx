@@ -14,7 +14,7 @@ interface Props {
 
 const Confirm = ({onConfirm, onCancel, actionText, requiresAuth}: Props) => {
 
-    const { verifyUser } = useAuthContext()
+    const { verifyUserAccount } = useAuthContext()
 
     const confirmPasswordRef = useRef<HTMLInputElement>(null)
     const [firebaseError, setFirebaseError] = useState('')
@@ -29,7 +29,7 @@ const Confirm = ({onConfirm, onCancel, actionText, requiresAuth}: Props) => {
                     setInputError('You need to confirm your password')
                     return
                 }
-                await verifyUser(confirmPasswordRef.current.value)
+                await verifyUserAccount(confirmPasswordRef.current.value)
             }
 
             onConfirm()
