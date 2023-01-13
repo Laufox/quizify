@@ -141,7 +141,7 @@ const CreateQuizPage = () => {
 
                 <h2>Info</h2>
 
-                <label>Quiz name *</label>
+                <label htmlFor="quizname">Quiz name *</label>
                 <input 
                     id="quizname" 
                     type='text' 
@@ -153,7 +153,7 @@ const CreateQuizPage = () => {
                 />
                 {errors.quizname && <span className="form-error-message">{errors.quizname?.message}</span>}
 
-                <label>Category *</label>
+                <label htmlFor="quizcategory">Category *</label>
                 <select
                     id="quizcategory" 
                     {...register('category', {
@@ -171,7 +171,7 @@ const CreateQuizPage = () => {
                 </select>
                 {errors.category && <span className="form-error-message">{errors.category?.message}</span>}
 
-                <label>Description</label>
+                <label htmlFor="quizdesc">Description</label>
                 <textarea
                     id="quizdesc"  
                     {...register('description')}
@@ -181,7 +181,7 @@ const CreateQuizPage = () => {
                 />
                 {errors.description && <span className="form-error-message">{errors.description?.message}</span>}
 
-                <label>Tags (seperate each one with space)</label>
+                <label htmlFor="quiztags">Tags (seperate each one with space)</label>
                 <textarea 
                     id="quiztags"
                     {...register('tags')}

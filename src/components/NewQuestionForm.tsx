@@ -32,7 +32,7 @@ const NewQuestionForm = ({onAddNewQuestion} : Props) => {
         <div className="new-question-form">
 
             <h3>Add new question:</h3>
-            <label>Question</label>
+            <label htmlFor="questionname">Question</label>
             <input 
                 id="questionname"
                 type='text'
@@ -47,7 +47,7 @@ const NewQuestionForm = ({onAddNewQuestion} : Props) => {
                 }}
             />
 
-            <label>Correct answer</label>
+            <label htmlFor="questioncorrectanswer">Correct answer</label>
             <input 
                 id="questioncorrectanswer"
                 type='text'
@@ -62,7 +62,7 @@ const NewQuestionForm = ({onAddNewQuestion} : Props) => {
                 }}
             />
 
-            <label>Other alternative</label>
+            <label htmlFor="questionfirstwronganswer">Other alternative</label>
             <input 
                 id="questionfirstwronganswer"
                 type='text'
@@ -77,7 +77,7 @@ const NewQuestionForm = ({onAddNewQuestion} : Props) => {
                 }}
             />
 
-            <label>Other alternative</label>
+            <label htmlFor="questionsecondwronganswer">Other alternative</label>
             <input 
                 id="questionsecondwronganswer"
                 type='text'
@@ -92,7 +92,7 @@ const NewQuestionForm = ({onAddNewQuestion} : Props) => {
                 }}
             />
 
-            <label>Other alternative</label>
+            <label htmlFor="questionthirdwronganswer">Other alternative</label>
             <input 
                 id="questionthirdwronganswer"
                 type='text'
