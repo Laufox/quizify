@@ -5,8 +5,8 @@ import { useState, useEffect } from 'react'
 import defaultAvatar from '../../assets/icons/defaultAvatar.svg'
 
 interface Props {
-    currentPhoto: File | null,
-    setCurrentPhoto: React.Dispatch<React.SetStateAction<File | null>>,
+    currentPhoto: File | Blob | null,
+    setCurrentPhoto: React.Dispatch<React.SetStateAction<File | Blob | null>>,
     defaultImageUrl: string
 }
 
@@ -42,7 +42,20 @@ const AvatarInput = ({currentPhoto, setCurrentPhoto, defaultImageUrl}: Props) =>
     }
 
     useEffect(()=>{
+
+        if (!defaultImageUrl) {
+            return
+        }
+
         setImagePreview(defaultImageUrl)
+
+        const applyInitialCurrentPhoto = async () => {
+
+            setCurrentPhoto(await fetch(defaultImageUrl).then(res => res.blob()))
+
+        }
+        applyInitialCurrentPhoto()
+
     }, [defaultImageUrl])
 
     return (

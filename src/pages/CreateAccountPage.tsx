@@ -29,17 +29,17 @@ const CreateAccountPage = () => {
     const [submitErrorMessage, setSubmitErrorMessage] = useState('')
 
     // State for image file currently selected for upload on form submit
-    const [currentPhoto, setCurrentPhoto] = useState<File | null>(null)
+    const [currentPhoto, setCurrentPhoto] = useState<File | Blob | null>(null)
 
     // Function to request  to sign up new user through auth context
     const createUser = async (data: any) => {
 
         setSubmitErrorMessage('')
 
-        const respone = await createUserAccount(data.email, data.password, data.username, currentPhoto)
+        const response = await createUserAccount(data.email, data.password, data.username, currentPhoto)
 
-        if (!respone.success) {
-            setSubmitErrorMessage(respone.error.message)
+        if (!response.success) {
+            setSubmitErrorMessage(response.error.message ?? 'An unknown error occured')
             return
         }
 

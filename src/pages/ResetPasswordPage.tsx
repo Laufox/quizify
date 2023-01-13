@@ -4,27 +4,28 @@ import { useForm } from "react-hook-form"
 import { useAuthContext } from '../contexts/AuthContext'
 import { FormData } from '../interfaces/FormData'
 import classNames from "classnames"
-
-// type FormData = {
-//     email: string
-// }
+import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
 
 const ResetPasswordPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
-    const { resetUserAccountPassword } = useAuthContext()
+    const { resetUserAccountPassword, loading } = useAuthContext()
 
     const [submitErrorMessage, setSubmitErrorMessage] = useState('')
     const [submitSuccessMessage, setSubmitSuccessMessage] = useState('')
 
-    const loginUser = async (data: any) => {
-        console.log(data)
+    const resetPassword = async (data: any) => {
 
-        try {
-            await resetUserAccountPassword(data.email)
-            setSubmitSuccessMessage('An email has been sent to your email with further instruction on how to reset your password')
-        } catch (error: any) {
-            setSubmitErrorMessage(error?.message ? error.message : 'An unknown error occured')
+        setSubmitErrorMessage('')
+        setSubmitSuccessMessage('')
+        const respone = await resetUserAccountPassword(data.email)
+
+        if (!respone.success) {
+            setSubmitErrorMessage(respone.error.message ?? 'An unknown error has occured')
+            return
         }
+
+        setSubmitSuccessMessage('An email has been sent with further instruction on how to reset your password')
+        
     }
 
     return (
@@ -33,7 +34,7 @@ const ResetPasswordPage = () => {
 
             <p>Reset your password by filling in your email address below. An email will be sent with further instructions</p>
 
-            <form onSubmit={handleSubmit(loginUser)} noValidate>
+            <form onSubmit={handleSubmit(resetPassword)} noValidate>
                 <label>Email</label>
                 <input 
                     id="resetemail" 
@@ -56,7 +57,25 @@ const ResetPasswordPage = () => {
                     <p className="submit-success-message">{submitSuccessMessage}</p>
                 }
 
-                <button type="submit" className="btn btn-info">Reset</button>
+                <button 
+                    type="submit" 
+                    className={classNames({
+                        'btn': true,
+                        'btn-info': true,
+                        'btn-action': true,
+                        'btn-reset': true,
+                        'btn-disabled': loading.resetPassword
+                    })}
+                    disabled={loading.resetPassword}
+                >
+                    {
+                        loading.resetPassword ? (
+                            <LoadingSpinnerButton />
+                        ) : (
+                            'Reset'
+                        )
+                    }
+                </button>
 
                 <hr />
 

@@ -81,7 +81,10 @@ const AuthContextProvider = ({ children }: Props) => {
     const [userLoading, setUserLoading] = useState(true)
     const [loading, setLoading] = useState({
         user: true,
-        createUser: false
+        createUser: false,
+        signinUser: false,
+        resetPassword: false,
+        updateUser: false
     })
 
     /********************************************************
@@ -162,7 +165,34 @@ const AuthContextProvider = ({ children }: Props) => {
     // Function to sign in user with firebase
     const signinUserAccount = async (email: string, password: string) => {
 
-        await signInWithEmailAndPassword(auth, email, password)
+        setLoading({
+            ...loading,
+            signinUser: true
+        })
+
+        try {
+
+            await signInWithEmailAndPassword(auth, email, password)
+
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                signinUser: false
+            })
+
+        }
 
     }
 
@@ -176,58 +206,117 @@ const AuthContextProvider = ({ children }: Props) => {
     // Function to send email to reset user password with firebase
     const resetUserAccountPassword = async (email: string) => {
 
-        await sendPasswordResetEmail(auth, email)
+        setLoading({
+            ...loading,
+            resetPassword: true
+        })
 
+        try {
+            
+            await sendPasswordResetEmail(auth, email)
+
+            return {
+                success: true
+            }
+
+        } catch (error) {
+            
+            return {
+                success: false,
+                error
+            }
+
+        } finally {
+
+            setLoading({
+                ...loading,
+                resetPassword: false
+            })
+
+        }
+        
     }
     
     // Function to update a user account
-    const updateUserAccount = async (email: string, password: string, username: string, photo: File) => {
+    const updateUserAccount = async (email: string, newPassword: string, currentPassword: string, username: string, photo: File) => {
+
+        setLoading({
+            ...loading,
+            updateUser: true
+        })
         
         if (!auth.currentUser) {
-            return
-        }
-        
-        let photoURL
-        
-        // If a photo was given, upload photo to storage and then asign photo and username to currentuser profile
-        if (photo) {
-            const uploadPhoto = await uploadBytes(ref(storage, `avatars/${auth.currentUser.uid}`), photo)
-            photoURL = await getDownloadURL(uploadPhoto.ref)
-            
-            await updateProfile(auth.currentUser, {
-                displayName: username,
-                photoURL
-            })
-        } else {
-            await updateProfile(auth.currentUser, {
-                displayName: username
-            })
+            return {
+                success: false
+            }
         }
 
-        // If user had a profile photo but removed it, delete it from storage and update profile data
-        if (!photo && auth.currentUser.photoURL) {
-            await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
-            await updateProfile(auth.currentUser, {
-                photoURL: ""
+        try {
+
+            let photoURL
+        
+            // If a photo was given, upload photo to storage and then asign photo and username to currentuser profile
+            if (photo) {
+                const uploadPhoto = await uploadBytes(ref(storage, `avatars/${auth.currentUser.uid}`), photo)
+                photoURL = await getDownloadURL(uploadPhoto.ref)
+                
+                await updateProfile(auth.currentUser, {
+                    displayName: username,
+                    photoURL
+                })
+            } else {
+                await updateProfile(auth.currentUser, {
+                    displayName: username
+                })
+            }
+
+            // If user had a profile photo but removed it, delete it from storage and update profile data
+            if (!photo && auth.currentUser.photoURL) {
+                await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
+                await updateProfile(auth.currentUser, {
+                    photoURL: ""
+                })
+            }
+            
+            if (email) {
+                await verifyUserAccount(currentPassword)
+                await updateEmail(auth.currentUser, email)
+            }
+            
+            if (newPassword) {
+                await verifyUserAccount(currentPassword)
+                await updatePassword(auth.currentUser, newPassword)
+            }
+            
+            // Update user document in firestore
+            await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                email: email ?? auth.currentUser.email,
+                username,
+                photoURL: photoURL ?? auth.currentUser.photoURL
+            }, {
+                merge: true
             })
+
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false, 
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                updateUser: false
+            })
+
         }
         
-        if (email) {
-            await updateEmail(auth.currentUser, email)
-        }
-        
-        if (password) {
-            await updatePassword(auth.currentUser, password)
-        }
-        
-        // Update user document in firestore
-        await setDoc(doc(db, 'users', auth.currentUser.uid), {
-            email: email ?? auth.currentUser.email,
-            username,
-            photoURL: photoURL ?? auth.currentUser.photoURL
-        }, {
-            merge: true
-        })
     }
 
     // Function for when user has to verify their account by reentering their password

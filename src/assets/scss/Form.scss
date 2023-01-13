@@ -276,11 +276,23 @@ form, .new-question-form {
         display: flex;
         justify-content: center;
         align-items: center;
+        height: 4.5rem;
     }
 
     .btn-create-account {
         width: 20.1rem;
-        height: 5.2rem;
+    }
+
+    .btn-signin {
+        width: 12rem;
+    }
+
+    .btn-reset {
+        width: 9.3rem;
+    }
+
+    .btn-update-user {
+        width: 8.5rem;
     }
 }
 

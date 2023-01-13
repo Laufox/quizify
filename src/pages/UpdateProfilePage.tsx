@@ -14,6 +14,7 @@ import { UserData } from '../interfaces/UserData'
 import classNames from "classnames"
 import Confirm from '../components/Confirm'
 import AvatarInput from '../components/Forms/AvatarInput'
+import LoadingSpinnerButton from '../components/LoadingSpinnerButton'
 
 const UpdateProfilePage = () => {
 
@@ -21,7 +22,7 @@ const UpdateProfilePage = () => {
     const navigate = useNavigate()
 
     // Funtions and variabels to use from auth context
-    const { getUserDocument, currentUser, updateUserAccount, verifyUserAccount, deleteUserAccount } = useAuthContext()
+    const { getUserDocument, currentUser, updateUserAccount, verifyUserAccount, deleteUserAccount, loading } = useAuthContext()
 
     const { uid } = useParams()
 
@@ -37,29 +38,31 @@ const UpdateProfilePage = () => {
     // State for image url for preview avatar before submitting form
     const [imagePreview, setImagePreview] = useState('')
     // State for image file currently selected for upload on form submit
-    const [currentPhoto, setCurrentPhoto] = useState<File | null>(null)
+    const [currentPhoto, setCurrentPhoto] = useState<File | Blob | null>(null)
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
     // Function to request  to sign up new user through auth context
     const updateUser = async (data: any) => {
 
-        try {
+        setSubmitErrorMessage('')
+        
+        const response = await updateUserAccount(
+            data.email !== currentUser.email ? data.email : null, 
+            data.password ?? null, 
+            data.currentpassword ?? null,
+            data.username, 
+            currentPhoto,
+        )
 
-            if ((data.password && data.passwordrepeat && data.currentpassword) || (data.email !== currentUser.email)) {
-                await verifyUserAccount(data.currentpassword)
-            }
+        if (!response.success) {
 
-            await updateUserAccount(
-                data.email !== currentUser.email ? data.email : null, 
-                data.password ?? null, 
-                data.username, 
-                currentPhoto,
-            )
-            navigate(`/profile/${currentUser.uid}`)
-        } catch (error: any) {
-            setSubmitErrorMessage(error?.message)
+            setSubmitErrorMessage(response.error.message ?? 'An unknown error occured')
+
+            return
         }
+
+        navigate(`/profile/${currentUser.uid}`)
 
     }
 
@@ -185,9 +188,8 @@ const UpdateProfilePage = () => {
                             type='password' 
                             {...register('currentpassword', {
                                 validate: (val: string) => {
-                                    if (watch('password') && !val) {
-
-                                        return 'You need to enter your current password to change to a new password'
+                                    if ((watch('password') || (watch('email') !== userData.email)) && !val) {
+                                        return 'You need to enter your current password to change to a new password/email'
                                     }
                                 }
                             })}
@@ -203,7 +205,25 @@ const UpdateProfilePage = () => {
                             <p className="submit-error-message">{submitErrorMessage}</p>
                         }
 
-                        <button type="submit" className="btn btn-info">Save</button>
+                        <button 
+                            type="submit" 
+                            className={classNames({
+                                'btn': true,
+                                'btn-info': true,
+                                'btn-action': true,
+                                'btn-update-user': true,
+                                'btn-disabled': loading.updateUser
+                            })}
+                            disabled={loading.updateUser}
+                        >
+                            {
+                                loading.updateUser ? (
+                                    <LoadingSpinnerButton />
+                                ) : (
+                                    'Save'
+                                )
+                            }
+                        </button>
 
                     </form>
 
