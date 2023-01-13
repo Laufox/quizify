@@ -12,6 +12,7 @@ import { FormData } from '../interfaces/FormData'
 
 import classNames from "classnames"
 import AvatarInput from '../components/Forms/AvatarInput'
+import LoadingSpinnerButton from '../components/LoadingSpinnerButton'
 
 const CreateAccountPage = () => {
 
@@ -19,7 +20,7 @@ const CreateAccountPage = () => {
     const navigate = useNavigate()
 
     // Funtions and variabels to use from auth context
-    const { createUserAccount } = useAuthContext()
+    const { createUserAccount, loading } = useAuthContext()
 
     // Functions to use from react-hook-form
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
@@ -33,12 +34,16 @@ const CreateAccountPage = () => {
     // Function to request  to sign up new user through auth context
     const createUser = async (data: any) => {
 
-        try {
-            await createUserAccount(data.email, data.password, data.username, currentPhoto)
-            navigate('/')
-        } catch (error: any) {
-            setSubmitErrorMessage(error?.message)
+        setSubmitErrorMessage('')
+
+        const respone = await createUserAccount(data.email, data.password, data.username, currentPhoto)
+
+        if (!respone.success) {
+            setSubmitErrorMessage(respone.error.message)
+            return
         }
+
+        navigate('/')
 
     }
 
@@ -119,7 +124,25 @@ const CreateAccountPage = () => {
                     <p className="submit-error-message">{submitErrorMessage}</p>
                 }
 
-                <button type="submit" className="btn btn-info">Create Account</button>
+                <button 
+                    type="submit" 
+                    className={classNames({
+                        'btn': true,
+                        'btn-info': true,
+                        'btn-action': true,
+                        'btn-create-account': true,
+                        'btn-disabled': loading.createUser
+                    })} 
+                    disabled={loading.createUser}
+                >
+                    {
+                        loading.createUser ? (
+                            <LoadingSpinnerButton />
+                        ) : (
+                            'Create Account'
+                        )
+                    }
+                </button>
 
                 <Link to='/signin'>Already have an account? sign in instead!</Link>
             </form>

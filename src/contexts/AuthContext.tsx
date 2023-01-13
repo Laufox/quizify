@@ -79,7 +79,10 @@ const AuthContextProvider = ({ children }: Props) => {
     // State for user currently signed in through firebase
     const [currentUser, setCurrentUser] = useState<any>()
     const [userLoading, setUserLoading] = useState(true)
-
+    const [loading, setLoading] = useState({
+        user: true,
+        createUser: false
+    })
 
     /********************************************************
      **                                                    **
@@ -91,43 +94,68 @@ const AuthContextProvider = ({ children }: Props) => {
     // Function for creating a new user 
     const createUserAccount = async (email: string, password: string, username: string, photo: File) => {
 
-        setUserLoading(true)
-        // Create user through firebase with given credentials
-        await createUserWithEmailAndPassword(auth, email, password)
-
-        // If creation did not succeed, return early
-        if (!auth.currentUser) {
-            return
-        }
-
-        let photoURL
-
-        // If a photo was given, upload photo to storage and then asign photo and username to currentuser profile
-        if (photo) {
-            const uploadPhoto = await uploadBytes(ref(storage, `avatars/${auth.currentUser.uid}`), photo)
-            photoURL = await getDownloadURL(uploadPhoto.ref)
-
-            await updateProfile(auth.currentUser, {
-                displayName: username,
-                photoURL
-            })
-        } else {
-            await updateProfile(auth.currentUser, {
-                displayName: username
-            })
-        }
-
-        // Create new firestore document for the new user
-        await setDoc(doc(db, 'users', auth.currentUser.uid), {
-            uid: auth.currentUser.uid,
-            email,
-            username,
-            role: 'user',
-            createdAt: new Date(),
-            photoURL: photoURL ?? "",
-            playedQuizzes: []
+        setLoading({
+            ...loading,
+            createUser: true
         })
-        setUserLoading(false)
+        
+        try {
+
+            // Create user through firebase with given credentials
+            await createUserWithEmailAndPassword(auth, email, password)
+
+            // If creation did not succeed, return early
+            if (!auth.currentUser) {
+                return
+            }
+
+            let photoURL
+
+            // If a photo was given, upload photo to storage and then asign photo and username to currentuser profile
+            if (photo) {
+                const uploadPhoto = await uploadBytes(ref(storage, `avatars/${auth.currentUser.uid}`), photo)
+                photoURL = await getDownloadURL(uploadPhoto.ref)
+
+                await updateProfile(auth.currentUser, {
+                    displayName: username,
+                    photoURL
+                })
+            } else {
+                await updateProfile(auth.currentUser, {
+                    displayName: username
+                })
+            }
+
+            // Create new firestore document for the new user
+            await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                uid: auth.currentUser.uid,
+                email,
+                username,
+                role: 'user',
+                createdAt: new Date(),
+                photoURL: photoURL ?? "",
+                playedQuizzes: []
+            })
+
+            return {
+                success: true
+            }
+
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                createUser: false
+            })
+
+        }
 
     }
 
@@ -468,6 +496,7 @@ const AuthContextProvider = ({ children }: Props) => {
     // Object with variables and functions that children components can use
     const contextValues= {
         currentUser,
+        loading,
         createUserAccount,
         signinUserAccount,
         signoutUserAccount,
@@ -497,7 +526,10 @@ const AuthContextProvider = ({ children }: Props) => {
 
         const unsubscribe = onAuthStateChanged(auth, user => {
             setCurrentUser(user)
-            setUserLoading(false)
+            setLoading({
+                ...loading,
+                user: false
+            })
         })
 
         return unsubscribe
@@ -507,7 +539,7 @@ const AuthContextProvider = ({ children }: Props) => {
     return (
         <AuthContext.Provider value={contextValues}>
             {
-                userLoading ? (
+                loading.user ? (
                     <LoadingSpinner />
                 ) : (
                     children

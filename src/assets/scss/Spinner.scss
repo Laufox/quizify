@@ -57,3 +57,17 @@
         }
     }
 }
+
+.loading-spinner-button {
+
+    width: 3rem;
+    height: 3rem;
+    border: 0.4rem solid #00b;
+    border-top: 0.4rem solid #fff;
+    border-radius: 50%;
+    animation-name: spinner-rotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+
+}

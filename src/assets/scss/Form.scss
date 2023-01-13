@@ -270,6 +270,18 @@ form, .new-question-form {
     .btn-info {
         align-self: flex-start;
     }
+
+    .btn-action {
+        font-size: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-create-account {
+        width: 20.1rem;
+        height: 5.2rem;
+    }
 }
 
 /* Rules for seperate search form */
