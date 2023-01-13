@@ -27,6 +27,7 @@ import Navigaion from './components/Navigation'
 
 // Context with data and functions for user authentication
 import { useAuthContext } from './contexts/AuthContext'
+import LoadingSpinner from './components/LoadingSpinner'
 
 function App() {
 
@@ -59,6 +60,7 @@ function App() {
                     <Route path='/search' element={<SearchPage />} />
                 </Routes>
             </div>
+            {/* <LoadingSpinner /> */}
         </div>
     )
 }

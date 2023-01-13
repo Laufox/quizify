@@ -60,6 +60,7 @@ import { User } from "../interfaces/User"
 import { Categories } from "../interfaces/Categories"
 import { Quiz } from "../interfaces/Quiz"
 import { QuizResults } from "../interfaces/QuizResults"
+import LoadingSpinner from "../components/LoadingSpinner"
 
 // Initiate context
 const AuthContext = createContext<any>(undefined)
@@ -73,6 +74,7 @@ const AuthContextProvider = ({ children }: any) => {
 
     // State for user currently signed in through firebase
     const [currentUser, setCurrentUser] = useState<any>()
+    const [userLoading, setUserLoading] = useState(true)
 
 
     /********************************************************
@@ -489,6 +491,7 @@ const AuthContextProvider = ({ children }: any) => {
 
         const unsubscribe = onAuthStateChanged(auth, user => {
             setCurrentUser(user)
+            setUserLoading(false)
         })
 
         return unsubscribe
@@ -497,7 +500,13 @@ const AuthContextProvider = ({ children }: any) => {
 
     return (
         <AuthContext.Provider value={contextValues}>
-            {children}
+            {
+                userLoading ? (
+                    <LoadingSpinner />
+                ) : (
+                    children
+                )
+            }
         </AuthContext.Provider>
     )
 }

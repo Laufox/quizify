@@ -1,0 +1,59 @@
+@use 'sass:math';
+
+@keyframes spinner-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner-outer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(256,256,256,0.5);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+
+    .spinner-inner-container {
+        padding: 2rem;
+
+        .spinner-circle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 8rem;
+            height: 8rem;
+            border: 0.8rem solid #004;
+            // border-radius: 50%;
+            border-right: none;
+            border-left: none;
+            animation-name: spinner-rotate;
+            animation-duration: 1.5s;
+            animation-iteration-count: infinite;
+            // animation-direction: alternate;
+            // animation-timing-function: linear;
+
+            span {
+                color: #861;
+                font-weight: 600;
+                // font-family: 'Roboto Serif', 'Times New Roman', Times, serif;
+                font-size: 3rem;
+            }
+        }
+
+        .spinner-svg {
+
+            .spinner-circle {
+                animation-name: spinner-rotate;
+                animation-duration: 1s;
+            }
+        }
+    }
+}
