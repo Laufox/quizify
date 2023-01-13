@@ -62,6 +62,10 @@ import { Quiz } from "../interfaces/Quiz"
 import { QuizResults } from "../interfaces/QuizResults"
 import LoadingSpinner from "../components/LoadingSpinner"
 
+interface Props {
+    children: JSX.Element
+}
+
 // Initiate context
 const AuthContext = createContext<any>(undefined)
 
@@ -70,7 +74,7 @@ const useAuthContext = () => {
 }
 
 // The component itself, with functions and variables to be used by its children
-const AuthContextProvider = ({ children }: any) => {
+const AuthContextProvider = ({ children }: Props) => {
 
     // State for user currently signed in through firebase
     const [currentUser, setCurrentUser] = useState<any>()
@@ -87,6 +91,7 @@ const AuthContextProvider = ({ children }: any) => {
     // Function for creating a new user 
     const createUserAccount = async (email: string, password: string, username: string, photo: File) => {
 
+        setUserLoading(true)
         // Create user through firebase with given credentials
         await createUserWithEmailAndPassword(auth, email, password)
 
@@ -122,6 +127,7 @@ const AuthContextProvider = ({ children }: any) => {
             photoURL: photoURL ?? "",
             playedQuizzes: []
         })
+        setUserLoading(false)
 
     }
 

@@ -24,10 +24,11 @@ import UpdateQuizPage from './pages/UpdateQuizPage'
 
 // Component import
 import Navigaion from './components/Navigation'
+import RequireAccount from './components/RequireAccount'
 
 // Context with data and functions for user authentication
 import { useAuthContext } from './contexts/AuthContext'
-import LoadingSpinner from './components/LoadingSpinner'
+import RequireGuest from './components/RequireGuest'
 
 function App() {
 
@@ -40,27 +41,112 @@ function App() {
             <div className='app-container'>
                 <Routes>
 
-                    <Route path='*' element={<NotFoundPage />} />
-                    <Route path='/' element={currentUser ? <UserHomePage /> : <GuestHomePage />} />
+                    {/* 404 PAGE FOR UNKNOWN ADDRESS */}
+                    <Route 
+                        path='*' 
+                        element={
+                            <NotFoundPage />
+                        } 
+                    />
 
-                    <Route path='/signup' element={<CreateAccountPage />} />
-                    <Route path='/signin' element={<SignInPage />} />
-                    <Route path='/resetpassword' element={<ResetPasswordPage />} />
+                    {/* START PAGE */}
+                    <Route 
+                        path='/' 
+                        element={
+                            currentUser 
+                            ? <UserHomePage /> 
+                            : <GuestHomePage />
+                        } 
+                    />
 
-                    <Route path='/about' element={<AboutPage />} />
+                    {/* ACCOUNT CREATION, SIGN IN AND RESET PASSWORD PAGES */}
+                    <Route 
+                        path='/signup' 
+                        element={
+                            <RequireGuest>
+                                <CreateAccountPage />
+                            </RequireGuest>
+                        } 
+                    />
+                    <Route 
+                        path='/signin' 
+                        element={
+                            <SignInPage />
+                        } 
+                    />
+                    <Route 
+                        path='/resetpassword' 
+                        element={
+                            <RequireGuest>
+                                <ResetPasswordPage />
+                            </RequireGuest>
+                        }
+                    />
 
-                    <Route path='/quizlist' element={<QuizListPage />} />
-                    <Route path='/quiz/:id' element={<QuizPage />} />
-                    <Route path='/createquiz' element={<CreateQuizPage />} />
-                    <Route path='/updatequiz/:id' element={<UpdateQuizPage />} />
+                    {/* VIEW AND UPDATE PROFILE PAGES */}
+                    <Route 
+                        path='/profile/:uid' 
+                        element={
+                            <ProfilePage />
+                        } 
+                    />
+                    <Route 
+                        path='/updateprofile/:uid' 
+                        element={
+                            <RequireAccount>
+                                <UpdateProfilePage />
+                            </RequireAccount>
+                        } 
+                    />
 
-                    <Route path='/profile/:uid' element={<ProfilePage />} />
-                    <Route path='/updateprofile/:uid' element={<UpdateProfilePage />} />
+                    {/* LIST, VIEW, CREATE AND UPDATE QUIZ PAGES */}
+                    <Route 
+                        path='/quizlist' 
+                        element={
+                            <QuizListPage />
+                        } 
+                    />
+                    <Route 
+                        path='/quiz/:id' 
+                        element={
+                            <QuizPage />
+                        } 
+                    />
+                    <Route 
+                        path='/createquiz' 
+                        element={
+                            <RequireAccount>
+                                <CreateQuizPage />
+                            </RequireAccount>
+                        } 
+                    />
+                    <Route 
+                        path='/updatequiz/:id' 
+                        element={
+                            <RequireAccount>
+                                <UpdateQuizPage />
+                            </RequireAccount>
+                        } 
+                    />
 
-                    <Route path='/search' element={<SearchPage />} />
+                    {/* SEARCH PAGE */}
+                    <Route 
+                        path='/search' 
+                        element={
+                            <SearchPage />
+                        } 
+                    />
+
+                    {/* ABOUT WEBSITE PAGE */}
+                    <Route 
+                        path='/about' 
+                        element={
+                            <AboutPage />
+                        } 
+                    />
+
                 </Routes>
             </div>
-            {/* <LoadingSpinner /> */}
         </div>
     )
 }
