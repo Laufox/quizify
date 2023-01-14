@@ -89,6 +89,8 @@ const AuthContextProvider = ({ children }: Props) => {
         createQuiz: false,
         updateQuiz: false,
         deleteQuiz: false,
+        getQuizzes: false,
+        getCategories: false
     })
 
     /********************************************************
@@ -514,26 +516,52 @@ const AuthContextProvider = ({ children }: Props) => {
 
     const getMultipleQuizDocuments = async (collectionReference: Query<DocumentData>) => {
 
-        const arrayOfQuizzes: Quiz[] = []
-
-        const allQuizzesSnap: QuerySnapshot<DocumentData> = await getDocs(collectionReference)
-
-        allQuizzesSnap.forEach(quiz => {
-            arrayOfQuizzes.push({
-                id: quiz.id,
-                authorId: quiz.data().authorId,
-                authorName: quiz.data().authorName,
-                name: quiz.data().name,
-                category: quiz.data().category,
-                description: quiz.data().description,
-                tags: quiz.data().tags,
-                questions: quiz.data().questions,
-                visibility: quiz.data().visibility,
-                createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
-            })
+        setLoading({
+            ...loading,
+            getQuizzes: true
         })
 
-        return arrayOfQuizzes
+        try {
+
+            const arrayOfQuizzes: Quiz[] = []
+
+            const allQuizzesSnap: QuerySnapshot<DocumentData> = await getDocs(collectionReference)
+
+            allQuizzesSnap.forEach(quiz => {
+                arrayOfQuizzes.push({
+                    id: quiz.id,
+                    authorId: quiz.data().authorId,
+                    authorName: quiz.data().authorName,
+                    name: quiz.data().name,
+                    category: quiz.data().category,
+                    description: quiz.data().description,
+                    tags: quiz.data().tags,
+                    questions: quiz.data().questions,
+                    visibility: quiz.data().visibility,
+                    createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
+                })
+            })
+
+            return {
+                success: true,
+                quizzes: arrayOfQuizzes
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                getQuizzes: false
+            })
+
+        }
 
     }
 
@@ -622,18 +650,44 @@ const AuthContextProvider = ({ children }: Props) => {
     // Get all category documents from database
     const getAllCategoryDocuments = async () => {
 
-        const arrayOfCategories: Categories[] = []
-
-        const allCategoriesSnap = await getDocs(query(collection(db, "categories"), orderBy("name")))
-
-        allCategoriesSnap.forEach((cat) => {
-            arrayOfCategories.push({
-                id: cat.id,
-                name: cat.data().name
-            })
+        setLoading({
+            ...loading,
+            getCategories: true
         })
 
-        return arrayOfCategories
+        try {
+
+            const arrayOfCategories: Categories[] = []
+
+            const allCategoriesSnap = await getDocs(query(collection(db, "categories"), orderBy("name")))
+
+            allCategoriesSnap.forEach((cat) => {
+                arrayOfCategories.push({
+                    id: cat.id,
+                    name: cat.data().name
+                })
+            })
+
+            return {
+                success: true,
+                categories: arrayOfCategories
+            }
+            
+        } catch (error) {
+            
+            return {
+                success: false,
+                error
+            }
+
+        } finally {
+
+            setLoading({
+                ...loading,
+                getCategories: false
+            })
+
+        }
 
     }
 

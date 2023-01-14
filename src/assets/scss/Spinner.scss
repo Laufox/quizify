@@ -78,3 +78,45 @@
     border-top: 0.4rem solid #fff;
 
 }
+
+.loading-spinner-generic-small {
+
+    width: 3rem;
+    height: 3rem;
+    border: 0.4rem solid #fff;
+    border-top: 0.4rem solid #004;
+    border-radius: 50%;
+    animation-name: spinner-rotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+
+}
+
+.loading-spinner-generic-medium {
+
+    width: 8rem;
+    height: 8rem;
+    border: 0.8rem solid #fff;
+    border-top: 0.8rem solid #004;
+    border-radius: 50%;
+    animation-name: spinner-rotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    
+}
+
+.loading-spinner-generic-large {
+
+    width: 15rem;
+    height: 15rem;
+    border: 1.5rem solid #fff;
+    border-top: 1.5rem solid #004;
+    border-radius: 50%;
+    animation-name: spinner-rotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    
+}

@@ -6,10 +6,11 @@ import { Quiz } from '../interfaces/Quiz'
 import { Categories } from '../interfaces/Categories'
 
 import classNames from 'classnames'
+import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
 
 const QuizListPage = () => {
 
-    const { getAllPublicQuizDocuments, getAllCategoryDocuments } = useAuthContext()
+    const { getAllPublicQuizDocuments, getAllCategoryDocuments, loading } = useAuthContext()
 
     const [quizList, setQuizList] = useState<Quiz[]>([])
     const [quizListFiltered, setQuizListFiltered] = useState<Quiz[]>([])
@@ -19,13 +20,27 @@ const QuizListPage = () => {
 
     const applyQuizzes = async () => {
 
-        setQuizList([...await getAllPublicQuizDocuments()])
+        const response = await getAllPublicQuizDocuments()
+
+        if (!response.success) {
+            console.log('There was an error: ', response.error)
+            return
+        }
+
+        setQuizList([...response.quizzes])
 
     }
 
     const applyCategories = async () => {
 
-        setCategories([...await getAllCategoryDocuments()])
+        const response = await getAllCategoryDocuments()
+
+        if (!response.success) {
+            console.log('There was an error: ', response.error)
+            return
+        }
+
+        setCategories([...response.categories])
 
     }
 
@@ -93,53 +108,75 @@ const QuizListPage = () => {
             <h2>Filter by category</h2>
             <div className='filterbox-container'>
 
-                <p 
-                    className={classNames({
-                        'filterbox-item link' : true,
-                        'selected': selectedCategory === 'all'
-                    })}
-                    onClick={()=>{filterQuizzesByCategory('all')}}
-                >
-                    All
-                </p>
                 {
-                    !!categories.length && categories.map((cat)=>(
+                    loading.getCategories ? (
+
+                        <LoadingSpinnerGeneric size='medium' />
+
+                    ) : (
+                        <>
                         <p 
-                            key={cat.id} 
                             className={classNames({
                                 'filterbox-item link' : true,
-                                'selected': selectedCategory === cat.name
+                                'selected': selectedCategory === 'all'
                             })}
-                            onClick={()=>{filterQuizzesByCategory(cat.name)}}
+                            onClick={()=>{filterQuizzesByCategory('all')}}
                         >
-                            {cat.name}
+                            All
                         </p>
-                    ))
+
+                        {
+                                            
+                            !!categories.length && categories.map((cat)=>(
+                                <p 
+                                    key={cat.id} 
+                                    className={classNames({
+                                        'filterbox-item link' : true,
+                                        'selected': selectedCategory === cat.name
+                                    })}
+                                    onClick={()=>{filterQuizzesByCategory(cat.name)}}
+                                >
+                                    {cat.name}
+                                </p>
+                            ))
+                            
+                        }
+                        </>
+                    )
                 }
+                
 
             </div>
 
             <div className='quizlist-container'>
                 <h2>List of quizzes</h2>
                 {
-                    !!quizListFiltered.length && quizListFiltered.map((quiz)=>(
-                        <div key={quiz.id} className='quizlist-item'>
-                            <header>
-                                <Link to={`/quiz/${quiz.id}`}>{quiz.name}</Link>
-                                <div className='category-date'>
-                                    <span>{quiz.category}</span>
-                                    <span>{quiz.createdAt}</span>
-                                </div>
-                            </header>
-                            {
-                                quiz.description && (
-                                    <main>
-                                        <p>{quiz.description}</p>
-                                    </main>
-                                )
-                            }
-                        </div>
-                    ))
+                    loading.getQuizzes ? (
+
+                        <LoadingSpinnerGeneric size='large' />
+
+                    ) : (
+
+                        !!quizListFiltered.length && quizListFiltered.map((quiz)=>(
+                            <div key={quiz.id} className='quizlist-item'>
+                                <header>
+                                    <Link to={`/quiz/${quiz.id}`}>{quiz.name}</Link>
+                                    <div className='category-date'>
+                                        <span>{quiz.category}</span>
+                                        <span>{quiz.createdAt}</span>
+                                    </div>
+                                </header>
+                                {
+                                    quiz.description && (
+                                        <main>
+                                            <p>{quiz.description}</p>
+                                        </main>
+                                    )
+                                }
+                            </div>
+                        ))
+
+                    )
                 }
             </div>
 
