@@ -13,21 +13,27 @@ import { FormData } from "../interfaces/FormData"
 import { NewQuestionItem } from "../interfaces/NewQuestionItem"
 import { Categories } from "../interfaces/Categories"
 import { NewQuestionInput } from "../interfaces/NewQuestionInput"
+import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
+import { useNavigate } from "react-router-dom"
 
 const CreateQuizPage = () => {
+
+    const navigate = useNavigate()
 
     // Functions to use from react-hook-form
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
 
     // Funtions and variabels to use from auth context
-    const { createQuizDocument, getAllCategoryDocuments } = useAuthContext()
+    const { createQuizDocument, getAllCategoryDocuments, loading } = useAuthContext()
 
-    const [submitErrorMessage, setSubmitErrorMessage] = useState()
+    const [submitErrorMessage, setSubmitErrorMessage] = useState('')
     const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
     const [questionsList, setQuestionsList] = useState<NewQuestionItem[]>([])
     const [categories, setCategories] = useState<Categories[]>([])
 
     const submitQuiz = async (data: FormData) => {
+
+        setSubmitErrorMessage('')
 
         if (data.description) {
             data.description = data.description.trim()
@@ -36,16 +42,21 @@ const CreateQuizPage = () => {
         if (data.tags && typeof data.tags === "string") {
             data.tags = data.tags.trim().split(' ')
         }
-        
-        try {
-            await createQuizDocument({
-                ...data,
-                name: data.quizname.trim(),
-                questions: questionsList
-            })
-        } catch (error: any) {
-            setSubmitErrorMessage(error?.message)
+
+        const response = await createQuizDocument({
+            ...data,
+            name: data.quizname.trim(),
+            questions: questionsList
+        })
+
+        if (!response.success) {
+
+            setSubmitErrorMessage(response.error.message ?? 'An unknown error occured')
+            return
+
         }
+
+        navigate(`/quiz/${response.quizId}`)
 
     }
 
@@ -263,11 +274,19 @@ const CreateQuizPage = () => {
                     className={classNames({
                         'btn': true,
                         'btn-info': true,
-                        'btn-disabled': !questionsList.length
+                        'btn-action': true,
+                        'btn-create-quiz': true,
+                        'btn-disabled': !questionsList.length || loading.createQuiz
                     })}
-                    disabled={!questionsList.length}
+                    disabled={!questionsList.length || loading.createQuiz}
                 >
-                    Publish
+                    {
+                        loading.createQuiz ? (
+                            <LoadingSpinnerButton />
+                        ) : (
+                            'Publish'
+                        )
+                    }
                 </button>
                 {
                     !questionsList.length &&

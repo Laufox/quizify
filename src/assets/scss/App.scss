@@ -165,6 +165,42 @@ img {
     cursor: not-allowed;
 }
 
+.btn-action {
+    font-size: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4.5rem;
+}
+
+.btn-create-account {
+    width: 20.1rem;
+}
+
+.btn-signin {
+    width: 12rem;
+}
+
+.btn-reset {
+    width: 9.3rem;
+}
+
+.btn-update-user {
+    width: 8.5rem;
+}
+
+.btn-delete-user {
+    width: 18.9rem;
+}
+
+.btn-create-quiz {
+    width: 11.4rem;
+}
+
+.btn-delete-quiz {
+    width: 15.1rem;
+}
+
 /* Container rules for all page - specific content */
 .app-container {
     padding: 4rem 2rem;

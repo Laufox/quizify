@@ -84,7 +84,11 @@ const AuthContextProvider = ({ children }: Props) => {
         createUser: false,
         signinUser: false,
         resetPassword: false,
-        updateUser: false
+        updateUser: false,
+        deleteUser: false,
+        createQuiz: false,
+        updateQuiz: false,
+        deleteQuiz: false,
     })
 
     /********************************************************
@@ -240,17 +244,17 @@ const AuthContextProvider = ({ children }: Props) => {
     // Function to update a user account
     const updateUserAccount = async (email: string, newPassword: string, currentPassword: string, username: string, photo: File) => {
 
-        setLoading({
-            ...loading,
-            updateUser: true
-        })
-        
         if (!auth.currentUser) {
             return {
                 success: false
             }
         }
 
+        setLoading({
+            ...loading,
+            updateUser: true
+        })
+        
         try {
 
             let photoURL
@@ -332,24 +336,53 @@ const AuthContextProvider = ({ children }: Props) => {
 
     // Function to delete a user
     const deleteUserAccount = async () => {
-
+        
         if (!auth.currentUser) {
-            return
+            return {
+                success: false
+            }
         }
 
-        // Delete possible avatar from storage
-        if (auth.currentUser.photoURL) {
+        setLoading({
+            ...loading,
+            deleteUser: true
+        })
 
-            await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
+        try {
+
+            // Delete possible avatar from storage
+            if (auth.currentUser.photoURL) {
+
+                await deleteObject(ref(storage, `avatars/${auth.currentUser.uid}`))
+
+            }
+
+            // Delete user doc from firestore
+            await deleteDoc(doc(db, "users", auth.currentUser.uid))
+
+            // Delete user from auth
+            await deleteUser(auth.currentUser)
+
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                deleteUser: false
+            })
 
         }
-
-        // Delete user doc from firestore
-        await deleteDoc(doc(db, "users", auth.currentUser.uid))
-
-        // Delete user from auth
-        await deleteUser(auth.currentUser)
-
+        
     }
 
     // Function fro admins to delete a user
@@ -383,22 +416,85 @@ const AuthContextProvider = ({ children }: Props) => {
     const createQuizDocument = async (data: any) => {
 
         if (!auth.currentUser) {
-            return
+            return {
+                success: false
+            }
         }
 
-        await addDoc(collection(db, "quizzes"), {
-            authorId: auth.currentUser.uid,
-            authorName: auth.currentUser.displayName,
-            createdAt: new Date(),
-            ...data
+        setLoading({
+            ...loading,
+            createQuiz: true
         })
 
+        try {
+
+            const quizDoc = await addDoc(collection(db, "quizzes"), {
+                authorId: auth.currentUser.uid,
+                authorName: auth.currentUser.displayName,
+                createdAt: new Date(),
+                ...data
+            })
+
+            return {
+                success: true,
+                quizId: quizDoc.id
+            }
+            
+        } catch (error) {
+            
+            return {
+                success: false,
+                error
+            }
+
+        } finally {
+
+            setLoading({
+                ...loading,
+                createQuiz: false
+            })
+
+        }
+        
     }
 
     // Delete quiz document from firestore
     const deleteQuizDocument = async (id: string) => {
 
-        await deleteDoc(doc(db, "quizzes", id))
+        if (!auth.currentUser) {
+            return {
+                success: false
+            }
+        }
+
+        setLoading({
+            ...loading,
+            deleteQuiz: true
+        })
+
+        try {
+
+            await deleteDoc(doc(db, "quizzes", id))
+
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                deleteQuiz: false
+            })
+
+        }
 
     }
 
@@ -473,14 +569,46 @@ const AuthContextProvider = ({ children }: Props) => {
     const updateQuizDocument = async (data: any, id: string) => {
 
         if (!auth.currentUser) {
-            return
+            return {
+                success: false
+            }
         }
 
-        await setDoc(doc(db, 'quizzes', id), {
-            ...data
-        }, {
-            merge: true
+        setLoading({
+            ...loading,
+            updateQuiz: true
         })
+
+        try {
+
+            await setDoc(doc(db, 'quizzes', id), {
+                ...data
+            }, {
+                merge: true
+            })
+
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+
+            return {
+
+                success: false,
+                error
+
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                createQuiz: false
+            })
+
+        }
+        
     }
 
 

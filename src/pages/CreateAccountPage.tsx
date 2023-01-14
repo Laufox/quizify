@@ -39,7 +39,7 @@ const CreateAccountPage = () => {
         const response = await createUserAccount(data.email, data.password, data.username, currentPhoto)
 
         if (!response.success) {
-            setSubmitErrorMessage(response.error.message ?? 'An unknown error occured')
+            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
             return
         }
 

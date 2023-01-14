@@ -57,9 +57,9 @@ const UpdateProfilePage = () => {
 
         if (!response.success) {
 
-            setSubmitErrorMessage(response.error.message ?? 'An unknown error occured')
-
+            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
             return
+
         }
 
         navigate(`/profile/${currentUser.uid}`)
@@ -67,12 +67,22 @@ const UpdateProfilePage = () => {
     }
 
     const handleDeleteUser = async () => {
-        try {
-            await deleteUserAccount()
-            navigate('/')
-        } catch (error) {
-            console.log(error)
+
+        setSubmitErrorMessage('')
+        closeConfirmModal()
+
+        const response = await deleteUserAccount()
+
+        if (!response.success) {
+
+            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
+
+            return
+
         }
+
+        navigate('/')
+
     }
 
     const openConfirmModal = () => {
@@ -231,9 +241,24 @@ const UpdateProfilePage = () => {
                     <div className='danger-zone'>
                         <h2>Danger zone</h2>
                         <button 
-                            className='btn btn-danger' 
+                            className={classNames({
+                                'btn': true,
+                                'btn-danger': true,
+                                'btn-action': true,
+                                'btn-delete-user': true,
+                                'btn-disabled': loading.deleteUser
+                            })}
                             onClick={openConfirmModal}
-                        >Delete account</button>
+                            disabled={loading.deleteUser}
+                        >
+                            {
+                                loading.deleteUser ? (
+                                    <LoadingSpinnerButton />
+                                ) : (
+                                    'Delete Account'
+                                )
+                            }
+                        </button>
                     </div>
 
                     

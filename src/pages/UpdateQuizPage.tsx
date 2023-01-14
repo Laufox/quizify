@@ -15,6 +15,7 @@ import { FormData } from "../interfaces/FormData"
 import { Quiz } from "../interfaces/Quiz"
 import { NewQuestionItem } from "../interfaces/NewQuestionItem"
 import { NewQuestionInput } from "../interfaces/NewQuestionInput"
+import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
 
 const UpdateQuizPage = () => {
 
@@ -26,9 +27,9 @@ const UpdateQuizPage = () => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>()
 
     // Funtions and variabels to use from auth context
-    const { updateQuizDocument, getAllCategoryDocuments, getQuizDocument, deleteQuizDocument, currentUser } = useAuthContext()
+    const { updateQuizDocument, getAllCategoryDocuments, getQuizDocument, deleteQuizDocument, currentUser, loading } = useAuthContext()
 
-    const [submitErrorMessage, setSubmitErrorMessage] = useState()
+    const [submitErrorMessage, setSubmitErrorMessage] = useState('')
     const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
     const [questionsList, setQuestionsList] = useState<NewQuestionItem[]>([])
     const [categories, setCategories] = useState<{id: string, name: string}[]>([])
@@ -39,6 +40,8 @@ const UpdateQuizPage = () => {
 
     const submitQuiz = async (data: FormData) => {
 
+        setSubmitErrorMessage('')
+
         if (data.description) {
             data.description = data.description.trim()
         }
@@ -47,16 +50,20 @@ const UpdateQuizPage = () => {
             data.tags = data.tags.trim().split(' ')
         }
         
-        try {
-            await updateQuizDocument({
-                ...data,
-                name: data.quizname.trim(),
-                questions: questionsList
-            }, id)
-            navigate(`/quiz/${id}`)
-        } catch (error: any) {
-            setSubmitErrorMessage(error?.message)
+        const response = await updateQuizDocument({
+            ...data,
+            name: data.quizname.trim(),
+            questions: questionsList
+        }, id)
+
+        if (!response.success) {
+
+            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
+            return
+
         }
+
+        navigate(`/quiz/${id}`)
 
     }
 
@@ -145,7 +152,6 @@ const UpdateQuizPage = () => {
 
     const applyQuestions = () => {
 
-        console.log(quiz?.questions)
         if (!quiz){
             return
         }
@@ -163,13 +169,16 @@ const UpdateQuizPage = () => {
 
     const handleDeleteQuiz = async () => {
 
-        try {
-            await deleteQuizDocument(id)
-            closeConfirmModal()
-            navigate('/')
-        } catch (error) {
-            console.log(error)
+        setSubmitErrorMessage('')
+
+        closeConfirmModal()
+        const response = await deleteQuizDocument(id)
+
+        if (!response.success) {
+            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
         }
+
+        navigate('/')
 
     }
 
@@ -340,11 +349,19 @@ const UpdateQuizPage = () => {
                             className={classNames({
                                 'btn': true,
                                 'btn-info': true,
-                                'btn-disabled': !questionsList.length
+                                'btn-action': true,
+                                'btn-update-user': true,
+                                'btn-disabled': !questionsList.length || loading.updateQuiz
                             })}
-                            disabled={!questionsList.length}
+                            disabled={!questionsList.length || loading.updateQuiz}
                         >
-                            Publish
+                            {
+                                loading.updateQuiz ? (
+                                    <LoadingSpinnerButton />
+                                ) : (
+                                    'Save'
+                                )
+                            }
                         </button>
                         {
                             !questionsList.length &&
@@ -356,9 +373,24 @@ const UpdateQuizPage = () => {
                     <div className='danger-zone'>
                         <h2>Danger zone</h2>
                         <button 
-                            className='btn btn-danger' 
+                            className={classNames({
+                                'btn': true,
+                                'btn-danger': true,
+                                'btn-action': true,
+                                'btn-delete-quiz': true,
+                                'btn-disabled': loading.deleteQuiz
+                            })}
                             onClick={openConfirmModal}
-                        >Delete quiz</button>
+                            disabled={loading.deleteQuiz}
+                        >
+                            {
+                                loading.deleteQuiz ? (
+                                    <LoadingSpinnerButton />
+                                ) : (
+                                    'Delete Quiz'
+                                )
+                            }
+                        </button>
                     </div>
                     </>
                 )

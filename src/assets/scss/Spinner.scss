@@ -71,3 +71,10 @@
     animation-timing-function: linear;
 
 }
+
+.btn-delete-user > .loading-spinner-button, .btn-delete-quiz > .loading-spinner-button {
+
+    border: 0.4rem solid #c33;
+    border-top: 0.4rem solid #fff;
+
+}
