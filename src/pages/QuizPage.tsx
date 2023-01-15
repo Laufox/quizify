@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
 import QuizIntro from '../components/QuizPlay/QuizIntro'
 import QuizPlaying from '../components/QuizPlay/QuizPlaying'
 import QuizResults from '../components/QuizPlay/QuizResults'
@@ -12,7 +13,7 @@ const QuizPage = () => {
 
     const { id } = useParams()
 
-    const { getQuizDocument, currentUser, addQuizResultToUser } = useAuthContext()
+    const { getQuizDocument, currentUser, addQuizResultToUser, loading } = useAuthContext()
 
     const [quiz, setQuiz] = useState<Quiz>()
     const [quizStatus, setQuizStatus] = useState<'intro'|'playing'|'over'>('intro')
@@ -22,7 +23,16 @@ const QuizPage = () => {
 
     const applyQuiz = async () => {
 
-        setQuiz(await getQuizDocument(id))
+        const response = await getQuizDocument(id)
+
+        if (!response.success) {
+
+            console.log('Error: ', response.error)
+            return
+
+        }
+
+        setQuiz(response.quiz)
 
     }
 
@@ -81,29 +91,38 @@ const QuizPage = () => {
     return (
         <div className='page-container quiz-container'>
             {
-                quiz && (
-                    <>
-                    <h1>{quiz.name}</h1>
-                    {
-                        quizStatus === 'intro' && (
-                            <QuizIntro quiz={quiz} onBegin={beginQuiz} />
-                        )
-                    }
+                loading.getQuiz ? (
 
-                    {
-                        quizStatus === 'playing' && (
-                            <QuizPlaying questions={quiz.questions} onFinish={endQuiz} />
-                        )
-                    }
+                    <LoadingSpinnerGeneric size='large' />
 
-                    {
-                        quizStatus === 'over' && (
-                            <QuizResults answeredQuestions={answeredQuestions} score={score} scorePercent={scorePercent} onReplay={handleReplay} />
-                        )
-                    }
-                    
-                    </>
+                ) : (
+
+                    quiz && (
+                        <>
+                        <h1>{quiz.name}</h1>
+                        {
+                            quizStatus === 'intro' && (
+                                <QuizIntro quiz={quiz} onBegin={beginQuiz} />
+                            )
+                        }
+    
+                        {
+                            quizStatus === 'playing' && (
+                                <QuizPlaying questions={quiz.questions} onFinish={endQuiz} />
+                            )
+                        }
+    
+                        {
+                            quizStatus === 'over' && (
+                                <QuizResults answeredQuestions={answeredQuestions} score={score} scorePercent={scorePercent} onReplay={handleReplay} />
+                            )
+                        }
+                        
+                        </>
+                    )
+
                 )
+                
             }
             
         </div>

@@ -90,7 +90,10 @@ const AuthContextProvider = ({ children }: Props) => {
         updateQuiz: false,
         deleteQuiz: false,
         getQuizzes: false,
-        getCategories: false
+        getCategories: false,
+        getUsers: false,
+        getUser: false,
+        getQuiz: false,
     })
 
     /********************************************************
@@ -503,13 +506,47 @@ const AuthContextProvider = ({ children }: Props) => {
     // Get one quiz document from firestore
     const getQuizDocument = async (id: string) => {
 
-        const quizSnap = await getDoc(doc(db, 'quizzes', id))
+        setLoading({
+            ...loading,
+            getQuiz: true
+        })
 
-        if (quizSnap.exists()) {
-            return {
-                ...quizSnap.data(),
-                createdAt: new Date(quizSnap.data().createdAt.toMillis()).toISOString().slice(0, 10)
+        try {
+
+            const quizSnap = await getDoc(doc(db, 'quizzes', id))
+
+            if (!quizSnap.exists()) {
+                return {
+                    success: false,
+                    error: {
+                        code: 'Doc not found',
+                        message: 'Quiz document could not be retrieved'
+                    }
+                }
             }
+
+            return {
+                success: true,
+                quiz: {
+                    ...quizSnap.data(),
+                    createdAt: new Date(quizSnap.data().createdAt.toMillis()).toISOString().slice(0, 10)
+                }
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                getQuiz: false
+            })
+
         }
 
     }
@@ -694,17 +731,71 @@ const AuthContextProvider = ({ children }: Props) => {
     // Create new category document to firestore
     const createCategoryDocument = async (name: string) => {
 
-        await addDoc(collection(db, "categories"), {
-            name
+        setLoading({
+            ...loading,
+            getCategories: true
         })
 
+        try {
+
+            await addDoc(collection(db, "categories"), {
+                name
+            })
+
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                getCategories: false
+            })
+
+        }
+        
     }
 
     // Delete category document from firestore
     const deleteCategoryDocument = async (id: string) => {
         
-        await deleteDoc(doc(db, "categories", id))
+        setLoading({
+            ...loading,
+            getCategories: true
+        })
 
+        try {
+
+            await deleteDoc(doc(db, "categories", id))
+
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                getCategories: false
+            })
+
+        }
+        
     }
 
 
@@ -718,31 +809,92 @@ const AuthContextProvider = ({ children }: Props) => {
     // Get a user document from firestore
     const getUserDocument = async (uid: string) => {
 
-        const docSnap = await getDoc(doc(db, "users", uid))
+        setLoading({
+            ...loading,
+            getUser: true
+        })
 
-        if (docSnap.exists()) {
-            return docSnap.data()
+        try {
+
+            const docSnap = await getDoc(doc(db, "users", uid))
+
+            if (!docSnap.exists()) {
+                return {
+                    success: false,
+                    error: {
+                        code: 'Doc not found',
+                        message: 'User document could not be retrieved'
+                    }
+                }
+            }
+
+            return {
+                success: true,
+                user: docSnap.data()
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                getUser: false
+            })
+
         }
-
+        
     }
 
     // Get all user documents from firestore
     const getAllUserDocuments = async () => {
 
-        const arrayOfUsers: User[] = []
-
-        const allUsersSnap = await getDocs(collection(db, "users"))
-
-        allUsersSnap.forEach(user => {
-            arrayOfUsers.push({
-                id: user.id,
-                name: user.data().username,
-                photoURL: user.data().photoURL,
-                createdAt: new Date(user.data().createdAt.toMillis()).toISOString().slice(0, 10)
-            })
+        setLoading({
+            ...loading,
+            getUsers: true
         })
 
-        return arrayOfUsers
+        try {
+
+            const arrayOfUsers: User[] = []
+
+            const allUsersSnap = await getDocs(collection(db, "users"))
+
+            allUsersSnap.forEach(user => {
+                arrayOfUsers.push({
+                    id: user.id,
+                    name: user.data().username,
+                    photoURL: user.data().photoURL,
+                    createdAt: new Date(user.data().createdAt.toMillis()).toISOString().slice(0, 10)
+                })
+            })
+
+            return {
+                success: true,
+                users: arrayOfUsers
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                getUsers: false
+            })
+
+        }
+
     }
 
     const addQuizResultToUser = async (quizResults: QuizResults) => {
