@@ -134,7 +134,16 @@ const CreateQuizPage = () => {
     }
 
     const applyCategories = async () => {
-        setCategories([...await getAllCategoryDocuments()])
+
+        const response = await getAllCategoryDocuments()
+
+        if (!response.success) {
+            console.log('There was an error: ', response.error)
+            return
+        }
+
+        setCategories([...response.categories])
+        
     }
 
     useEffect(()=>{
