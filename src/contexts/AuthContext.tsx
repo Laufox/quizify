@@ -529,7 +529,7 @@ const AuthContextProvider = ({ children }: Props) => {
                 success: true,
                 quiz: {
                     ...quizSnap.data(),
-                    createdAt: new Date(quizSnap.data().createdAt.toMillis()).toISOString().slice(0, 10)
+                    createdAt: new Date(quizSnap.data().createdAt.toMillis()).toISOString().slice(2, 10)
                 }
             }
             
@@ -575,7 +575,7 @@ const AuthContextProvider = ({ children }: Props) => {
                     tags: quiz.data().tags,
                     questions: quiz.data().questions,
                     visibility: quiz.data().visibility,
-                    createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(0, 10)
+                    createdAt: new Date(quiz.data().createdAt.toMillis()).toISOString().slice(2, 10)
                 })
             })
 
@@ -870,7 +870,7 @@ const AuthContextProvider = ({ children }: Props) => {
                     id: user.id,
                     name: user.data().username,
                     photoURL: user.data().photoURL,
-                    createdAt: new Date(user.data().createdAt.toMillis()).toISOString().slice(0, 10)
+                    createdAt: new Date(user.data().createdAt.toMillis()).toISOString().slice(2, 10)
                 })
             })
 

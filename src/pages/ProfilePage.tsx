@@ -3,7 +3,8 @@ import { Link, useParams } from "react-router-dom"
 import { useAuthContext } from "../contexts/AuthContext"
 
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
-import accordionIcon from '../assets/icons/accordion-icon.svg'
+import updateIcon from '../assets/icons/update-icon.svg'
+import deleteIcon from '../assets/icons/delete-icon.svg'
 import SearchForm from '../components/SearchForm'
 import Confirm from '../components/Confirm'
 
@@ -12,8 +13,8 @@ import { Categories } from '../interfaces/Categories'
 import { Quiz } from '../interfaces/Quiz'
 import { User } from '../interfaces/User'
 
-import { adminDeleteUser } from '../api-services/userAPI'
 import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
+import CollectionContainer from '../components/CollectionContainer'
 
 const ProfilePage = () => {
 
@@ -227,123 +228,85 @@ const ProfilePage = () => {
                             }
                         </div>
     
-    
-                        <div className='created-quizzes'>
-                            <header onClick={toggleShowCreated}>
-                                <h2>Your created quizzes</h2>
-                                <img src={accordionIcon}/>
-                            </header>
-    
+                        <CollectionContainer
+                            onToggle={toggleShowCreated}
+                            title={`Quizzes created by ${userData.username}`}
+                            loadingState={loading.getQuizzes}
+                            showState={showCreated}
+                        >
+                            <>
                             {
-                                showCreated && (
-                                    <main className='created-quizzes-collection'>
-    
+                                !!quizzesCreatedByUser.length && quizzesCreatedByUser.map(quiz => (
+                                    <div key={quiz.id} className='collection-row'>
+                                        <Link to={`/quiz/${quiz.id}`} className='collection-row-main'>{quiz.createdAt} - {quiz.name}</Link>
+
                                         {
-                                            loading.getQuizzes ? (
-    
-                                                <LoadingSpinnerGeneric size='medium' />
-    
-                                            ) : (
-    
-                                                <>
-                                                {
-                                                    !!quizzesCreatedByUser.length && quizzesCreatedByUser.map(quiz => (
-                                                        <div key={quiz.id} className='created-quiz-item'>
-                                                            <Link to={`/quiz/${quiz.id}`}>{quiz.createdAt} - {quiz.name}</Link>
-    
-                                                            {
-                                                                userData.uid === uid && (
-                                                                    <div className='action-links'>
-                                                                        <Link to={`/updatequiz/${quiz.id}`}>Update</Link>
-                                                                        <p 
-                                                                            onClick={()=>{
-                                                                                setObjectToDelete({
-                                                                                    id: quiz.id,
-                                                                                    name: quiz.name
-                                                                                })
-                                                                                openConfirmModal()
-                                                                            }} 
-                                                                            className='link'
-                                                                        >
-                                                                            Delete
-                                                                        </p>
-                                                                    </div>
-                                                                )
-                                                            }
-                                                            
-                                                        </div>
-                                                    ))
-                                                }
-    
-                                                {
-                                                    !quizzesCreatedByUser.length && (
-                                                        <div>
-                                                            <p>No quizzes created yet</p>
-                                                        </div>
-                                                    )
-                                                }
-                                                
-                                                {/* Only show if this is signed in user */}
-                                                {
-                                                    userData.uid === uid && <Link to='/createquiz' className='new-quiz-link'>+ New quiz</Link>
-                                                }
-                                                </>
-    
+                                            userData.uid === uid && (
+                                                <div className='collection-row-actions'>
+                                                    <Link to={`/updatequiz/${quiz.id}`} className=''>
+                                                        <img src={updateIcon} />
+                                                    </Link>
+                                                    <p 
+                                                        onClick={()=>{
+                                                            setObjectToDelete({
+                                                                id: quiz.id,
+                                                                name: quiz.name
+                                                            })
+                                                            openConfirmModal()
+                                                        }} 
+                                                        className='link'
+                                                    >
+                                                        <img src={deleteIcon} />
+                                                    </p>
+                                                </div>
                                             )
                                         }
                                         
-                                    </main>
-                                )
+                                    </div>
+                                ))
                             }
-                            
-                        </div>
-    
-                        <div className='played-quizzes'>
-                            <header onClick={toggleShowPlayed} >
-                                <h2>Your last played quizzes</h2>
-                                <img src={accordionIcon}/>
-                            </header>
-    
+
                             {
-                                showPlayed && (
-                                    <main className='played-quizzes-collection'>
-    
-                                        {
-                                            loading.getQuizzes ? (
-    
-                                                <LoadingSpinnerGeneric size='medium' />
-    
-                                            ) : (
-    
-                                                <>
-                                                {
-                                                    !!userData.playedQuizzes.length && userData.playedQuizzes.map((quiz, i) => (
-                                                        <div key={i} className='played-quiz-item'>
-                                                            <Link to={`/quiz/${quiz.id}`}>{quiz.playedAt} - {quiz.name}</Link>
-                                                            <span>{quiz.scorePercentage} %</span>
-                                                        </div>
-                                                    ))
-                                                    
-                                                }
-    
-                                                {
-                                                    !userData.playedQuizzes.length && (
-                                                        <div>
-                                                            <p>No quizzes played yet</p>
-                                                        </div>
-                                                    )
-                                                }
-                                                </>
-    
-                                            )
-                                        }
-                                        
-                                    </main>
+                                !quizzesCreatedByUser.length && (
+                                    <div>
+                                        <p>No quizzes created yet</p>
+                                    </div>
                                 )
                             }
-    
                             
-                        </div>
+                            {/* Only show if this is signed in user */}
+                            {
+                                userData.uid === uid && <Link to='/createquiz' className='new-quiz-link'>+ New quiz</Link>
+                            }
+                            </>
+                        </CollectionContainer>
+
+                        <CollectionContainer
+                            onToggle={toggleShowPlayed}
+                            title={`Quizzes played by ${userData.username}`}
+                            loadingState={loading.getQuizzes}
+                            showState={showPlayed}
+                        >
+                            <>
+                            {
+                                !!userData.playedQuizzes.length && userData.playedQuizzes.map((quiz, i) => (
+                                    <div key={i} className='collection-row'>
+                                        <Link to={`/quiz/${quiz.id}`} className='collection-row-main'>{quiz.playedAt.slice(2)} - {quiz.name}</Link>
+                                        <span className='collection-row-extra'>{quiz.scorePercentage} %</span>
+                                    </div>
+                                ))
+                                
+                            }
+
+                            {
+                                !userData.playedQuizzes.length && (
+                                    <div>
+                                        <p>No quizzes played yet</p>
+                                    </div>
+                                )
+                            }
+                            </>
+                        </CollectionContainer>
     
                         {
                             userData.role === "admin" && (
@@ -354,152 +317,114 @@ const ProfilePage = () => {
                                     <h2>Admin control</h2>
     
                                     <SearchForm onSearch={()=>{}} />
-    
-                                    <div className='created-quizzes'>
-                                        <header onClick={toggleShowAddedQuizzes}>
-                                            <h2>Latest added quizzes</h2>
-                                            <img src={accordionIcon}/>
-                                        </header>
-    
+
+                                    <CollectionContainer 
+                                        onToggle={toggleShowAddedQuizzes}
+                                        title='All created quizzes'
+                                        loadingState={loading.getQuizzes}
+                                        showState={showAddedQuizzes}
+                                    >
+                                        <>
                                         {
-                                            showAddedQuizzes && (
-                                                <main className='created-quizzes-collection'>
-                                                    {
-                                                        loading.getQuizzes ? (
-    
-                                                            <LoadingSpinnerGeneric size='medium' />
-    
-                                                        ) : (
-    
-                                                            !!allQuizzes.length && allQuizzes.map(quiz => (
-                                                                <div key={quiz.id} className='created-quiz-item'>
-                                                                    <Link to={`/quiz/${quiz.id}`}>{quiz.createdAt} - {quiz.name}</Link>
-                                                                    <div className='action-links'>
-                                                                    <p 
-                                                                        onClick={()=>{
-                                                                            setObjectToDelete({
-                                                                                id: quiz.id,
-                                                                                name: quiz.name
-                                                                            })
-                                                                            openConfirmModal()
-                                                                        }} 
-                                                                        className='link'
-                                                                    >
-                                                                        Delete
-                                                                    </p>
-                                                                    </div>
-                                                                </div>
-                                                            ))
-    
-                                                        )
-                                                        
-                                                    }
-                                                </main>
-                                            )
+                                            !!allQuizzes.length && allQuizzes.map(quiz => (
+                                                <div key={quiz.id} className='collection-row'>
+                                                    <Link to={`/quiz/${quiz.id}`} className='collection-row-main'>{quiz.createdAt} - {quiz.name}</Link>
+                                                    <div className='collection-row-actions'>
+                                                    <p 
+                                                        onClick={()=>{
+                                                            setObjectToDelete({
+                                                                id: quiz.id,
+                                                                name: quiz.name
+                                                            })
+                                                            openConfirmModal()
+                                                        }} 
+                                                        className='link'
+                                                    >
+                                                        <img src={deleteIcon} />
+                                                    </p>
+                                                    </div>
+                                                </div>
+                                            ))
                                         }
+                                        </>
                                         
-                                    </div>
-    
-                                    <div className='created-quizzes'>
-                                        <header onClick={toggleShowAddedUsers}>
-                                            <h2>Latest added users</h2>
-                                            <img src={accordionIcon}/>
-                                        </header>
-    
+                                    </CollectionContainer>
+
+                                    <CollectionContainer
+                                        onToggle={toggleShowAddedUsers}
+                                        title='All created users'
+                                        loadingState={loading.getUsers}
+                                        showState={showAddedUsers}
+                                    >
+                                        <>
                                         {
-                                            showAddedUsers && (
-                                                <main className='created-quizzes-collection'>
-                                                    {
-    
-                                                        loading.getUsers ? (
-    
-                                                            <LoadingSpinnerGeneric size='medium' />
-    
-                                                        ) : (
-    
-                                                            !!allUsers.length && allUsers.map(user => (
-                                                                <div key={user.id} className='created-quiz-item'>
-                                                                    <Link to={`/profile/${user.id}`}>{user.createdAt} - {user.name}</Link>
-                                                                    <div className='action-links'>
-                                                                        <p className='link' onClick={async ()=>{
-                                                                            try {
-                                                                                console.log('test')
-                                                                                await deleteUserAccountAdmin(user.id, user.photoURL ? true : false)
-                                                                                console.log('after call')
-                                                                                applyAllUsers()
-                                                                                console.log('after apply')
-        
-                                                                            } catch (error: any) {
-                                                                                console.log('error')
-                                                                                console.log('error code: ', error.code)
-                                                                                console.log('error msg: ', error.message)
-                                                                            }
-                                                                            }}>Delete</p>
-                                                                    </div>
-                                                                </div>
-                                                            ))
-                                                        )
-                                                        
-                                                    }
-                                                </main>
-                                            )
-                                        }
-                                        
-                                    </div>
-    
-                                    <div className='created-quizzes'>
-                                        <header onClick={toggleShowCategories}>
-                                            <h2>Categories</h2>
-                                            <img src={accordionIcon}/>
-                                        </header>
-    
-                                        {
-                                            showCategories && (
-                                                <main className='created-quizzes-collection'>
-                                                    {
-                                                        loading.getCategories ? (
-    
-                                                            <LoadingSpinnerGeneric size='medium' />
-    
-                                                        ) : (
-                                                            <>
-                                                            {
-                                                                !!categories.length && categories.map((cat)=>(
-                                                                    <div key={cat.id} className='created-quiz-item'>
-                                                                        <p>{cat.name}</p>
-                                                                        <p 
-                                                                            className='link'
-                                                                            onClick={()=>{handleDeleteCategorie(cat.id)}}
-                                                                        >
-                                                                            Delete
-                                                                        </p>
-                                                                    </div>
-                                                                ))
+                                            !!allUsers.length && allUsers.map(user => (
+                                                <div key={user.id} className='collection-row'>
+                                                    <Link to={`/profile/${user.id}`} className='collection-row-main'>{user.createdAt} - {user.name}</Link>
+                                                    <div className='collection-row-actions'>
+                                                        <p className='link' onClick={async ()=>{
+                                                            try {
+                                                                console.log('test')
+                                                                await deleteUserAccountAdmin(user.id, user.photoURL ? true : false)
+                                                                console.log('after call')
+                                                                applyAllUsers()
+                                                                console.log('after apply')
+
+                                                            } catch (error: any) {
+                                                                console.log('error')
+                                                                console.log('error code: ', error.code)
+                                                                console.log('error msg: ', error.message)
                                                             }
-    
-                                                            <h3>Add new: </h3>
-                                                            <form 
-                                                                onSubmit={addNewCategorie}
-                                                                noValidate
-                                                            >
-                                                                <input 
-                                                                    type='text'
-                                                                    value={newCategorieInput}
-                                                                    onChange={(e)=>{
-                                                                        setNewCategorieInput(e.target.value)
-                                                                    }}
-                                                                />
-                                                                <button type='submit' className='btn btn-info'>Add</button>
-                                                            </form>
-                                                            </>
-                                                        )
-                                                    }
-                                                    
-                                                </main>
-                                            )
+                                                            }}>
+                                                                <img src={deleteIcon} />
+                                                            </p>
+                                                    </div>
+                                                </div>
+                                            ))
                                         }
-                                        
-                                    </div>
+                                        </>
+                                    </CollectionContainer>
+
+                                    <CollectionContainer
+                                        onToggle={toggleShowCategories}
+                                        title='Categories'
+                                        loadingState={loading.getCategories}
+                                        showState={showCategories}
+                                    >
+                                        <>
+                                        {
+                                            !!categories.length && categories.map((cat)=>(
+                                                <div key={cat.id} className='collection-row'>
+                                                    <p className='collection-row-main'>{cat.name}</p>
+                                                    <div className='collection-row-actions'>
+                                                        <p 
+                                                            className='link'
+                                                            onClick={()=>{handleDeleteCategorie(cat.id)}}
+                                                        >
+                                                            <img src={deleteIcon} />
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+
+                                        <h3>Add new: </h3>
+                                        <form 
+                                            onSubmit={addNewCategorie}
+                                            noValidate
+                                        >
+                                            <input 
+                                                type='text'
+                                                value={newCategorieInput}
+                                                onChange={(e)=>{
+                                                    setNewCategorieInput(e.target.value)
+                                                }}
+                                            />
+                                            <button type='submit' className='btn btn-info btn-action'>Add</button>
+                                        </form>
+                                        </>
+                                    </CollectionContainer>
+                                    
                                 </div>
                             )
                         }

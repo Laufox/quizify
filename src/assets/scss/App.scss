@@ -130,8 +130,11 @@ img {
     align-self: flex-start;
     font-size: 1.4rem;
     margin: 2rem 0;
-
     cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
 }
 
 .btn-info {
