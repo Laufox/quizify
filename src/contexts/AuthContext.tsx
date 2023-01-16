@@ -394,8 +394,15 @@ const AuthContextProvider = ({ children }: Props) => {
     const deleteUserAccountAdmin = async (uid: string, hasPhoto: boolean) => {
 
         if (!auth.currentUser) {
-            return
+            return {
+                success: false
+            }
         }
+
+        setLoading({
+            ...loading,
+            getUser: true
+        })
 
         // Delete possible avatar from storage
         if (hasPhoto) {
@@ -405,7 +412,14 @@ const AuthContextProvider = ({ children }: Props) => {
         // Delete user doc from firestore
         await deleteDoc(doc(db, "users", uid))
 
-        return await adminDeleteUser(uid)
+        const response = await adminDeleteUser(uid)
+        
+        setLoading({
+            ...loading,
+            getUser: true
+        })
+        
+        return response.data
 
     }
 

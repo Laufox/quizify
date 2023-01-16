@@ -64,23 +64,26 @@ const ProfilePage = () => {
             return
         }
 
-        try {
-            await createCategoryDocument(newCategorieInput)
-            applyCategories()
-            setNewCategorieInput('')
-        } catch (error) {
-            console.log(error)
+        const response = await createCategoryDocument(newCategorieInput)
+
+        if (!response.success) {
+            console.log('Error', response.error)
         }
+
+        applyCategories()
+        setNewCategorieInput('')
+
     }
     
     const handleDeleteCategorie = async (id: string) => {
         
-        try {
-            await deleteCategoryDocument(id)
-            applyCategories()
-        } catch (error) {
-            console.log(error)
+        const response = await deleteCategoryDocument(id)
+
+        if (!response.success) {
+            console.log('Error', response.error)
         }
+
+        applyCategories()
         
     }
 
@@ -161,16 +164,33 @@ const ProfilePage = () => {
 
     const handleDeleteQuiz = async () => {
 
-        try {
-            await deleteQuizDocument(objectToDelete?.id)
-            applyQuizzesCreatedByUser()
-            if (userData?.role === "admin") {
-                applyAllQuizzes()
-            }
-            closeConfirmModal()
-        } catch (error) {
-            console.log(error)
+        const response = await deleteQuizDocument(objectToDelete?.id)
+
+        if (!response.success) {
+
+            console.log('Error has happended: ', response.error)
+            return
+
         }
+
+        applyQuizzesCreatedByUser()
+        if (userData?.role === "admin") {
+            applyAllQuizzes()
+        }
+        closeConfirmModal()
+
+    }
+
+    const handleDeleteUser = async (user: User) => {
+
+        const response = await deleteUserAccountAdmin(user.id, user.photoURL ? true : false)
+
+        if (!response.success) {
+            console.log('Error: ', response.error)
+            return
+        }
+
+        applyAllUsers()
 
     }
 
@@ -362,22 +382,12 @@ const ProfilePage = () => {
                                                 <div key={user.id} className='collection-row'>
                                                     <Link to={`/profile/${user.id}`} className='collection-row-main'>{user.createdAt} - {user.name}</Link>
                                                     <div className='collection-row-actions'>
-                                                        <p className='link' onClick={async ()=>{
-                                                            try {
-                                                                console.log('test')
-                                                                await deleteUserAccountAdmin(user.id, user.photoURL ? true : false)
-                                                                console.log('after call')
-                                                                applyAllUsers()
-                                                                console.log('after apply')
-
-                                                            } catch (error: any) {
-                                                                console.log('error')
-                                                                console.log('error code: ', error.code)
-                                                                console.log('error msg: ', error.message)
-                                                            }
-                                                            }}>
-                                                                <img src={deleteIcon} />
-                                                            </p>
+                                                        <p 
+                                                            className='link' 
+                                                            onClick={()=>{handleDeleteUser(user)}}
+                                                        >
+                                                            <img src={deleteIcon} />
+                                                        </p>
                                                     </div>
                                                 </div>
                                             ))
