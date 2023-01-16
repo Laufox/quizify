@@ -226,11 +226,6 @@
                         cursor: default;  
                     }
 
-                    .question-answer-guess {
-                        // transform: scaleX(0.95);
-                        // transform-origin: right;
-                        // margin-right: 0.2rem;
-                    }
                 }
 
                 @media screen and (min-width: 720px) {
@@ -429,9 +424,6 @@
                             flex-grow: 1;
                         }
 
-                        .question-item-accordion-icon {
-                            // align-self: flex-end;
-                        }
                     }
 
                     .question-container {

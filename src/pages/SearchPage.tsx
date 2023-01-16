@@ -38,9 +38,6 @@ const SearchPage = () => {
 
     const performSearch = async (q: string) => {
 
-        console.log('quizzes:', allQuizzes)
-        console.log('users: ', allUsers)
-
         const quizzes = allQuizzes.filter((quiz) => {
 
             if (quiz.name.includes(q) || quiz.tags.includes(q)) {
@@ -70,13 +67,31 @@ const SearchPage = () => {
 
     const applyAllQuizzes = async () => {
 
-        setAllQuizzes([...await getAllPublicQuizDocuments()])
+        const response = await getAllPublicQuizDocuments()
+
+        if (!response.success) {
+
+            console.log('Error has happended: ', response.error)
+            return
+
+        }
+
+        setAllQuizzes([...response.quizzes])
 
     }
 
     const applyAllUsers = async () => {
 
-        setAllUsers([...await getAllUserDocuments()])
+        const response = await getAllUserDocuments()
+
+        if (!response.success) {
+
+            console.log('Error has occured', response.error)
+            return
+
+        }
+
+        setAllUsers([...await response.users])
 
     }
 
@@ -108,12 +123,6 @@ const SearchPage = () => {
         applyAllUsers()
 
     }, [])
-
-    useEffect(() => {
-
-        console.log('Results: ', searchResults)
-
-    }, [searchResults])
 
     return (
         <div className="page-container">

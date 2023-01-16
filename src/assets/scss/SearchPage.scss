@@ -7,7 +7,7 @@
     main {
         display: flex;
         flex-flow: column;
-        gap: 1rem;
+        // gap: 1rem;
 
         a {
             font-size: 1.4rem;
@@ -27,6 +27,9 @@
             display: flex;
             flex-flow: column;
             gap: 0.5rem;
+            border-bottom: 0.1rem solid #999;
+            margin: 1rem 0;
+            padding-bottom: 2rem;
 
             a {
                 align-self: flex-start;
@@ -52,10 +55,18 @@
                 }
 
             }
+
+            &:last-child {
+                border: none;
+            }
             
         }
 
         .search-results-item-user {
+
+            border-bottom: 0.1rem solid #999;
+            margin: 1rem 0;
+            padding-bottom: 2rem;
 
             .avatar-container {
                 display: flex;
@@ -73,6 +84,10 @@
                     display: flex;
                     align-items: center;
                 }
+            }
+
+            &:last-child {
+                border: none;
             }
         }
     }
