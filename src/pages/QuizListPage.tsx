@@ -99,7 +99,7 @@ const QuizListPage = () => {
     }, [quizList])
 
     return (
-        <div className="page-container">
+        <div className="page-container quiz-list-page">
 
             <h1>Public quiz list</h1>
 
@@ -149,7 +149,7 @@ const QuizListPage = () => {
             </div>
 
             <div className='quizlist-container'>
-                <h2>List of quizzes</h2>
+                <h2>List of {selectedCategory.toLowerCase()} quizzes</h2>
                 {
                     loading.getQuizzes ? (
 

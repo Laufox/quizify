@@ -16,6 +16,7 @@ import { Quiz } from "../interfaces/Quiz"
 import { NewQuestionItem } from "../interfaces/NewQuestionItem"
 import { NewQuestionInput } from "../interfaces/NewQuestionInput"
 import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
+import LoadingSpinnerGeneric from "../components/LoadingSpinnerGeneric"
 
 const UpdateQuizPage = () => {
 
@@ -141,12 +142,28 @@ const UpdateQuizPage = () => {
     }
 
     const applyCategories = async () => {
-        setCategories([...await getAllCategoryDocuments()])
+
+        const response = await getAllCategoryDocuments()
+
+        if (!response.success) {
+            console.log('There was an error: ', response.error)
+            return
+        }
+
+        setCategories([...response.categories])
+
     }
 
     const applyQuiz = async () => {
 
-        setQuiz(await getQuizDocument(id))
+        const response = await getQuizDocument(id)
+
+        if (!response.success) {
+            console.log('There was an error: ', response.error)
+            return
+        }
+
+        setQuiz(response.quiz)
 
     }
 
@@ -212,199 +229,208 @@ const UpdateQuizPage = () => {
 
     return (
         <div className="page-container">
-
-            <h1>Update quiz</h1>
-
             {
-                quiz && currentUser.uid === quiz.authorId && (
+                loading.getQuiz ? (
+                    <LoadingSpinnerGeneric size="large" />
+                ) : (
                     <>
-                    <form onSubmit={handleSubmit(submitQuiz)} noValidate>
+                    <h1>Update quiz</h1>
 
-                        <h2>Info</h2>
+                    {
+                        quiz && currentUser.uid === quiz.authorId && (
+                            <>
+                            <form onSubmit={handleSubmit(submitQuiz)} noValidate>
 
-                        <label>Quiz name *</label>
-                        <input 
-                            id="quizname" 
-                            type='text' 
-                            {...register('quizname', {
-                                required: 'Name of quiz is required'
-                            })}
-                            placeholder='name'
-                            className={classNames({'error-input': errors.quizname})}
-                            defaultValue={quiz.name}
-                        />
-                        {errors.quizname && <span className="form-error-message">{errors.quizname?.message}</span>}
+                                <h2>Info</h2>
 
-                        <label>Category *</label>
-                        <select
-                            id="quizcategory" 
-                            {...register('category', {
-                                required: 'Must choose category'
-                            })}
-                            placeholder='category'
-                            className={classNames({'error-input': errors.category})}
-                            defaultValue={quiz.category}
-                        >
-                            <option value="" hidden>--Select a category--</option>
-                            {
-                                !!categories.length && categories.map((cat, i)=>(
-                                    <option key={cat.id} value={cat.name}>{cat.name}</option>
-                                ))
-                            }
-                        </select>
-                        {errors.category && <span className="form-error-message">{errors.category?.message}</span>}
+                                <label>Quiz name *</label>
+                                <input 
+                                    id="quizname" 
+                                    type='text' 
+                                    {...register('quizname', {
+                                        required: 'Name of quiz is required'
+                                    })}
+                                    placeholder='name'
+                                    className={classNames({'error-input': errors.quizname})}
+                                    defaultValue={quiz.name}
+                                />
+                                {errors.quizname && <span className="form-error-message">{errors.quizname?.message}</span>}
 
-                        <label>Description</label>
-                        <textarea
-                            id="quizdesc"  
-                            {...register('description')}
-                            placeholder='description'
-                            className={classNames({'error-input': errors.description})}
-                            rows={3}
-                            defaultValue={quiz.description}
-                        />
-                        {errors.description && <span className="form-error-message">{errors.description?.message}</span>}
-
-                        <label>Tags (seperate each one with space)</label>
-                        <textarea 
-                            id="quiztags"
-                            {...register('tags')}
-                            placeholder='tags'
-                            className={classNames({'error-input': errors.tags})}
-                            rows={2}
-                            defaultValue={quiz.tags ? quiz.tags.join(' ') : ''}
-                        />
-                        {errors.tags && <span className="form-error-message">{errors.tags?.message}</span>}
-
-                        <label>Visibility</label>
-
-                        <label className="radio-input-label">
-                            <input 
-                                id="quizvispublic"
-                                type='radio'
-                                {...register('visibility')}
-                                value='public'
-                                defaultChecked={quiz.visibility === 'public'}
-                            />
-                            Public
-                        </label>
-                        <label className="radio-input-label">
-                            <input 
-                                id="quizvisprivate"
-                                type='radio'
-                                {...register('visibility')}
-                                value='private'
-                                defaultChecked={quiz.visibility === 'private'}
-                            />
-                            Private
-                        </label>
-
-                        <hr />
-
-                        <h2>Questions</h2>
-                    
-                        <NewQuestionForm onAddNewQuestion={addNewQuestion} />
-                            
-                        {
-                            !!questionsList.length && (
-                                <h3 className="current-added-questions">Current added questions:</h3>
-                            )
-                        }
-
-                        {
-                            !!questionsList.length && questionsList.map((question, i) => (
-                                <div className="question-container" key={i}>
-                                    <header onClick={()=>{
-                                            toggleEditQuestionForm(i)
-                                        }}>
-                                        <div className="question-number-text">
-                                            <span>#{i+1}</span>
-                                            <h3>{question.questionText}</h3>
-                                        </div>
-                                        <img src={accordionIcon} alt='icon to see question' />
-                                    </header>
-
+                                <label>Category *</label>
+                                <select
+                                    id="quizcategory" 
+                                    {...register('category', {
+                                        required: 'Must choose category'
+                                    })}
+                                    placeholder='category'
+                                    className={classNames({'error-input': errors.category})}
+                                    defaultValue={quiz.category}
+                                >
+                                    <option value="" hidden>--Select a category--</option>
                                     {
-                                        questionAddedToShow === i && 
-
-                                        <EditQuestionForm 
-                                            question={questionsList[questionAddedToShow]} 
-                                            onEdit={(updatedQuestion)=>{editQuestion(i, updatedQuestion)}} onDelete={()=>{deleteQuestion(i)}}
-                                        />
-                                        
+                                        !!categories.length && categories.map((cat, i)=>(
+                                            <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                        ))
                                     }
-                                </div>
-                            ))
-                        }
+                                </select>
+                                {errors.category && <span className="form-error-message">{errors.category?.message}</span>}
 
-                        <hr />
+                                <label>Description</label>
+                                <textarea
+                                    id="quizdesc"  
+                                    {...register('description')}
+                                    placeholder='description'
+                                    className={classNames({'error-input': errors.description})}
+                                    rows={3}
+                                    defaultValue={quiz.description}
+                                />
+                                {errors.description && <span className="form-error-message">{errors.description?.message}</span>}
 
-                        {
-                            submitErrorMessage && 
-                            <p className="submit-error-message">{submitErrorMessage}</p>
-                        }
+                                <label>Tags (seperate each one with space)</label>
+                                <textarea 
+                                    id="quiztags"
+                                    {...register('tags')}
+                                    placeholder='tags'
+                                    className={classNames({'error-input': errors.tags})}
+                                    rows={2}
+                                    defaultValue={quiz.tags ? quiz.tags.join(' ') : ''}
+                                />
+                                {errors.tags && <span className="form-error-message">{errors.tags?.message}</span>}
 
-                        <button 
-                            type="submit" 
-                            className={classNames({
-                                'btn': true,
-                                'btn-info': true,
-                                'btn-action': true,
-                                'btn-update-user': true,
-                                'btn-disabled': !questionsList.length || loading.updateQuiz
-                            })}
-                            disabled={!questionsList.length || loading.updateQuiz}
-                        >
-                            {
-                                loading.updateQuiz ? (
-                                    <LoadingSpinnerButton />
-                                ) : (
-                                    'Save'
-                                )
-                            }
-                        </button>
-                        {
-                            !questionsList.length &&
-                            <span>(Must add at least one quiz)</span>
-                        }
-                    </form>
+                                <label>Visibility</label>
 
-                    <hr />
-                    <div className='danger-zone'>
-                        <h2>Danger zone</h2>
-                        <button 
-                            className={classNames({
-                                'btn': true,
-                                'btn-danger': true,
-                                'btn-action': true,
-                                'btn-delete-quiz': true,
-                                'btn-disabled': loading.deleteQuiz
-                            })}
-                            onClick={openConfirmModal}
-                            disabled={loading.deleteQuiz}
-                        >
-                            {
-                                loading.deleteQuiz ? (
-                                    <LoadingSpinnerButton />
-                                ) : (
-                                    'Delete Quiz'
-                                )
-                            }
-                        </button>
-                    </div>
+                                <label className="radio-input-label">
+                                    <input 
+                                        id="quizvispublic"
+                                        type='radio'
+                                        {...register('visibility')}
+                                        value='public'
+                                        defaultChecked={quiz.visibility === 'public'}
+                                    />
+                                    Public
+                                </label>
+                                <label className="radio-input-label">
+                                    <input 
+                                        id="quizvisprivate"
+                                        type='radio'
+                                        {...register('visibility')}
+                                        value='private'
+                                        defaultChecked={quiz.visibility === 'private'}
+                                    />
+                                    Private
+                                </label>
+
+                                <hr />
+
+                                <h2>Questions</h2>
+                            
+                                <NewQuestionForm onAddNewQuestion={addNewQuestion} />
+                                    
+                                {
+                                    !!questionsList.length && (
+                                        <h3 className="current-added-questions">Current added questions:</h3>
+                                    )
+                                }
+
+                                {
+                                    !!questionsList.length && questionsList.map((question, i) => (
+                                        <div className="question-container" key={i}>
+                                            <header onClick={()=>{
+                                                    toggleEditQuestionForm(i)
+                                                }}>
+                                                <div className="question-number-text">
+                                                    <span>#{i+1}</span>
+                                                    <h3>{question.questionText}</h3>
+                                                </div>
+                                                <img src={accordionIcon} alt='icon to see question' />
+                                            </header>
+
+                                            {
+                                                questionAddedToShow === i && 
+
+                                                <EditQuestionForm 
+                                                    question={questionsList[questionAddedToShow]} 
+                                                    onEdit={(updatedQuestion)=>{editQuestion(i, updatedQuestion)}} onDelete={()=>{deleteQuestion(i)}}
+                                                />
+                                                
+                                            }
+                                        </div>
+                                    ))
+                                }
+
+                                <hr />
+
+                                {
+                                    submitErrorMessage && 
+                                    <p className="submit-error-message">{submitErrorMessage}</p>
+                                }
+
+                                <button 
+                                    type="submit" 
+                                    className={classNames({
+                                        'btn': true,
+                                        'btn-info': true,
+                                        'btn-action': true,
+                                        'btn-update-user': true,
+                                        'btn-disabled': !questionsList.length || loading.updateQuiz
+                                    })}
+                                    disabled={!questionsList.length || loading.updateQuiz}
+                                >
+                                    {
+                                        loading.updateQuiz ? (
+                                            <LoadingSpinnerButton />
+                                        ) : (
+                                            'Save'
+                                        )
+                                    }
+                                </button>
+                                {
+                                    !questionsList.length &&
+                                    <span>(Must add at least one quiz)</span>
+                                }
+                            </form>
+
+                            <hr />
+                            <div className='danger-zone'>
+                                <h2>Danger zone</h2>
+                                <button 
+                                    className={classNames({
+                                        'btn': true,
+                                        'btn-danger': true,
+                                        'btn-action': true,
+                                        'btn-delete-quiz': true,
+                                        'btn-disabled': loading.deleteQuiz
+                                    })}
+                                    onClick={openConfirmModal}
+                                    disabled={loading.deleteQuiz}
+                                >
+                                    {
+                                        loading.deleteQuiz ? (
+                                            <LoadingSpinnerButton />
+                                        ) : (
+                                            'Delete Quiz'
+                                        )
+                                    }
+                                </button>
+                            </div>
+                            </>
+                        )
+                    }            
+
+                    {
+                        openConfirm &&
+                        <Confirm 
+                            onConfirm={handleDeleteQuiz}
+                            onCancel={closeConfirmModal}
+                            actionText='You are about to delete this quiz'
+                            requiresAuth={false}
+                        />
+                    }
                     </>
                 )
-            }            
-
-            {
-                openConfirm &&
-                <Confirm 
-                    onConfirm={handleDeleteQuiz}
-                    onCancel={closeConfirmModal}
-                    actionText='You are about to delete this quiz'
-                    requiresAuth={false}
-                />
             }
+
+            
 
         </div>
     )

@@ -79,7 +79,7 @@ const ResetPasswordPage = () => {
 
                 <hr />
 
-                <Link to='/signin'>Go back to sign in page</Link>
+                <Link to='/signin' className="sign-in-link">Go back to sign in page</Link>
                 <Link to='/signup'>Don't have an account? Sign up now!</Link>
             </form>
         </div>

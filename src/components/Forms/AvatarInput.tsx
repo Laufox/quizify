@@ -67,7 +67,7 @@ const AvatarInput = ({currentPhoto, setCurrentPhoto, defaultImageUrl}: Props) =>
 
             <label htmlFor="createphoto" className="file-upload-label">
                 <p>Upload profile image</p>
-                <span>Click to open file system or drag directly to this area</span>
+                <span>Click here to open file system</span>
             </label>
             <input 
                 type="file" 

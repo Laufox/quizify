@@ -12,16 +12,25 @@
         display: flex;
         justify-content: center;
         height: 6rem;
+        padding: 0 2rem;
+
+        @media screen and (min-width: 500px) {
+            padding: 0 3rem;
+        }
+
+        @media screen and (min-width: 720px) {
+            padding: 0 6rem;
+        }
     }
 
     .nav-top {
         height: 6rem;
         width: 100vw;
-        max-width: 160rem;
+        max-width: 120rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 2rem;
+        // padding: 0 2rem;
 
         .nav-logo-link {
             display: flex;
@@ -38,13 +47,29 @@
 
                 @media screen and (min-width: 400px) {
                     display: block;
+                    padding: 0.9rem 1.5rem;
+                    width: 8.2rem;
+                }
+            }
+
+            .sign-up-button {
+                padding: 1rem 1.6rem;
+                width: 8.7rem;
+            }
+
+            .sign-out-button {
+                padding: 0.9rem 1.5rem;
+                width: 8.3rem;
+                
+                &:hover {
+                    font-style: italic;
                 }
             }
 
             form {
 
                 .nav-search {
-                    width: 24rem;
+                    width: 20rem;
 
                     @media screen and (min-width: 1280px) {
                         width: 30rem;
@@ -68,15 +93,34 @@
                 }
             }
 
+            .view-quiz-list {
+                @media screen and (min-width: 992px) {
+                    width: 9.6rem;
+                }
+            } 
+            
+            .create-a-quiz {
+                @media screen and (min-width: 992px) {
+                    width: 9.3rem;
+                }
+            } 
+            
+            .about-website {
+                @media screen and (min-width: 992px) {
+                    width: 10.3rem;
+                }
+            }
+
             @media screen and (min-width: 992px) {
                 
                 display: flex;
                 flex-flow: row;
                 align-items: center;
-                margin-right: 2rem;
+                margin-right: 1.5rem;
     
                 a, p {
                     font-size: 1.4rem;
+                    // width: 10.3rem;
                 }
 
             }
@@ -136,6 +180,8 @@
                 display: none;
             }
         }
+
+        
     }
     
     /* Rules for content in dropdown section on smaller screens */
@@ -147,6 +193,16 @@
         min-height: calc(100vh - 6rem);
 
         padding: 4rem 2rem;
+
+        padding: 4rem 2rem;
+
+        @media screen and (min-width: 500px) {
+            padding: 4rem 3rem;
+        }
+
+        @media screen and (min-width: 720px) {
+            padding: 4rem 6rem;
+        }
     
         .link-collection {
             a, p {

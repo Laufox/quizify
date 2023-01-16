@@ -73,7 +73,7 @@ const SignInPage = () => {
                 />
                 {errors.password && <span className="form-error-message">{errors.password?.message}</span>}
 
-                <Link to='/resetpassword'>Forgotten your password? Click to reset</Link>
+                <Link to='/resetpassword' className="forgotten-password">Forgotten your password? Click to reset</Link>
 
                 <hr />
 

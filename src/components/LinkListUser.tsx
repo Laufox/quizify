@@ -17,18 +17,21 @@ const LinkListUser = ({onNavClick, signOut} : Props) => {
             <Link 
                 to='/quizlist'
                 onClick={onNavClick}
+                className='view-quiz-list'
             >
                 View quiz list
             </Link>
             <Link 
                 to='/createquiz'
                 onClick={onNavClick}
+                className='create-a-quiz'
             >
                 Create a quiz
             </Link>
             <Link 
                 to='/about'
                 onClick={onNavClick}
+                className='about-website'
             >
                 About website
             </Link>

@@ -13,12 +13,14 @@ const LinkListGuest = ({onNavClick} : Props) => {
             <Link 
                 to='/quizlist'
                 onClick={onNavClick}
+                className='view-quiz-list'
             >
                 View quiz list
             </Link>
             <Link 
                 to='/about'
                 onClick={onNavClick}
+                className='about-website'
             >
                 About website
             </Link>

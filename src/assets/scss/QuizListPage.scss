@@ -1,13 +1,27 @@
+.quiz-list-page {
+    form {
+        margin: 0;
+    }
+}
+
 .filterbox-container {
     display: flex;
     flex-flow: row wrap;
     gap: 2rem;
 
     .filterbox-item {
-        padding: 0.5rem 2rem;
+        padding: 0.5rem 1rem;
         border-radius: 3rem;
         min-width: 9rem;
         border: 0.1rem solid #000;
+
+        @media screen and (min-width: 720px) {
+            padding: 0.5rem 1.5rem;
+        }
+
+        @media screen and (min-width: 992px) {
+            padding: 0.5rem 2rem;
+        }
         
     }
 
@@ -20,11 +34,17 @@
 .quizlist-container {
     display: flex;
     flex-flow: column;
-    gap: 2rem;
+    // gap: 2rem;
     max-width: 70rem;
 
+    h2 {
+        margin-bottom: 2rem;
+    }
+
     .quizlist-item {
-        margin-bottom: 1.5rem;
+        margin: 1.5rem 0;
+        padding-bottom: 1.5rem;
+        border-bottom: 0.1rem solid #999;
 
         header {
 
@@ -32,6 +52,15 @@
     
             a {
                 text-decoration: underline;
+                font-size: 1.6rem;
+
+                @media screen and (min-width: 720px) {
+                    font-size: 2rem;
+                }
+        
+                @media screen and (min-width: 992px) {
+                    font-size: 2.4rem;
+                }
             }
     
             .category-date {
@@ -41,10 +70,37 @@
     
                 span {
     
-                    font-size: 1.6rem;
+                    font-size: 1.4rem;
+
+                    @media screen and (min-width: 720px) {
+                        font-size: 1.8rem;
+                    }
+            
+                    @media screen and (min-width: 992px) {
+                        font-size: 2rem;
+                    }
                 }
             }
         }
+
+        main {
+            p {
+                font-size: 1.2rem;
+
+                @media screen and (min-width: 720px) {
+                    font-size: 1.6rem;
+                }
+        
+                @media screen and (min-width: 992px) {
+                    font-size: 1.8rem;
+                }
+            }
+        }
+
+        &:last-child {
+            border: none;
+        }
+        
     }
 
     

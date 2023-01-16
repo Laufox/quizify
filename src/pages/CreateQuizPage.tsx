@@ -221,7 +221,7 @@ const CreateQuizPage = () => {
                         value='public'
                         defaultChecked
                     />
-                    Public
+                    Public (searchable for everyone)
                 </label>
                 <label className="radio-input-label">
                     <input 
@@ -230,10 +230,10 @@ const CreateQuizPage = () => {
                         {...register('visibility')}
                         value='private'
                     />
-                    Private
+                    Private (only reachable by link)
                 </label>
 
-                <hr />
+                <hr className="hr-create-question-form" />
 
                 <h2>Questions</h2>
                
@@ -248,9 +248,12 @@ const CreateQuizPage = () => {
                 {
                     !!questionsList.length && questionsList.map((question, i) => (
                         <div className="question-container" key={i}>
-                            <header onClick={()=>{
+                            <header 
+                                onClick={()=>{
                                     toggleEditQuestionForm(i)
-                                }}>
+                                }}
+                                className={questionAddedToShow === i ? 'header-open': 'header-closed'}
+                            >
                                 <div className="question-number-text">
                                     <span>#{i+1}</span>
                                     <h3>{question.questionText}</h3>
@@ -263,7 +266,8 @@ const CreateQuizPage = () => {
 
                                 <EditQuestionForm 
                                     question={questionsList[questionAddedToShow]} 
-                                    onEdit={(updatedQuestion)=>{editQuestion(i, updatedQuestion)}} onDelete={()=>{deleteQuestion(i)}}
+                                    onEdit={(updatedQuestion)=>{editQuestion(i, updatedQuestion)}} 
+                                    onDelete={()=>{deleteQuestion(i)}}
                                 />
                                 
                             }
@@ -271,7 +275,7 @@ const CreateQuizPage = () => {
                     ))
                 }
 
-                <hr />
+                <hr className="hr-create-question-form" />
 
                 {
                     submitErrorMessage && 
