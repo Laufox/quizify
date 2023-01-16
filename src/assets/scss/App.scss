@@ -170,11 +170,20 @@ img {
 }
 
 .btn-action {
-    font-size: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 4.5rem;
+    font-size: 1.6rem;
+    height: 4rem;
+
+    @media screen and (min-width: 720px) {
+        
+    }
+
+    @media screen and (min-width: 992px) {
+        font-size: 2rem;
+        height: 4.5rem;
+    }
 }
 
 .btn-create-account {

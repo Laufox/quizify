@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { NewQuestionItem } from "../../interfaces/NewQuestionItem"
 import classNames from "classnames"
 import Timer from "./Timer";
-import userGuessIcon from '../../assets/icons/user-guess-icon.svg'
+import pointerIcon from '../../assets/icons/pointer-icon.svg'
 import { AnsweredQuestion } from "../../interfaces/AnsweredQuestion";
 
 interface Props {
@@ -151,9 +151,10 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
                             {
                                 !!questionsSet[questionNumber - 1].answers.length && questionsSet[questionNumber - 1].answers.map((ans, i)=>(
                                     <div className="question-answer-container" key={i}>
+                                        
                                         {
                                             ans.text === userGuess && (
-                                                <img src={userGuessIcon} />
+                                                <img src={pointerIcon} />
                                             )
                                         }
                                         
@@ -162,7 +163,8 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
                                             className={classNames({
                                                 'question-answer': true,
                                                 'question-answer-correct': questionStatus === 'finished' && ans.isCorrect,
-                                                'question-answer-wrong': questionStatus === 'finished' && !ans.isCorrect
+                                                'question-answer-wrong': questionStatus === 'finished' && !ans.isCorrect,
+                                                'question-answer-guess': ans.text === userGuess
                                             })}
                                         >
                                             <span>{ans.text}</span>

@@ -30,7 +30,7 @@ const QuizIntro = ({quiz, onBegin}: Props) => {
             </p>
 
             <button 
-                className='btn btn-confirm'
+                className='btn btn-confirm btn-action'
                 onClick={onBegin}
             >
                 Begin quiz

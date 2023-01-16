@@ -24,3 +24,19 @@
         transform: scaleY(1);
     }
 }
+
+@keyframes flashing-green {
+    
+    0% {
+        background-color: rgb(134, 209, 91);
+    }
+
+    // 50% {
+    //     background-color: rgb(104, 179, 61);
+    // }
+
+    100% {
+        background-color: rgb(209, 134, 91);
+    }
+
+}
