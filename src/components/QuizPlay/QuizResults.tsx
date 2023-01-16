@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnsweredQuestion } from "../../interfaces/AnsweredQuestion"
 import accordionIcon from '../../assets/icons/accordion-icon.svg'
-import userGuessIcon from '../../assets/icons/user-guess-icon.svg'
+import pointerIcon from '../../assets/icons/pointer-icon.svg'
 import classNames from 'classnames'
 
 interface Props {
@@ -37,13 +37,16 @@ const QuizResults = ({answeredQuestions, score, scorePercent, onReplay}: Props) 
                         {
                             !!answeredQuestions.length && answeredQuestions.map((quest, i) => (
                                 <div key={i} className='question-item'>
-                                    <header onClick={()=>{
-                                        if (questionToShow === i) {
-                                            setQuestionToShow(-1)
-                                            return
-                                        }
-                                        setQuestionToShow(i)
-                                    }}>
+                                    <header 
+                                        onClick={()=>{
+                                            if (questionToShow === i) {
+                                                setQuestionToShow(-1)
+                                                return
+                                            }
+                                            setQuestionToShow(i)
+                                        }}
+                                        className={questionToShow === i ? 'header-open' : 'header-closed'}
+                                    >
                                         <div 
                                             className={classNames({
                                                 'question-item-number-container': true,
@@ -76,7 +79,7 @@ const QuizResults = ({answeredQuestions, score, scorePercent, onReplay}: Props) 
                                                                 <div className="question-answer-container" key={i}>
                                                                     {
                                                                         ans.text === quest.guess && (
-                                                                            <img src={userGuessIcon} />
+                                                                            <img src={pointerIcon} />
                                                                         )
                                                                     }
                                                                     
