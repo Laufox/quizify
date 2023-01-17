@@ -116,11 +116,11 @@ const ProfilePage = () => {
 
     const applyQuizzesCreatedByUser = async () => {
         
-        if (!uid || !currentUser?.uid) {
+        if (!uid) {
             return
         }
 
-        const response = uid === currentUser.uid 
+        const response = uid === currentUser?.uid 
             ? await getAllQuizDocumentsByUser(userData?.uid)
             : await getAllPublicQuizDocumentsByUser(userData?.uid)
 
@@ -217,7 +217,7 @@ const ProfilePage = () => {
             applyQuizzesCreatedByUser()
         }
 
-        if (userData?.role === "admin") {
+        if ((currentUser?.uid === userData?.uid) && userData?.role === "admin") {
             applyCategories()
             applyAllUsers()
             applyAllQuizzes()
@@ -244,7 +244,7 @@ const ProfilePage = () => {
                             </div>
                             <h1>{ userData.username }</h1>
                             {
-                                userData.uid === currentUser.uid &&
+                                userData.uid === currentUser?.uid &&
                                 <Link to={`/updateprofile/${userData.uid}`}>Update profile</Link>
                             }
                         </div>
@@ -330,7 +330,7 @@ const ProfilePage = () => {
                         </CollectionContainer>
     
                         {
-                            userData.role === "admin" && (
+                            (currentUser?.uid === userData?.uid) && userData.role === "admin" && (
                                 <div className='admin-panel'>
     
                                     <hr />
