@@ -1,0 +1,26 @@
+.pagination-container {
+    display: flex;
+    gap: 0.5rem;
+
+    .btn {
+        border: 0.1rem solid #aaa;
+        padding: 0.5rem 1rem;
+        background-color: #fff;
+        font-style: normal;
+
+        @media screen and (min-width: 720px) {
+            padding: 0.7rem 1.4rem;
+            font-size: 1.6rem;
+        }
+
+        @media screen and (min-width: 992px) {
+            padding: 0.8rem 1.6rem;
+            font-size: 1.8rem;
+        }
+    }
+
+    .btn-selected {
+        background-color: #cfc;
+        border: 0.1rem solid #666;
+    }
+}

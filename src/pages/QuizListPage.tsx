@@ -8,6 +8,7 @@ import { Categories } from '../interfaces/Categories'
 import classNames from 'classnames'
 import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
 import Alert from '../components/Alert'
+import Pagination from '../components/Pagination'
 
 const QuizListPage = () => {
 
@@ -19,6 +20,7 @@ const QuizListPage = () => {
     const [selectedCategory, setSelectedCategory] = useState('all')
     const [searchTerm, setSearchTerm] = useState('')
     const [firebaseError, setFirebaseError] = useState('')
+    const [currentPage, setCurrentPage] = useState(1)
 
     const applyQuizzes = async () => {
 
@@ -147,7 +149,6 @@ const QuizListPage = () => {
                     )
                 }
                 
-
             </div>
 
             <div className='quizlist-container'>
@@ -158,26 +159,37 @@ const QuizListPage = () => {
                         <LoadingSpinnerGeneric size='large' />
 
                     ) : (
-
-                        !!quizListFiltered.length && quizListFiltered.map((quiz)=>(
-                            <div key={quiz.id} className='quizlist-item'>
-                                <header>
-                                    <Link to={`/quiz/${quiz.id}`}>{quiz.name}</Link>
-                                    <div className='category-date'>
-                                        <span>{quiz.category}</span>
-                                        <span>{quiz.createdAt}</span>
-                                    </div>
-                                </header>
-                                {
-                                    quiz.description && (
-                                        <main>
-                                            <p>{quiz.description}</p>
-                                        </main>
-                                    )
-                                }
-                            </div>
-                        ))
-
+                        <>
+                        {
+                            quizListFiltered.length > 10 && (
+                                <Pagination
+                                    items={quizListFiltered}
+                                    currentPage={currentPage}
+                                    onPageSwitch={(page: number)=>{setCurrentPage(page)}}
+                                />
+                            )
+                        }
+                        {
+                            !!quizListFiltered.length && quizListFiltered.slice(currentPage*10-10, currentPage*10).map((quiz)=>(
+                                <div key={quiz.id} className='quizlist-item'>
+                                    <header>
+                                        <Link to={`/quiz/${quiz.id}`}>{quiz.name}</Link>
+                                        <div className='category-date'>
+                                            <span>{quiz.category}</span>
+                                            <span>{quiz.createdAt}</span>
+                                        </div>
+                                    </header>
+                                    {
+                                        quiz.description && (
+                                            <main>
+                                                <p>{quiz.description}</p>
+                                            </main>
+                                        )
+                                    }
+                                </div>
+                            ))
+                        }
+                        </>
                     )
                 }
             </div>

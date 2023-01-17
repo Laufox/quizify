@@ -7,6 +7,7 @@ import { SearchResults } from '../interfaces/SearchResults'
 import { User } from '../interfaces/User'
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
 import Alert from '../components/Alert'
+import Pagination from '../components/Pagination'
 
 const SearchPage = () => {
 
@@ -20,6 +21,8 @@ const SearchPage = () => {
     const [allUsers, setAllUsers] = useState<User[]>([])
     const [searchResults, setSearchResults] = useState<SearchResults>()
     const [firebaseError, setFirebaseError] = useState('')
+    const [currentPageUsers, setCurrentPageUsers] = useState(1)
+    const [currentPageQuizzes, setCurrentPageQuizzes] = useState(1)
 
     const handleSearch = (e: any, ref: React.RefObject<HTMLInputElement>) => {
 
@@ -148,7 +151,16 @@ const SearchPage = () => {
                         </header>
                         <main>
                         {
-                            searchResults.quizzes.map((quiz, i) => (
+                            searchResults.quizzes.length > 10 && (
+                                <Pagination
+                                    items={searchResults.quizzes}
+                                    currentPage={currentPageQuizzes}
+                                    onPageSwitch={(page: number)=>{setCurrentPageQuizzes(page)}}
+                                />
+                            )
+                        }
+                        {
+                            searchResults.quizzes.slice(currentPageQuizzes*10-10, currentPageQuizzes*10).map((quiz, i) => (
                                 <div key={i} className='search-results-item-quiz'>
                                     <Link to={`/quiz/${quiz.id}`}>{quiz.name}</Link>
                                     <div className='search-results-item-quiz-extras'>
@@ -171,7 +183,16 @@ const SearchPage = () => {
                         </header>
                         <main>
                         {
-                            searchResults.users.map((user, i) => (
+                            searchResults.users.length > 10 && (
+                                <Pagination
+                                    items={searchResults.users}
+                                    currentPage={currentPageUsers}
+                                    onPageSwitch={(page: number)=>{setCurrentPageUsers(page)}}
+                                />
+                            )
+                        }
+                        {
+                            searchResults.users.slice(currentPageUsers*10-10, currentPageUsers*10).map((user, i) => (
                                 <div key={i} className='search-results-item-user'>
                                     <Link 
                                         to={`/profile/${user.id}`} 

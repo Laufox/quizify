@@ -1,3 +1,5 @@
+import classNames from "classnames"
+
 interface Props {
     items: any[],
     currentPage: number,
@@ -14,32 +16,49 @@ const Pagination = ({items, currentPage, onPageSwitch}: Props) => {
 
     return (
         <div className="pagination-container">
-            <div 
+            <button 
+                className={classNames({
+                    'btn': true,
+                    'btn-disabled': currentPage === 1
+                })}
                 onClick={()=>{
                     onPageSwitch(currentPage - 1)
                 }}
+                disabled={currentPage === 1}
             >
                 {'<'}
-            </div>
+            </button>
             {
                 pages.map((page) => (
-                    <div 
+                    <button 
                         key={page} 
+                        className={classNames({
+                            'btn': true,
+                            'btn-selected': currentPage === page
+                        })}
                         onClick={()=>{
-                            onPageSwitch(page)
+                            if (currentPage !== page) {
+                                onPageSwitch(page)
+                            }
                         }}
+                        disabled={currentPage === page}
                     >
                         {page}
-                    </div>
+                    </button>
                 ))
             }
-            <div 
+            <button 
+                className={classNames({
+                    'btn': true,
+                    'btn-disabled': currentPage === pages.length
+                })}
                 onClick={()=>{
                     onPageSwitch(currentPage + 1)
                 }}
+                disabled={currentPage === pages.length}
             >
                 {'>'}
-            </div>
+            </button>
         </div>
     )
 }

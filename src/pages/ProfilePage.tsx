@@ -101,7 +101,10 @@ const ProfilePage = () => {
             return
         }
 
-        setUserData(response.user)
+        setUserData({
+            ...response.user,
+            playedQuizzes: response.user?.playedQuizzes.reverse()
+        })
 
     }
 
@@ -261,7 +264,17 @@ const ProfilePage = () => {
                         >
                             <>
                             {
-                                !!quizzesCreatedByUser.length && quizzesCreatedByUser.map(quiz => (
+                                quizzesCreatedByUser.length > 10 && (
+                                    <Pagination 
+                                        items={quizzesCreatedByUser} 
+                                        currentPage={currentPageCreated} 
+                                        onPageSwitch={(page: number) => {setCurrentPageCreated(page)}}
+                                    />
+                                )
+                            }
+
+                            {
+                                !!quizzesCreatedByUser.length && quizzesCreatedByUser.slice(currentPageCreated*10-10, currentPageCreated*10).map(quiz => (
                                     <div key={quiz.id} className='collection-row'>
                                         <Link to={`/quiz/${quiz.id}`} className='collection-row-main'>{quiz.createdAt} - {quiz.name}</Link>
 
@@ -322,7 +335,7 @@ const ProfilePage = () => {
                                     />
                                 )
                             }
-                            
+
                             {
                                 !!userData.playedQuizzes.length && userData.playedQuizzes.slice(currentPagePlayed*10-10, currentPagePlayed*10).map((quiz, i) => (
                                     <div key={i} className='collection-row'>
@@ -361,7 +374,17 @@ const ProfilePage = () => {
                                     >
                                         <>
                                         {
-                                            !!allQuizzes.length && allQuizzes.map(quiz => (
+                                            allQuizzes.length > 10 && (
+                                                <Pagination 
+                                                    items={allQuizzes} 
+                                                    currentPage={currentPageAllQuizzes} 
+                                                    onPageSwitch={(page: number) => {setCurrentPageAllQuizzes(page)}}
+                                                />
+                                            )
+                                        }
+
+                                        {
+                                            !!allQuizzes.length && allQuizzes.slice(currentPageAllQuizzes*10-10, currentPageAllQuizzes*10).map(quiz => (
                                                 <div key={quiz.id} className='collection-row'>
                                                     <Link to={`/quiz/${quiz.id}`} className='collection-row-main'>{quiz.createdAt} - {quiz.name}</Link>
                                                     <div className='collection-row-actions'>
@@ -393,7 +416,17 @@ const ProfilePage = () => {
                                     >
                                         <>
                                         {
-                                            !!allUsers.length && allUsers.map(user => (
+                                            allUsers.length > 10 && (
+                                                <Pagination 
+                                                    items={allUsers} 
+                                                    currentPage={currentPageAllUsers} 
+                                                    onPageSwitch={(page: number) => {setCurrentPageAllUsers(page)}}
+                                                />
+                                            )
+                                        }
+
+                                        {
+                                            !!allUsers.length && allUsers.slice(currentPageAllUsers*10-10, currentPageAllUsers*10).map(user => (
                                                 <div key={user.id} className='collection-row'>
                                                     <Link to={`/profile/${user.id}`} className='collection-row-main'>{user.createdAt} - {user.name}</Link>
                                                     <div className='collection-row-actions'>
