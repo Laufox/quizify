@@ -16,6 +16,7 @@ import { User } from '../interfaces/User'
 import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
 import CollectionContainer from '../components/CollectionContainer'
 import Alert from '../components/Alert'
+import Pagination from '../components/Pagination'
 
 const ProfilePage = () => {
 
@@ -35,7 +36,10 @@ const ProfilePage = () => {
     const [allQuizzes, setAllQuizzes] = useState<Quiz[]>([])
     const [firebaseError, setFirebaseError] = useState('')
     const [openConfirm, setOpenConfirm] = useState(false)
-
+    const [currentPageCreated, setCurrentPageCreated] = useState(1)
+    const [currentPagePlayed, setCurrentPagePlayed] = useState(1)
+    const [currentPageAllUsers, setCurrentPageAllUsers] = useState(1)
+    const [currentPageAllQuizzes, setCurrentPageAllQuizzes] = useState(1)
     const [objectToDelete, setObjectToDelete] = useState<{id: string, name: string}>()
 
     const toggleShowCreated = () => {
@@ -310,7 +314,17 @@ const ProfilePage = () => {
                         >
                             <>
                             {
-                                !!userData.playedQuizzes.length && userData.playedQuizzes.map((quiz, i) => (
+                                userData.playedQuizzes.length > 10 && (
+                                    <Pagination 
+                                        items={userData.playedQuizzes} 
+                                        currentPage={currentPagePlayed} 
+                                        onPageSwitch={(page: number) => {setCurrentPagePlayed(page)}}
+                                    />
+                                )
+                            }
+                            
+                            {
+                                !!userData.playedQuizzes.length && userData.playedQuizzes.slice(currentPagePlayed*10-10, currentPagePlayed*10).map((quiz, i) => (
                                     <div key={i} className='collection-row'>
                                         <Link to={`/quiz/${quiz.id}`} className='collection-row-main'>{quiz.playedAt.slice(2)} - {quiz.name}</Link>
                                         <span className='collection-row-extra'>{quiz.scorePercentage} %</span>
