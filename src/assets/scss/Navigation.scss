@@ -178,8 +178,13 @@
 
         .menu-toggle {
             cursor: pointer;
-            height: 3.2rem;
-            width: 3.2rem;
+            height: 3.8rem;
+            width: 3.8rem;
+
+            img {
+                height: 3.8rem;
+                width: 3.8rem;
+            }
 
             @media screen and (min-width: 992px) {
                 display: none;
