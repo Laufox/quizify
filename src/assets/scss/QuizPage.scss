@@ -64,6 +64,7 @@
         .description-text {
             margin: 3rem 0;
             font-weight: 500;
+            white-space: pre-wrap;
         }
 
         .quiz-questions-amount {
@@ -388,12 +389,14 @@
                         gap: 01rem;
                         border: 0.1rem solid #000;
                         cursor: pointer;
+                        height: 4.2rem;
 
                         .question-item-number-container {
                             display: flex;
                             align-items: center;
                             padding: 1rem;
                             flex-basis: 5.5rem;
+                            flex-shrink: 0;
 
                             .question-item-number-text {
                                 font-size: 1.6rem;
@@ -427,6 +430,17 @@
 
                         .question-item-heading {
                             flex-grow: 1;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                            white-space: nowrap;
+                        }
+
+                        @media screen and (min-width: 720px) {
+                            height: 4.5rem;
+                        }
+        
+                        @media screen and (min-width: 992px) {
+                            height: 5rem;
                         }
 
                     }
@@ -434,7 +448,6 @@
                     .question-container {
 
                         header {
-            
                             
                             display: flex;
                             align-items: center;
@@ -445,6 +458,7 @@
                             margin-top: 0rem;
                             margin-bottom: 0rem;
                             cursor: default;
+                            height: auto;
             
                             @media screen and (min-width: 720px) {
                                 padding: 1rem 2rem;

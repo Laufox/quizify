@@ -108,7 +108,11 @@ const CreateAccountPage = () => {
                     id="createusername" 
                     type='text' 
                     {...register('username', {
-                        required: 'Username is required'
+                        required: 'Username is required',
+                        maxLength: {
+                            value: 32,
+                            message: 'Username cannot be longer than 32 characters'
+                        }
                     })}
                     placeholder='username'
                     className={classNames({'error-input': errors.username})}

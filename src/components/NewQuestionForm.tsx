@@ -14,8 +14,43 @@ const NewQuestionForm = ({onAddNewQuestion} : Props) => {
     const [firstWrongAnswerInput, setFirstWrongAnswerInput] = useState('')
     const [secondWrongAnswerInput, setSecondWrongAnswerInput] = useState('')
     const [thirdWrongAnswerInput, setThirdWrongAnswerInput] = useState('')
-
+    const [newQuestionError, setNewQuestionError] = useState('')
     const [isFormDataInvalid, setIsFormDataInvalid] = useState(true)
+
+    const addNewQuestion = () => {
+
+        setNewQuestionError('')
+        if (
+            correctAnswerInput === firstWrongAnswerInput ||
+            correctAnswerInput === secondWrongAnswerInput ||
+            correctAnswerInput === thirdWrongAnswerInput ||
+            firstWrongAnswerInput === secondWrongAnswerInput ||
+            firstWrongAnswerInput === thirdWrongAnswerInput ||
+            secondWrongAnswerInput === thirdWrongAnswerInput
+        ) {
+            setNewQuestionError('All four answers must be unique')
+            return
+        }
+
+        if (isFormDataInvalid) {
+            return
+        }
+
+        onAddNewQuestion({
+            question: questionInput,
+            correctAnswer: correctAnswerInput,
+            firstWrongAnswer: firstWrongAnswerInput,
+            secondWrongAnswer: secondWrongAnswerInput,
+            thirdWrongAnswer: thirdWrongAnswerInput
+        })
+
+        setQuestionInput('')
+        setCorrectAnswerInput('')
+        setFirstWrongAnswerInput('')
+        setSecondWrongAnswerInput('')
+        setThirdWrongAnswerInput('')
+        
+    }
 
     useEffect(()=>{
 
@@ -107,6 +142,14 @@ const NewQuestionForm = ({onAddNewQuestion} : Props) => {
                 }}
             />
 
+            {
+                newQuestionError && (
+                    <div>
+                        <p className="error-message">{newQuestionError}</p>
+                    </div>
+                )
+            }
+
             <button
                 type="button"
                 className={classNames({
@@ -120,26 +163,9 @@ const NewQuestionForm = ({onAddNewQuestion} : Props) => {
                 disabled={
                     isFormDataInvalid
                 }
-                onClick={()=>{
-
-                    if (isFormDataInvalid) {
-                        return
-                    }
-
-                    onAddNewQuestion({
-                        question: questionInput,
-                        correctAnswer: correctAnswerInput,
-                        firstWrongAnswer: firstWrongAnswerInput,
-                        secondWrongAnswer: secondWrongAnswerInput,
-                        thirdWrongAnswer: thirdWrongAnswerInput
-                    })
-
-                    setQuestionInput('')
-                    setCorrectAnswerInput('')
-                    setFirstWrongAnswerInput('')
-                    setSecondWrongAnswerInput('')
-                    setThirdWrongAnswerInput('')
-                }}
+                onClick={
+                    addNewQuestion
+                }
             >
                 Add
             </button>

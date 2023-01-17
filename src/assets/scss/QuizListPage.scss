@@ -84,8 +84,15 @@
         }
 
         main {
+
+            margin-top: 1rem;
+
             p {
+                display: -webkit-box;
                 font-size: 1.2rem;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
 
                 @media screen and (min-width: 720px) {
                     font-size: 1.6rem;
