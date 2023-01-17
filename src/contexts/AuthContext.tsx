@@ -83,6 +83,7 @@ const AuthContextProvider = ({ children }: Props) => {
         user: true,
         createUser: false,
         signinUser: false,
+        signoutUser: false,
         resetPassword: false,
         updateUser: false,
         deleteUser: false,
@@ -206,9 +207,36 @@ const AuthContextProvider = ({ children }: Props) => {
     }
 
     // FUnction to sign out user with firebase
-    const signoutUserAccount = () => {
+    const signoutUserAccount = async () => {
 
-        return signOut(auth)
+        setLoading({
+            ...loading,
+            signoutUser: true
+        })
+
+        try {
+
+            await signOut(auth)
+
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        } finally {
+
+            setLoading({
+                ...loading,
+                signoutUser: false
+            })
+
+        }
 
     }
 
@@ -914,19 +942,32 @@ const AuthContextProvider = ({ children }: Props) => {
     const addQuizResultToUser = async (quizResults: QuizResults) => {
 
         if (!currentUser.uid) {
-            return
+            return {
+                success: false
+            }
         }
 
-        await setDoc(doc(db, "users", currentUser.uid), {
-            
-            playedQuizzes: arrayUnion({
-                ...quizResults,
-                playedAt: new Date().toISOString().slice(0, 10)
-            })
+        try {
 
-        }, {
-            merge: true
-        })
+            await setDoc(doc(db, "users", currentUser.uid), {
+            
+                playedQuizzes: arrayUnion({
+                    ...quizResults,
+                    playedAt: new Date().toISOString().slice(0, 10)
+                })
+    
+            }, {
+                merge: true
+            })
+            
+        } catch (error) {
+
+            return {
+                success: false,
+                error
+            }
+            
+        }
 
     }
 

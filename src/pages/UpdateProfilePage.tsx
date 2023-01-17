@@ -15,6 +15,7 @@ import classNames from "classnames"
 import Confirm from '../components/Confirm'
 import AvatarInput from '../components/Forms/AvatarInput'
 import LoadingSpinnerButton from '../components/LoadingSpinnerButton'
+import Alert from '../components/Alert'
 
 const UpdateProfilePage = () => {
 
@@ -39,7 +40,7 @@ const UpdateProfilePage = () => {
     const [imagePreview, setImagePreview] = useState('')
     // State for image file currently selected for upload on form submit
     const [currentPhoto, setCurrentPhoto] = useState<File | Blob | null>(null)
-
+    const [firebaseError, setFirebaseError] = useState('')
     const [openConfirm, setOpenConfirm] = useState(false)
 
     // Function to request  to sign up new user through auth context
@@ -57,7 +58,7 @@ const UpdateProfilePage = () => {
 
         if (!response.success) {
 
-            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
+            setSubmitErrorMessage(response?.error?.message ?? 'An unknown error occured')
             return
 
         }
@@ -75,8 +76,7 @@ const UpdateProfilePage = () => {
 
         if (!response.success) {
 
-            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
-
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
 
         }
@@ -93,18 +93,22 @@ const UpdateProfilePage = () => {
         setOpenConfirm(false)
     }
 
-    useEffect(()=>{
+    const applyUserData = async () => {
 
-        const asyncFunction = async () => {
-            try {
-                setUserData(await getUserDocument(uid))
-            } catch (error) {
-                console.log(error)
-            }
+        const response = await getUserDocument(uid)
+
+        if (!response.success) {
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
+            return
         }
 
+        setUserData(response.user)
+    }
+
+    useEffect(()=>{
+
         if (uid) {
-            asyncFunction()
+            applyUserData()
         }
 
     }, [uid])
@@ -275,6 +279,15 @@ const UpdateProfilePage = () => {
                     actionText='You are about to delete this account'
                     requiresAuth={true}
                 />
+            }
+
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
+                )
             }
             
         </div>

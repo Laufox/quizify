@@ -21,6 +21,9 @@ import navLogo from '../assets/icons/quizify-logo.svg'
 import LinkListGuest from './LinkListGuest'
 import LinkListUser from './LinkListUser'
 import SearchForm from './SearchForm'
+import Alert from './Alert'
+import LoadingSpinnerButton from './LoadingSpinnerButton'
+import LoadingSpinnerGeneric from './LoadingSpinnerGeneric'
 
 const Navigaion = () => {
 
@@ -28,19 +31,23 @@ const Navigaion = () => {
     const navigate = useNavigate()
 
     // Funtions and variabels to use from auth context
-    const { signoutUserAccount, currentUser } = useAuthContext()
+    const { signoutUserAccount, currentUser, loading } = useAuthContext()
 
     // State for if the dropdown content on smaller screens are open or not
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [firebaseError, setFirebaseError] = useState('')
 
     // Funtcion to request to sign out the signed in user
     const signOut = async () => {
-        try {
-            await signoutUserAccount()
-            navigate('/')
-        } catch (error: any) {
-            console.log(error?.message)
+
+        const response = await signoutUserAccount()
+
+        if (!response.success) {
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured')
         }
+
+        navigate('/')
+
     }
 
     // If dropdown menu is open, hide it. Otherwise show it
@@ -116,12 +123,18 @@ const Navigaion = () => {
                             </div>
                             :
                             <div className='btn-group'>
-                                <p  
-                                    className='btn btn-info-open sign-out-button'
+                                <div
                                     onClick={signOut}
+                                    className='btn btn-info-open btn-action sign-out-button'
                                 >
-                                    Sign out
-                                </p>
+                                    {
+                                        loading.signoutUser ? (
+                                            <LoadingSpinnerButton />
+                                        ) : (
+                                            <p>Sign out</p>
+                                        )
+                                    }
+                                </div>
                             </div>
                         }
 
@@ -168,6 +181,14 @@ const Navigaion = () => {
                 </div>
             }
             
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
+                )
+            }
             
         </header>
     )

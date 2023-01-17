@@ -20,7 +20,7 @@ const ResetPasswordPage = () => {
         const respone = await resetUserAccountPassword(data.email)
 
         if (!respone.success) {
-            setSubmitErrorMessage(respone.error?.message ?? 'An unknown error has occured')
+            setSubmitErrorMessage(respone?.error?.message ?? 'An unknown error has occured')
             return
         }
 

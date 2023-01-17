@@ -7,6 +7,7 @@ import { Categories } from '../interfaces/Categories'
 
 import classNames from 'classnames'
 import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
+import Alert from '../components/Alert'
 
 const QuizListPage = () => {
 
@@ -17,13 +18,14 @@ const QuizListPage = () => {
     const [categories, setCategories] = useState<Categories[]>([])
     const [selectedCategory, setSelectedCategory] = useState('all')
     const [searchTerm, setSearchTerm] = useState('')
+    const [firebaseError, setFirebaseError] = useState('')
 
     const applyQuizzes = async () => {
 
         const response = await getAllPublicQuizDocuments()
 
         if (!response.success) {
-            console.log('There was an error: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -36,7 +38,7 @@ const QuizListPage = () => {
         const response = await getAllCategoryDocuments()
 
         if (!response.success) {
-            console.log('There was an error: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -179,6 +181,15 @@ const QuizListPage = () => {
                     )
                 }
             </div>
+
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
+                )
+            }
 
         </div>
     )

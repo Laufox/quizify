@@ -35,10 +35,9 @@ const Confirm = ({onConfirm, onCancel, actionText, requiresAuth}: Props) => {
             onConfirm()
             
         } catch (error: any) {
-            setFirebaseError(error?.message)
+            setFirebaseError(error?.message ?? 'An unknown error has occured')
         }
         
-
     }
 
     return (

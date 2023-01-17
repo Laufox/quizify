@@ -15,6 +15,7 @@ import { Categories } from "../interfaces/Categories"
 import { NewQuestionInput } from "../interfaces/NewQuestionInput"
 import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
 import { useNavigate } from "react-router-dom"
+import Alert from "../components/Alert"
 
 const CreateQuizPage = () => {
 
@@ -30,6 +31,7 @@ const CreateQuizPage = () => {
     const [questionAddedToShow, setQuestionAddedToShow] = useState(-1)
     const [questionsList, setQuestionsList] = useState<NewQuestionItem[]>([])
     const [categories, setCategories] = useState<Categories[]>([])
+    const [firebaseError, setFirebaseError] = useState('')
 
     const submitQuiz = async (data: FormData) => {
 
@@ -51,7 +53,7 @@ const CreateQuizPage = () => {
 
         if (!response.success) {
 
-            setSubmitErrorMessage(response.error.message ?? 'An unknown error occured')
+            setSubmitErrorMessage(response?.error?.message ?? 'An unknown error occured')
             return
 
         }
@@ -138,7 +140,7 @@ const CreateQuizPage = () => {
         const response = await getAllCategoryDocuments()
 
         if (!response.success) {
-            console.log('There was an error: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -306,6 +308,15 @@ const CreateQuizPage = () => {
                     <span>(Must add at least one quiz)</span>
                 }
             </form>
+
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
+                )
+            }
 
         </div>
     )

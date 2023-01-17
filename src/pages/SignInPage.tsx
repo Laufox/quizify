@@ -11,6 +11,7 @@ import { useAuthContext } from '../contexts/AuthContext'
 import classNames from "classnames"
 import { FormData } from "../interfaces/FormData"
 import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
+import Alert from "../components/Alert"
 
 const SignInPage = () => {
 
@@ -25,6 +26,7 @@ const SignInPage = () => {
 
     // States for error messages to display within form
     const [submitErrorMessage, setSubmitErrorMessage] = useState('')
+    const [firebaseError, setFirebaseError] = useState('')
 
     // Function to request  to sign in user through auth context
     const loginUser = async (data: any) => {
@@ -36,7 +38,7 @@ const SignInPage = () => {
             if (response.error.code === "auth/user-not-found" || response.error.code === "auth/wrong-password") {
                 setSubmitErrorMessage('Wrong user credentials')
             } else {
-                setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
+                setFirebaseError(response?.error?.message ?? 'An unknown error occured')
             }
             return
         }
@@ -104,6 +106,15 @@ const SignInPage = () => {
 
                 <Link to='/signup'>Don't have an account? Sign up now!</Link>
             </form>
+
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
+                )
+            }
         </div>
     )
 }

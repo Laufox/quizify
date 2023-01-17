@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import Alert from '../components/Alert'
 import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
 import QuizIntro from '../components/QuizPlay/QuizIntro'
 import QuizPlaying from '../components/QuizPlay/QuizPlaying'
@@ -20,6 +21,7 @@ const QuizPage = () => {
     const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([])
     const [score, setScore] = useState<number>(0)
     const [scorePercent, setScorePercent] = useState<number>(0)
+    const [firebaseError, setFirebaseError] = useState('')
 
     const applyQuiz = async () => {
 
@@ -27,7 +29,7 @@ const QuizPage = () => {
 
         if (!response.success) {
 
-            console.log('Error: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
 
         }
@@ -42,7 +44,7 @@ const QuizPage = () => {
 
     }
 
-    const endQuiz = (answers: AnsweredQuestion[]) => {
+    const endQuiz = async (answers: AnsweredQuestion[]) => {
 
         setAnsweredQuestions([...answers])
 
@@ -64,13 +66,17 @@ const QuizPage = () => {
             return
         }
 
-        addQuizResultToUser({
+        const response = await addQuizResultToUser({
             id,
             name: quiz?.name,
             numberOfQuestions: answers.length,
             score: userScore,
             scorePercentage: scorePercentage
         })
+        
+        if (!response.success) {
+            setFirebaseError(response?.error?.message ?? 'An unknown error occured')
+        }
 
     }
 
@@ -123,6 +129,15 @@ const QuizPage = () => {
 
                 )
                 
+            }
+
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
+                )
             }
             
         </div>

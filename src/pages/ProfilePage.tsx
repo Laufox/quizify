@@ -15,6 +15,7 @@ import { User } from '../interfaces/User'
 
 import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
 import CollectionContainer from '../components/CollectionContainer'
+import Alert from '../components/Alert'
 
 const ProfilePage = () => {
 
@@ -32,7 +33,7 @@ const ProfilePage = () => {
     const [quizzesCreatedByUser, setQuizzesCreatedByUser] = useState<Quiz[]>([])
     const [allUsers, setAllUsers] = useState<User[]>([])
     const [allQuizzes, setAllQuizzes] = useState<Quiz[]>([])
-
+    const [firebaseError, setFirebaseError] = useState('')
     const [openConfirm, setOpenConfirm] = useState(false)
 
     const [objectToDelete, setObjectToDelete] = useState<{id: string, name: string}>()
@@ -67,7 +68,7 @@ const ProfilePage = () => {
         const response = await createCategoryDocument(newCategorieInput)
 
         if (!response.success) {
-            console.log('Error', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
         }
 
         applyCategories()
@@ -80,7 +81,7 @@ const ProfilePage = () => {
         const response = await deleteCategoryDocument(id)
 
         if (!response.success) {
-            console.log('Error', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
         }
 
         applyCategories()
@@ -92,7 +93,7 @@ const ProfilePage = () => {
         const response = await getUserDocument(uid)
 
         if (!response.success) {
-            console.log('Error has occured: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -105,7 +106,7 @@ const ProfilePage = () => {
         const response = await getAllCategoryDocuments()
 
         if (!response.success) {
-            console.log('There was an error: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -124,7 +125,7 @@ const ProfilePage = () => {
             : await getAllPublicQuizDocumentsByUser(userData?.uid)
 
         if (!response.success) {
-            console.log('Error has occured: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -138,7 +139,7 @@ const ProfilePage = () => {
 
         if (!response.success) {
 
-            console.log('Error has occured', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
 
         }
@@ -153,7 +154,7 @@ const ProfilePage = () => {
 
         if (!response.success) {
 
-            console.log('Error has happended: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
 
         }
@@ -168,7 +169,7 @@ const ProfilePage = () => {
 
         if (!response.success) {
 
-            console.log('Error has happended: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
 
         }
@@ -186,7 +187,7 @@ const ProfilePage = () => {
         const response = await deleteUserAccountAdmin(user.id, user.photoURL ? true : false)
 
         if (!response.success) {
-            console.log('Error: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -454,6 +455,15 @@ const ProfilePage = () => {
                     actionText={`You are about to delete ${objectToDelete?.name}`}
                     requiresAuth={false}
                 />
+            }
+
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
+                )
             }
 
         </div>

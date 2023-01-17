@@ -6,6 +6,7 @@ import { Quiz } from '../interfaces/Quiz'
 import { SearchResults } from '../interfaces/SearchResults'
 import { User } from '../interfaces/User'
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
+import Alert from '../components/Alert'
 
 const SearchPage = () => {
 
@@ -18,6 +19,7 @@ const SearchPage = () => {
     const [allQuizzes, setAllQuizzes] = useState<Quiz[]>([])
     const [allUsers, setAllUsers] = useState<User[]>([])
     const [searchResults, setSearchResults] = useState<SearchResults>()
+    const [firebaseError, setFirebaseError] = useState('')
 
     const handleSearch = (e: any, ref: React.RefObject<HTMLInputElement>) => {
 
@@ -71,7 +73,7 @@ const SearchPage = () => {
 
         if (!response.success) {
 
-            console.log('Error has happended: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
 
         }
@@ -86,7 +88,7 @@ const SearchPage = () => {
 
         if (!response.success) {
 
-            console.log('Error has occured', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
 
         }
@@ -186,6 +188,15 @@ const SearchPage = () => {
                         }
                         </main>
                     </div>
+                )
+            }
+
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
                 )
             }
 

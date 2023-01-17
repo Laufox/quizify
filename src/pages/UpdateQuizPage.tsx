@@ -17,6 +17,7 @@ import { NewQuestionItem } from "../interfaces/NewQuestionItem"
 import { NewQuestionInput } from "../interfaces/NewQuestionInput"
 import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
 import LoadingSpinnerGeneric from "../components/LoadingSpinnerGeneric"
+import Alert from "../components/Alert"
 
 const UpdateQuizPage = () => {
 
@@ -36,7 +37,7 @@ const UpdateQuizPage = () => {
     const [categories, setCategories] = useState<{id: string, name: string}[]>([])
 
     const [quiz, setQuiz] = useState<Quiz>()
-
+    const [firebaseError, setFirebaseError] = useState('')
     const [openConfirm, setOpenConfirm] = useState(false)
 
     const submitQuiz = async (data: FormData) => {
@@ -59,7 +60,7 @@ const UpdateQuizPage = () => {
 
         if (!response.success) {
 
-            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
+            setSubmitErrorMessage(response?.error?.message ?? 'An unknown error occured')
             return
 
         }
@@ -146,7 +147,7 @@ const UpdateQuizPage = () => {
         const response = await getAllCategoryDocuments()
 
         if (!response.success) {
-            console.log('There was an error: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -159,7 +160,7 @@ const UpdateQuizPage = () => {
         const response = await getQuizDocument(id)
 
         if (!response.success) {
-            console.log('There was an error: ', response.error)
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
         }
 
@@ -192,7 +193,8 @@ const UpdateQuizPage = () => {
         const response = await deleteQuizDocument(id)
 
         if (!response.success) {
-            setSubmitErrorMessage(response.error?.message ?? 'An unknown error occured')
+            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
+            return
         }
 
         navigate('/')
@@ -430,7 +432,14 @@ const UpdateQuizPage = () => {
                 )
             }
 
-            
+            {
+                firebaseError && (
+                    <Alert
+                        onCancel={()=>{setFirebaseError('')}}
+                        message={firebaseError}
+                    />
+                )
+            }
 
         </div>
     )
