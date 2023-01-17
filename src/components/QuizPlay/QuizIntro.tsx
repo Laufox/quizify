@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import { Quiz } from "../../interfaces/Quiz"
+import { useAuthContext } from "../../contexts/AuthContext"
 
 interface Props {
     quiz: Quiz,
@@ -7,6 +8,8 @@ interface Props {
 }
 
 const QuizIntro = ({quiz, onBegin}: Props) => {
+
+    const { currentUser } = useAuthContext()
 
     return (
         <div className='quiz-info-container'>
@@ -35,6 +38,17 @@ const QuizIntro = ({quiz, onBegin}: Props) => {
             >
                 Begin quiz
             </button>
+
+            {
+                quiz.authorId === currentUser.uid && (
+                    <Link 
+                        className='btn btn-info btn-action'
+                        to={`/updatequiz/${quiz.id}`}
+                    >
+                        Update quiz
+                    </Link>
+                )
+            }
         </div>
     )
 }

@@ -45,8 +45,6 @@ import {
     Query,
     arrayUnion,
     orderBy,
-    startAt,
-    endAt
 } from 'firebase/firestore'
 
 import { 
@@ -647,28 +645,28 @@ const AuthContextProvider = ({ children }: Props) => {
     // Gett all public quiz documents from a specific user
     const getAllPublicQuizDocumentsByUser = async (uid: string) => {
 
-        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("authorId", "==", uid), where("visibility", "==", "public")))
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("authorId", "==", uid), where("visibility", "==", "public"), orderBy("createdAt", "desc")))
         
     }
 
     // Get all quiz document from a specific user 
     const getAllQuizDocumentsByUser = async (uid: string) => {
 
-        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("authorId", "==", uid)))
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("authorId", "==", uid), orderBy("createdAt", "desc")))
         
     }
 
     // Get all public quiz documents from firestore
     const getAllPublicQuizDocuments = async () => {
 
-        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("visibility", "==", "public")))
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), where("visibility", "==", "public"), orderBy("createdAt", "desc")))
 
     }
 
     // Get all quiz documents from firestore
     const getAllQuizDocuments = async () => {
 
-        return await getMultipleQuizDocuments(collection(db, "quizzes"))
+        return await getMultipleQuizDocuments(query(collection(db, "quizzes"), orderBy("createdAt", "desc")))
 
     }
     
@@ -905,7 +903,7 @@ const AuthContextProvider = ({ children }: Props) => {
 
             const arrayOfUsers: User[] = []
 
-            const allUsersSnap = await getDocs(collection(db, "users"))
+            const allUsersSnap = await getDocs(query(collection(db, "users"),  orderBy("createdAt", "desc")))
 
             allUsersSnap.forEach(user => {
                 arrayOfUsers.push({

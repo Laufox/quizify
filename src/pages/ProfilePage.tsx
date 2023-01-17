@@ -132,8 +132,10 @@ const ProfilePage = () => {
             : await getAllPublicQuizDocumentsByUser(userData?.uid)
 
         if (!response.success) {
+
             setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
+            
         }
 
         setQuizzesCreatedByUser([...response.quizzes])
