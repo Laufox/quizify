@@ -16,8 +16,8 @@ const GuestHomePage = () => {
                 <h2>Take the chance, join now!</h2>
 
                 <div className='homepage-buttons'>
-                    <Link to='/signup' className='btn btn-info'>Sign Up!</Link>
-                    <Link to='/login' className='btn btn-info-open'>Sign in</Link>
+                    <Link to='/signup' className='btn btn-info btn-action'>Sign Up!</Link>
+                    <Link to='/login' className='btn btn-info-open btn-action'>Sign in</Link>
                 </div>
             </div>
 
@@ -51,8 +51,8 @@ const GuestHomePage = () => {
                 <h2>Don't miss out, join us!</h2>
 
                 <div className='homepage-buttons'>
-                    <Link to='/signup' className='btn btn-info'>Sign Up!</Link>
-                    <Link to='/login' className='btn btn-info-open'>Sign in</Link>
+                    <Link to='/signup' className='btn btn-info btn-action'>Sign Up!</Link>
+                    <Link to='/login' className='btn btn-info-open btn-action'>Sign in</Link>
                 </div>
             </div>
         </PageTransition>

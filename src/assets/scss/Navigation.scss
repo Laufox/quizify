@@ -100,19 +100,19 @@
 
             .view-quiz-list {
                 @media screen and (min-width: 992px) {
-                    width: 9.6rem;
+                    // width: 9.6rem;
                 }
             } 
             
             .create-a-quiz {
                 @media screen and (min-width: 992px) {
-                    width: 9.3rem;
+                    // width: 9.3rem;
                 }
             } 
             
             .about-website {
                 @media screen and (min-width: 992px) {
-                    width: 10.3rem;
+                    width: 11.52rem;
                 }
             }
 
@@ -121,12 +121,17 @@
                 display: flex;
                 flex-flow: row;
                 align-items: center;
-                margin-right: 1.5rem;
     
                 a, p {
-                    font-size: 1.4rem;
+                    font-size: 1.6rem;
                     // width: 10.3rem;
                 }
+
+            }
+
+            @media screen and (min-width: 1080px) {
+                
+                margin-right: 1.5rem;
 
             }
 
