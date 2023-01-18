@@ -12,7 +12,7 @@ import AuthContextProvider from '../../contexts/AuthContext'
 test('Renders sign up form', async () => {
 
     // Making sure the create account component renders/loads
-    await act(async ()=>{
+    await act(async () => {
         render(
             <BrowserRouter>
                 <AuthContextProvider>
@@ -43,13 +43,15 @@ test('Renders sign up form', async () => {
 test('Getting error feedback when typing invalid data', async () => {
     
     // Making sure the create account component renders/loads
-    render(
-        <BrowserRouter>
-            <AuthContextProvider>
-                <CreateAccountPage />
-            </AuthContextProvider>
-        </BrowserRouter>
-    )
+    await act(async () => {
+        render(
+            <BrowserRouter>
+                <AuthContextProvider>
+                    <CreateAccountPage />
+                </AuthContextProvider>
+            </BrowserRouter>
+        )
+    })
 
     // Finds various elements on the page and saves them to variables
     const emailInputEl :HTMLInputElement = screen.getByLabelText(/^email/i)
@@ -74,14 +76,16 @@ test('Getting error feedback when typing invalid data', async () => {
 test('Filling in and submitting the form', async () => {
 
     // Making sure the create account component renders/loads
-    render(
-        <BrowserRouter>
-            <AuthContextProvider>
-                <CreateAccountPage />
-            </AuthContextProvider>
-        </BrowserRouter>
-    )
-
+    await act(async () => {
+        render(
+            <BrowserRouter>
+                <AuthContextProvider>
+                    <CreateAccountPage />
+                </AuthContextProvider>
+            </BrowserRouter>
+        )
+    })
+    
     // Finds various elements on the page and saves them to variables
     const emailInputEl :HTMLInputElement = screen.getByLabelText(/^email/i)
     const passwordInputEl :HTMLInputElement = screen.getByLabelText(/^password/i)
