@@ -16,6 +16,8 @@
 @import 'Spinner';
 @import 'Pagination';
 
+// @import '../icons/bg-image.png';
+
 /* Generic default style rules for all elements */
 *, *:before, *:after {
     box-sizing: border-box;
@@ -221,6 +223,7 @@ img {
     min-height: calc(100vh - 6rem);
     display: flex;
     justify-content: center;
+    background-color: #474242;
 
     @media screen and (min-width: 720px) {
         padding: 6rem 4rem;
@@ -239,6 +242,10 @@ img {
 
     width: 100%;
     max-width: 1200px;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    min-height: 80vh;
 
     .btn {
         // padding-top: ;
@@ -255,14 +262,17 @@ img {
 
     @media screen and (min-width: 500px) {
         width: 90%;
+        padding: 1.2rem;
     }
 
     @media screen and (min-width: 720px) {
         width: 85%;
+        padding: 1.5rem;
     }
 
     @media screen and (min-width: 992px) {
         width: 85%;
+        padding: 2rem;
     }
 }
 
