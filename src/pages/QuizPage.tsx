@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import Alert from '../components/Alert'
 import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
+import PageTransition from '../components/PageTransition'
 import QuizIntro from '../components/QuizPlay/QuizIntro'
 import QuizPlaying from '../components/QuizPlay/QuizPlaying'
 import QuizResults from '../components/QuizPlay/QuizResults'
@@ -95,7 +96,8 @@ const QuizPage = () => {
     }, [id])
 
     return (
-        <div className='page-container quiz-container'>
+        <PageTransition extraClasses='quiz-container'>
+            <>
             {
                 loading.getQuiz ? (
 
@@ -139,8 +141,8 @@ const QuizPage = () => {
                     />
                 )
             }
-            
-        </div>
+            </>
+        </PageTransition>
     )
 }
 

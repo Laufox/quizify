@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom"
 // Context with data and functions for user authentication
 import { useAuthContext } from '../contexts/AuthContext'
 
+import { motion, AnimatePresence } from 'framer-motion'
+
 import classNames from "classnames"
 
 import accordionIcon from '../assets/icons/accordion-icon.svg'
@@ -18,6 +20,7 @@ import { NewQuestionInput } from "../interfaces/NewQuestionInput"
 import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
 import LoadingSpinnerGeneric from "../components/LoadingSpinnerGeneric"
 import Alert from "../components/Alert"
+import PageTransition from "../components/PageTransition"
 
 const UpdateQuizPage = () => {
 
@@ -230,7 +233,7 @@ const UpdateQuizPage = () => {
     }, [quiz])
 
     return (
-        <div className="page-container">
+        <PageTransition>
             {
                 loading.getQuiz ? (
                     <LoadingSpinnerGeneric size="large" />
@@ -334,9 +337,16 @@ const UpdateQuizPage = () => {
                                     )
                                 }
 
+                                <AnimatePresence mode="sync" initial={false}>
                                 {
                                     !!questionsList.length && questionsList.map((question, i) => (
-                                        <div className="question-container" key={i}>
+                                        <motion.div 
+                                            className="question-container" 
+                                            key={question.questionText}
+                                            initial={{opacity: 0, y: 20}}
+                                            animate={{opacity: 1, y: 0, transition: {duration: 0.5}}}
+                                            exit={{opacity: 0, height: 50, transition: {duration: 1}}}
+                                        >
                                             <header onClick={()=>{
                                                     toggleEditQuestionForm(i)
                                                 }}>
@@ -356,9 +366,10 @@ const UpdateQuizPage = () => {
                                                 />
                                                 
                                             }
-                                        </div>
+                                        </motion.div>
                                     ))
                                 }
+                                </AnimatePresence>
 
                                 <hr />
 
@@ -432,6 +443,7 @@ const UpdateQuizPage = () => {
                 )
             }
 
+            <>
             {
                 firebaseError && (
                     <Alert
@@ -440,8 +452,9 @@ const UpdateQuizPage = () => {
                     />
                 )
             }
+            </>
 
-        </div>
+        </PageTransition>
     )
 }
 

@@ -13,6 +13,7 @@ import { FormData } from '../interfaces/FormData'
 import classNames from "classnames"
 import AvatarInput from '../components/Forms/AvatarInput'
 import LoadingSpinnerButton from '../components/LoadingSpinnerButton'
+import PageTransition from '../components/PageTransition'
 
 const CreateAccountPage = () => {
 
@@ -48,7 +49,7 @@ const CreateAccountPage = () => {
     }
 
     return (
-        <div className="page-container">
+        <PageTransition>
             <h1>Create your account</h1>
 
             <form onSubmit={handleSubmit(createUser)} noValidate>
@@ -150,7 +151,7 @@ const CreateAccountPage = () => {
 
                 <Link to='/signin'>Already have an account? sign in instead!</Link>
             </form>
-        </div>
+        </PageTransition>
     )
 }
 

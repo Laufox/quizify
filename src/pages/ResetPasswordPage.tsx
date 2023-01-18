@@ -5,6 +5,7 @@ import { useAuthContext } from '../contexts/AuthContext'
 import { FormData } from '../interfaces/FormData'
 import classNames from "classnames"
 import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
+import PageTransition from "../components/PageTransition"
 
 const ResetPasswordPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
@@ -29,7 +30,7 @@ const ResetPasswordPage = () => {
     }
 
     return (
-        <div className="page-container">
+        <PageTransition>
             <h1>Reset account password</h1>
 
             <p>Reset your password by filling in your email address below. An email will be sent with further instructions</p>
@@ -82,7 +83,7 @@ const ResetPasswordPage = () => {
                 <Link to='/signin' className="sign-in-link">Go back to sign in page</Link>
                 <Link to='/signup'>Don't have an account? Sign up now!</Link>
             </form>
-        </div>
+        </PageTransition>
     )
 }
 

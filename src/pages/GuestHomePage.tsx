@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
+import PageTransition from '../components/PageTransition'
 
 const GuestHomePage = () => {
     return (
-        <div className="page-container">
+        <PageTransition>
             <div className='homepage-guest-intro'>
                 <h1>Quizify, the ultimate quiz application</h1>
 
@@ -54,7 +55,7 @@ const GuestHomePage = () => {
                     <Link to='/login' className='btn btn-info-open'>Sign in</Link>
                 </div>
             </div>
-        </div>
+        </PageTransition>
     )
 }
 

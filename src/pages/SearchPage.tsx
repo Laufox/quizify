@@ -8,6 +8,7 @@ import { User } from '../interfaces/User'
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
 import Alert from '../components/Alert'
 import Pagination from '../components/Pagination'
+import PageTransition from '../components/PageTransition'
 
 const SearchPage = () => {
 
@@ -130,11 +131,12 @@ const SearchPage = () => {
     }, [])
 
     return (
-        <div className="page-container">
+        <PageTransition>
             <h1>Search quizzes and users</h1>
             
             <SearchForm onSearch={handleSearch} defaultValue={searchparams.get("query") ?? ''} />
 
+            <>
             {
                 searchQuery && (
                     <div className='search-results-container'>
@@ -220,8 +222,9 @@ const SearchPage = () => {
                     />
                 )
             }
+            </>
 
-        </div>
+        </PageTransition>
     )
 }
 

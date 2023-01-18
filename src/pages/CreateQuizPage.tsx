@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form"
 // Context with data and functions for user authentication
 import { useAuthContext } from '../contexts/AuthContext'
 
+import { motion, AnimatePresence } from 'framer-motion'
+
 import classNames from "classnames"
 
 import accordionIcon from '../assets/icons/accordion-icon.svg'
@@ -16,6 +18,7 @@ import { NewQuestionInput } from "../interfaces/NewQuestionInput"
 import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
 import { useNavigate } from "react-router-dom"
 import Alert from "../components/Alert"
+import PageTransition from "../components/PageTransition"
 
 const CreateQuizPage = () => {
 
@@ -155,7 +158,7 @@ const CreateQuizPage = () => {
     }, [])
 
     return (
-        <div className="page-container">
+        <PageTransition>
 
             <h1>Create new quiz</h1>
 
@@ -246,10 +249,17 @@ const CreateQuizPage = () => {
                         <h3 className="current-added-questions">Current added questions:</h3>
                     )
                 }
-
+                <AnimatePresence mode="sync" initial={false}>
                 {
                     !!questionsList.length && questionsList.map((question, i) => (
-                        <div className="question-container" key={i}>
+                        
+                        <motion.div 
+                            className="question-container" 
+                            key={question.questionText}
+                            initial={{opacity: 0, y: 20}}
+                            animate={{opacity: 1, y: 0, transition: {duration: 0.5}}}
+                            exit={{opacity: 0, height: 50, transition: {duration: 1}}}
+                        >
                             <header 
                                 onClick={()=>{
                                     toggleEditQuestionForm(i)
@@ -273,10 +283,11 @@ const CreateQuizPage = () => {
                                 />
                                 
                             }
-                        </div>
+                        </motion.div>
+                        
                     ))
                 }
-
+                </AnimatePresence>
                 <hr className="hr-create-question-form" />
 
                 {
@@ -309,6 +320,7 @@ const CreateQuizPage = () => {
                 }
             </form>
 
+            <>
             {
                 firebaseError && (
                     <Alert
@@ -317,8 +329,9 @@ const CreateQuizPage = () => {
                     />
                 )
             }
+            </>
 
-        </div>
+        </PageTransition>
     )
 }
 

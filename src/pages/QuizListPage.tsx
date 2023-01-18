@@ -9,6 +9,7 @@ import classNames from 'classnames'
 import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
 import Alert from '../components/Alert'
 import Pagination from '../components/Pagination'
+import PageTransition from '../components/PageTransition'
 
 const QuizListPage = () => {
 
@@ -103,7 +104,7 @@ const QuizListPage = () => {
     }, [quizList])
 
     return (
-        <div className="page-container quiz-list-page">
+        <PageTransition>
 
             <h1>Public quiz list</h1>
 
@@ -194,6 +195,7 @@ const QuizListPage = () => {
                 }
             </div>
 
+            <>
             {
                 firebaseError && (
                     <Alert
@@ -202,8 +204,9 @@ const QuizListPage = () => {
                     />
                 )
             }
+            </>
 
-        </div>
+        </PageTransition>
     )
 }
 

@@ -16,6 +16,7 @@ import Confirm from '../components/Confirm'
 import AvatarInput from '../components/Forms/AvatarInput'
 import LoadingSpinnerButton from '../components/LoadingSpinnerButton'
 import Alert from '../components/Alert'
+import PageTransition from '../components/PageTransition'
 
 const UpdateProfilePage = () => {
 
@@ -123,7 +124,7 @@ const UpdateProfilePage = () => {
     }, [userData])
 
     return (
-        <div className="page-container">
+        <PageTransition>
             <h1>Update your account</h1>
 
             {
@@ -290,7 +291,7 @@ const UpdateProfilePage = () => {
                 )
             }
             
-        </div>
+        </PageTransition>
     )
 }
 

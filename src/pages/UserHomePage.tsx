@@ -4,13 +4,14 @@ import { useAuthContext } from "../contexts/AuthContext"
 import listIcon from '../assets/icons/list-icon.svg'
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
 import addIcon from '../assets/icons/add-icon.svg'
+import PageTransition from "../components/PageTransition"
 
 const UserHomePage = () => {
 
     const { currentUser } = useAuthContext()
 
     return (
-        <div className="page-container">
+        <PageTransition>
             <h1>Welcome { currentUser.displayName }!</h1>
 
             <div className="user-home-page-links">
@@ -27,7 +28,7 @@ const UserHomePage = () => {
                     View your profile
                 </Link>
             </div>
-        </div>
+        </PageTransition>
     )
 }
 

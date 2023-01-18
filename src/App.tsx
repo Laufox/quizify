@@ -1,7 +1,9 @@
 /** App component to hold all website content */
 
 // React related imports
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
+
+import { AnimatePresence } from 'framer-motion'
 
 // Style import
 import './assets/scss/App.scss'
@@ -32,6 +34,8 @@ import RequireGuest from './components/RequireGuest'
 
 function App() {
 
+    const location = useLocation()
+
     // Funtions and variabels to use from auth context
     const { currentUser } = useAuthContext()
 
@@ -39,113 +43,115 @@ function App() {
         <div className="App">
             <Navigaion />
             <div className='app-container'>
-                <Routes>
+                <AnimatePresence mode='wait'>
+                    <Routes location={location} key={location.pathname}>
 
-                    {/* 404 PAGE FOR UNKNOWN ADDRESS */}
-                    <Route 
-                        path='*' 
-                        element={
-                            <NotFoundPage />
-                        } 
-                    />
+                        {/* 404 PAGE FOR UNKNOWN ADDRESS */}
+                        <Route 
+                            path='*' 
+                            element={
+                                <NotFoundPage />
+                            } 
+                        />
 
-                    {/* START PAGE */}
-                    <Route 
-                        path='/' 
-                        element={
-                            currentUser 
-                            ? <UserHomePage /> 
-                            : <GuestHomePage />
-                        } 
-                    />
+                        {/* START PAGE */}
+                        <Route 
+                            path='/' 
+                            element={
+                                currentUser 
+                                ? <UserHomePage /> 
+                                : <GuestHomePage />
+                            } 
+                        />
 
-                    {/* ACCOUNT CREATION, SIGN IN AND RESET PASSWORD PAGES */}
-                    <Route 
-                        path='/signup' 
-                        element={
-                            <RequireGuest>
-                                <CreateAccountPage />
-                            </RequireGuest>
-                        } 
-                    />
-                    <Route 
-                        path='/signin' 
-                        element={
-                            <SignInPage />
-                        } 
-                    />
-                    <Route 
-                        path='/resetpassword' 
-                        element={
-                            <RequireGuest>
-                                <ResetPasswordPage />
-                            </RequireGuest>
-                        }
-                    />
+                        {/* ACCOUNT CREATION, SIGN IN AND RESET PASSWORD PAGES */}
+                        <Route 
+                            path='/signup' 
+                            element={
+                                <RequireGuest>
+                                    <CreateAccountPage />
+                                </RequireGuest>
+                            } 
+                        />
+                        <Route 
+                            path='/signin' 
+                            element={
+                                <SignInPage />
+                            } 
+                        />
+                        <Route 
+                            path='/resetpassword' 
+                            element={
+                                <RequireGuest>
+                                    <ResetPasswordPage />
+                                </RequireGuest>
+                            }
+                        />
 
-                    {/* VIEW AND UPDATE PROFILE PAGES */}
-                    <Route 
-                        path='/profile/:uid' 
-                        element={
-                            <ProfilePage />
-                        } 
-                    />
-                    <Route 
-                        path='/updateprofile/:uid' 
-                        element={
-                            <RequireAccount>
-                                <UpdateProfilePage />
-                            </RequireAccount>
-                        } 
-                    />
+                        {/* VIEW AND UPDATE PROFILE PAGES */}
+                        <Route 
+                            path='/profile/:uid' 
+                            element={
+                                <ProfilePage />
+                            } 
+                        />
+                        <Route 
+                            path='/updateprofile/:uid' 
+                            element={
+                                <RequireAccount>
+                                    <UpdateProfilePage />
+                                </RequireAccount>
+                            } 
+                        />
 
-                    {/* LIST, VIEW, CREATE AND UPDATE QUIZ PAGES */}
-                    <Route 
-                        path='/quizlist' 
-                        element={
-                            <QuizListPage />
-                        } 
-                    />
-                    <Route 
-                        path='/quiz/:id' 
-                        element={
-                            <QuizPage />
-                        } 
-                    />
-                    <Route 
-                        path='/createquiz' 
-                        element={
-                            <RequireAccount>
-                                <CreateQuizPage />
-                            </RequireAccount>
-                        } 
-                    />
-                    <Route 
-                        path='/updatequiz/:id' 
-                        element={
-                            <RequireAccount>
-                                <UpdateQuizPage />
-                            </RequireAccount>
-                        } 
-                    />
+                        {/* LIST, VIEW, CREATE AND UPDATE QUIZ PAGES */}
+                        <Route 
+                            path='/quizlist' 
+                            element={
+                                <QuizListPage />
+                            } 
+                        />
+                        <Route 
+                            path='/quiz/:id' 
+                            element={
+                                <QuizPage />
+                            } 
+                        />
+                        <Route 
+                            path='/createquiz' 
+                            element={
+                                <RequireAccount>
+                                    <CreateQuizPage />
+                                </RequireAccount>
+                            } 
+                        />
+                        <Route 
+                            path='/updatequiz/:id' 
+                            element={
+                                <RequireAccount>
+                                    <UpdateQuizPage />
+                                </RequireAccount>
+                            } 
+                        />
 
-                    {/* SEARCH PAGE */}
-                    <Route 
-                        path='/search' 
-                        element={
-                            <SearchPage />
-                        } 
-                    />
+                        {/* SEARCH PAGE */}
+                        <Route 
+                            path='/search' 
+                            element={
+                                <SearchPage />
+                            } 
+                        />
 
-                    {/* ABOUT WEBSITE PAGE */}
-                    <Route 
-                        path='/about' 
-                        element={
-                            <AboutPage />
-                        } 
-                    />
+                        {/* ABOUT WEBSITE PAGE */}
+                        <Route 
+                            path='/about' 
+                            element={
+                                <AboutPage />
+                            } 
+                        />
 
-                </Routes>
+                    </Routes>
+                </AnimatePresence>
             </div>
         </div>
     )

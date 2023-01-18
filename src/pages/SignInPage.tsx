@@ -12,6 +12,7 @@ import classNames from "classnames"
 import { FormData } from "../interfaces/FormData"
 import LoadingSpinnerButton from "../components/LoadingSpinnerButton"
 import Alert from "../components/Alert"
+import PageTransition from "../components/PageTransition"
 
 const SignInPage = () => {
 
@@ -47,7 +48,7 @@ const SignInPage = () => {
     }
 
     return (
-        <div className="page-container">
+        <PageTransition>
             <h1>Log in to your account</h1>
 
             <form onSubmit={handleSubmit(loginUser)} noValidate>
@@ -107,6 +108,7 @@ const SignInPage = () => {
                 <Link to='/signup'>Don't have an account? Sign up now!</Link>
             </form>
 
+            <>
             {
                 firebaseError && (
                     <Alert
@@ -115,7 +117,8 @@ const SignInPage = () => {
                     />
                 )
             }
-        </div>
+            </>
+        </PageTransition>
     )
 }
 

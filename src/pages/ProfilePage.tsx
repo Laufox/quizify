@@ -17,6 +17,7 @@ import LoadingSpinnerGeneric from '../components/LoadingSpinnerGeneric'
 import CollectionContainer from '../components/CollectionContainer'
 import Alert from '../components/Alert'
 import Pagination from '../components/Pagination'
+import PageTransition from '../components/PageTransition'
 
 const ProfilePage = () => {
 
@@ -235,8 +236,8 @@ const ProfilePage = () => {
     }, [userData])
 
     return (
-        <div className="page-container">
-
+        <PageTransition>
+            <>
             {
                 loading.getUser ? (
 
@@ -514,8 +515,8 @@ const ProfilePage = () => {
                     />
                 )
             }
-
-        </div>
+            </>
+        </PageTransition>
     )
 }
 

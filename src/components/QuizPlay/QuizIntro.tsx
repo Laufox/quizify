@@ -40,7 +40,7 @@ const QuizIntro = ({quiz, onBegin}: Props) => {
             </button>
 
             {
-                quiz.authorId === currentUser.uid && (
+                quiz.authorId === currentUser?.uid && (
                     <Link 
                         className='btn btn-info btn-action'
                         to={`/updatequiz/${quiz.id}`}

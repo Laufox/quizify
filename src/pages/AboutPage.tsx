@@ -1,6 +1,8 @@
+import PageTransition from '../components/PageTransition'
+
 const AboutPage = () => {
     return (
-        <div className="page-container">
+        <PageTransition>
             <h1>About website</h1>
 
             <p>
@@ -21,7 +23,7 @@ const AboutPage = () => {
                 <a href="https://reactjs.org/" target='_blank'>Read more about ReactJS</a>
                 <a href="https://firebase.google.com/" target='_blank'>Read more about Firebase</a>
             </div>
-        </div>
+        </PageTransition>
     )
 }
 
