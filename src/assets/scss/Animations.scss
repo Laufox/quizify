@@ -25,18 +25,14 @@
     }
 }
 
-@keyframes flashing-green {
+@keyframes fade-out {
     
     0% {
-        background-color: rgb(134, 209, 91);
+        opacity: 1;
     }
 
-    // 50% {
-    //     background-color: rgb(104, 179, 61);
-    // }
-
     100% {
-        background-color: rgb(209, 134, 91);
+        opacity: 0.4;
     }
 
 }

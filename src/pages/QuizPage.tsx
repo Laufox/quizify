@@ -11,6 +11,8 @@ import { useAuthContext } from '../contexts/AuthContext'
 import { AnsweredQuestion } from '../interfaces/AnsweredQuestion'
 import { Quiz } from '../interfaces/Quiz'
 
+import { AnimatePresence } from 'framer-motion'
+
 const QuizPage = () => {
 
     const { id } = useParams()
@@ -108,23 +110,31 @@ const QuizPage = () => {
                     quiz && (
                         <>
                         <h1>{quiz.name}</h1>
+                        <AnimatePresence mode='wait'>
                         {
                             quizStatus === 'intro' && (
-                                <QuizIntro quiz={quiz} onBegin={beginQuiz} />
+                                <PageTransition key={'intro'}>
+                                    <QuizIntro quiz={quiz} onBegin={beginQuiz} />
+                                </PageTransition>
                             )
                         }
     
                         {
                             quizStatus === 'playing' && (
-                                <QuizPlaying questions={quiz.questions} onFinish={endQuiz} />
+                                <PageTransition key={'playing'}>
+                                    <QuizPlaying questions={quiz.questions} onFinish={endQuiz} />
+                                </PageTransition>
                             )
                         }
     
                         {
                             quizStatus === 'over' && (
-                                <QuizResults answeredQuestions={answeredQuestions} score={score} scorePercent={scorePercent} onReplay={handleReplay} />
+                                <PageTransition key={'over'}>
+                                    <QuizResults answeredQuestions={answeredQuestions} score={score} scorePercent={scorePercent} onReplay={handleReplay} />
+                                </PageTransition>
                             )
                         }
+                        </AnimatePresence>
                         
                         </>
                     )

@@ -957,6 +957,10 @@ const AuthContextProvider = ({ children }: Props) => {
             }, {
                 merge: true
             })
+
+            return {
+                success: true
+            }
             
         } catch (error) {
 

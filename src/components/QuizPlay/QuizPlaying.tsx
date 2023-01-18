@@ -4,6 +4,7 @@ import classNames from "classnames"
 import Timer from "./Timer";
 import pointerIcon from '../../assets/icons/pointer-icon.svg'
 import { AnsweredQuestion } from "../../interfaces/AnsweredQuestion";
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface Props {
     questions: NewQuestionItem[],
@@ -143,7 +144,14 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
                         
                     </div>
 
-                    <div className="question-container">
+                    <AnimatePresence mode="wait">
+                    <motion.div 
+                        key={questionNumber}
+                        className="question-container"
+                        initial={{opacity: 0.3, x: '-98%'}}
+                        animate={{opacity: 1, x: 0, transition: {duration: 0.5}}}
+                        exit={{opacity: 0.3, x: '-98%', transition: {duration: 0.5}}}
+                    >
                         <header>
                             <h2 className="question-text">{questionsSet[questionNumber - 1].questionText}</h2>
                         </header>
@@ -173,16 +181,17 @@ const QuizPlaying = ({questions, onFinish}: Props) => {
                                 ))
                             }
                         </main>
-                        <footer>
-                            {
-                                questionStatus === "finished" && (
-                                    <div className="next-round-timer-container" onClick={goToNextQuestion}>
-                                        <span>{questionsSet.length !== questionNumber ? "Next" : "Finish"}</span>
-                                        <span>{timeToNextQuestion}</span>
-                                    </div>
-                                )
-                            }
-                        </footer>
+                    </motion.div>
+                    </AnimatePresence>
+                    <div className="next-round-countdown-container">
+                        {
+                            questionStatus === "finished" && (
+                                <div className="next-round-timer-container" onClick={goToNextQuestion}>
+                                    <span>{questionsSet.length !== questionNumber ? "Next" : "Finish"}</span>
+                                    <span>{timeToNextQuestion}</span>
+                                </div>
+                            )
+                        }
                     </div>
                     </>
                 )
