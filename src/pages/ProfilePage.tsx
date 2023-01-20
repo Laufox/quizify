@@ -5,7 +5,6 @@ import { useAuthContext } from "../contexts/AuthContext"
 import defaultAvatar from '../assets/icons/defaultavatar.svg'
 import updateIcon from '../assets/icons/update-icon.svg'
 import deleteIcon from '../assets/icons/delete-icon.svg'
-import SearchForm from '../components/SearchForm'
 import Confirm from '../components/Confirm'
 
 import { UserData } from '../interfaces/UserData'
@@ -41,7 +40,7 @@ const ProfilePage = () => {
     const [currentPagePlayed, setCurrentPagePlayed] = useState(1)
     const [currentPageAllUsers, setCurrentPageAllUsers] = useState(1)
     const [currentPageAllQuizzes, setCurrentPageAllQuizzes] = useState(1)
-    const [objectToDelete, setObjectToDelete] = useState<{id: string, name: string}>()
+    const [objectToDelete, setObjectToDelete] = useState<{resource: Quiz | User, type: "user" | "quiz"}>()
 
     const toggleShowCreated = () => {
         setShowCreated( prevState => !prevState )
@@ -173,35 +172,29 @@ const ProfilePage = () => {
 
     }
 
-    const handleDeleteQuiz = async () => {
+    const handleDeleteObject = async () => {
 
-        const response = await deleteQuizDocument(objectToDelete?.id)
-
-        if (!response.success) {
-
-            setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
-            return
-
-        }
-
-        applyQuizzesCreatedByUser()
-        if (userData?.role === "admin") {
-            applyAllQuizzes()
-        }
         closeConfirmModal()
 
-    }
-
-    const handleDeleteUser = async (user: User) => {
-
-        const response = await deleteUserAccountAdmin(user.id, user.photoURL ? true : false)
+        const response = objectToDelete?.type === "quiz" 
+        ? await deleteQuizDocument(objectToDelete?.resource?.id)
+        : await deleteUserAccountAdmin(objectToDelete?.resource?.id, objectToDelete?.resource?.photoURL ? true : false)
 
         if (!response.success) {
+
             setFirebaseError(response?.error?.message ?? 'An unknown error has occured.')
             return
+
         }
 
-        applyAllUsers()
+        if (objectToDelete?.type === "quiz") {
+            applyQuizzesCreatedByUser()
+            if (userData?.role === "admin") {
+                applyAllQuizzes()
+            }
+        } else {
+            applyAllUsers()
+        }
 
     }
 
@@ -290,8 +283,8 @@ const ProfilePage = () => {
                                                     <p 
                                                         onClick={()=>{
                                                             setObjectToDelete({
-                                                                id: quiz.id,
-                                                                name: quiz.name
+                                                                resource: quiz,
+                                                                type: "quiz"
                                                             })
                                                             openConfirmModal()
                                                         }} 
@@ -366,8 +359,6 @@ const ProfilePage = () => {
                                     <hr />
     
                                     <h2>Admin control</h2>
-    
-                                    <SearchForm onSearch={()=>{}} />
 
                                     <CollectionContainer 
                                         onToggle={toggleShowAddedQuizzes}
@@ -394,8 +385,8 @@ const ProfilePage = () => {
                                                     <p 
                                                         onClick={()=>{
                                                             setObjectToDelete({
-                                                                id: quiz.id,
-                                                                name: quiz.name
+                                                                resource: quiz,
+                                                                type: "quiz"
                                                             })
                                                             openConfirmModal()
                                                         }} 
@@ -435,7 +426,13 @@ const ProfilePage = () => {
                                                     <div className='collection-row-actions'>
                                                         <p 
                                                             className='link' 
-                                                            onClick={()=>{handleDeleteUser(user)}}
+                                                            onClick={()=>{
+                                                                setObjectToDelete({
+                                                                    resource: user,
+                                                                    type: "user"
+                                                                })
+                                                                openConfirmModal()
+                                                            }}
                                                         >
                                                             <img src={deleteIcon} />
                                                         </p>
@@ -500,9 +497,9 @@ const ProfilePage = () => {
             {
                 openConfirm &&
                 <Confirm 
-                    onConfirm={handleDeleteQuiz}
+                    onConfirm={handleDeleteObject}
                     onCancel={closeConfirmModal}
-                    actionText={`You are about to delete ${objectToDelete?.name}`}
+                    actionText={`You are about to delete ${objectToDelete?.resource?.name}`}
                     requiresAuth={false}
                 />
             }

@@ -55,7 +55,7 @@ const QuizListPage = () => {
 
         let tempFilteredList = !searchTerm ? [...quizList] : [...quizList.filter((quiz) => {
 
-            if (quiz.name.includes(searchTerm) || quiz.tags.includes(searchTerm)) {
+            if (quiz.name.toLowerCase().includes(searchTerm.toLowerCase()) || quiz.tags.includes(searchTerm.toLowerCase())) {
                 return true
             }
 

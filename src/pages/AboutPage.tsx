@@ -10,7 +10,7 @@ const AboutPage = () => {
             </p>
 
             <p>
-                The Quizify project is built with ReactJS framework, using TypeScript as primary language combined with HTML as markup and SASS/CSS for styling porpuses. The project uses a few libraries imported through npm, such as React-Hook-Form and Classnames, but all markup and styling is self-written.
+                The Quizify project is built with ReactJS framework, using TypeScript as primary language combined with HTML as markup and SASS/CSS for styling porpuses. The project uses a few libraries imported through npm, such as React-Hook-Form and Classnames, but all other markup and styling is self-written.
             </p>
 
             <p>

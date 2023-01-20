@@ -11,4 +11,5 @@ export interface Quiz {
     questions: NewQuestionItem[],
     visibility: string
     createdAt: string,
+    photoURL?: string
 }

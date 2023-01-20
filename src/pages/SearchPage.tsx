@@ -46,7 +46,7 @@ const SearchPage = () => {
 
         const quizzes = allQuizzes.filter((quiz) => {
 
-            if (quiz.name.includes(q) || quiz.tags.includes(q)) {
+            if (quiz.name.toLowerCase().includes(q.toLowerCase()) || quiz.tags.includes(q.toLowerCase())) {
                 return true
             }
 
