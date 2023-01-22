@@ -568,6 +568,7 @@ const AuthContextProvider = ({ children }: Props) => {
             return {
                 success: true,
                 quiz: {
+                    id: quizSnap.id,
                     ...quizSnap.data(),
                     createdAt: new Date(quizSnap.data().createdAt.toMillis()).toISOString().slice(2, 10)
                 }
