@@ -103,7 +103,7 @@ a, button, .link {
     border: none;
 
     &:hover {
-        font-style: italic;
+        text-decoration: underline solid 1px;
     }
 
     @media screen and (min-width: 720px) {
@@ -221,7 +221,7 @@ img {
     min-height: calc(100vh - 6rem);
     display: flex;
     justify-content: center;
-    background-color: #474242;
+    background-color: #fff;
 
     @media screen and (min-width: 720px) {
         padding: 6rem 3rem;
@@ -242,8 +242,8 @@ img {
     max-width: 1200px;
     background-color: #fff;
     padding: 1rem;
-    border-radius: 0.5rem;
-    min-height: 80vh;
+    border-left: 4px solid #ddd;
+    // min-height: 80vh;
 
     @media screen and (min-width: 500px) {
         padding: 1.5rem;

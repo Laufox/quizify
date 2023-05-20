@@ -113,7 +113,7 @@ const QuizPage = () => {
                         <AnimatePresence mode='wait'>
                         {
                             quizStatus === 'intro' && (
-                                <PageTransition key={'intro'}>
+                                <PageTransition key={'intro'} encapsulated>
                                     <QuizIntro quiz={quiz} onBegin={beginQuiz} />
                                 </PageTransition>
                             )
@@ -121,7 +121,7 @@ const QuizPage = () => {
     
                         {
                             quizStatus === 'playing' && (
-                                <PageTransition key={'playing'}>
+                                <PageTransition key={'playing'} encapsulated>
                                     <QuizPlaying questions={quiz.questions} onFinish={endQuiz} />
                                 </PageTransition>
                             )
@@ -129,7 +129,7 @@ const QuizPage = () => {
     
                         {
                             quizStatus === 'over' && (
-                                <PageTransition key={'over'}>
+                                <PageTransition key={'over'} encapsulated>
                                     <QuizResults answeredQuestions={answeredQuestions} score={score} scorePercent={scorePercent} onReplay={handleReplay} />
                                 </PageTransition>
                             )
